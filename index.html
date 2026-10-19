@@ -757,5 +757,41 @@ async function loadStore() {
 }
 loadStore();
 </script>
+  
+<script>
+(function () {
+  const SUPABASE_URL = "https://fudkfvwwbqmflmtkbtkk.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
+
+  let sessionId = sessionStorage.getItem("veyora_session_id");
+  if (!sessionId) {
+    sessionId = crypto.randomUUID();
+    sessionStorage.setItem("veyora_session_id", sessionId);
+  }
+
+  const path = location.pathname;
+  const productMatch = path.match(/product\/([^/]+)/i);
+  const eventType = productMatch ? "product_view" : "page_view";
+
+  fetch(SUPABASE_URL + "/rest/v1/analytics_events", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify({
+      session_id: sessionId,
+      event_type: eventType,
+      page_path: path,
+      product_id: null
+    })
+  }).catch(function (error) {
+    console.error("Veyora analytics error:", error);
+  });
+})();
+</script>
+
 </body>
 </html>
