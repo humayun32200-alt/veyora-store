@@ -644,14 +644,45 @@ $("productForm").onsubmit=async e=>{
 
     let savedId=id;
 
-    if(id){
-      const {error}=await db.from("products").update(payload).eq("id",id);
-      if(error)throw error;
-    }else{
-      const {data,error}=await db.from("products").insert(payload).select("id").single();
-      if(error)throw error;
-      savedId=data.id;
+if(id){
+  const {error}=await db.from("products").update(payload).eq("id",id);
+  if(error){
+    if(error.code==="23505" && error.message.includes("products_slug_key")){
+      throw new Error("Ye slug pehle se mojood hai. Product ka slug change karo.");
     }
+    throw error;
+  }
+}else{
+  const originalSlug=payload.slug;
+  let attempt=1;
+  let saved=false;
+
+  while(!saved && attempt<=20){
+    payload.slug=attempt===1
+      ? originalSlug
+      : `${originalSlug}-${attempt}`;
+
+    const {data,error}=await db.from("products")
+      .insert(payload)
+      .select("id")
+      .single();
+
+    if(!error){
+      savedId=data.id;
+      saved=true;
+    }else if(error.code==="23505" &&
+             error.message.includes("products_slug_key")){
+      attempt++;
+    }else{
+      throw error;
+    }
+  }
+
+  if(!saved){
+    throw new Error("Unique slug nahi ban saka. Product ka slug manually change karo.");
+  }
+}
+
 
     if($("pImages").files.length){
       await saveProductImages(savedId,$("pImages").files);
