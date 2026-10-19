@@ -16,7 +16,8 @@ button,.btn{padding:10px 13px;border:1px solid var(--gold);border-radius:7px;bac
 .top{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line);background:#171713}
 .brand{font-size:24px;font-weight:bold;letter-spacing:4px;color:var(--gold)}
 main{max-width:1250px;margin:auto;padding:20px}
-h1{font-size:27px}h2{font-size:21px}
+h1{font-size:27px}
+h2{font-size:21px}
 .panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .metric{font-size:28px;color:var(--gold);font-weight:bold;margin-top:8px}
@@ -39,6 +40,8 @@ th{color:var(--gold)}
 td button{margin:3px;padding:7px 9px}
 #login{max-width:420px;margin:8vh auto}
 .option-card{border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+.custom-access{border:1px solid var(--gold);border-radius:10px;padding:14px;margin:16px 0;background:#171713}
+.custom-access h3{margin-top:0;color:var(--gold)}
 [hidden]{display:none!important}
 @media(max-width:650px){
 main{padding:12px}
@@ -110,6 +113,19 @@ main{padding:12px}
 <button id="newProduct">+ Add Product</button>
 </div>
 
+<!-- NEW: Direct Custom Options Access -->
+<div class="custom-access">
+<h3>Custom Product Options</h3>
+<p class="muted">Product select karo, phir apni marzi ke Color, Size, Design ya doosre options add karo.</p>
+<label for="customProductSelect">Select product</label>
+<select id="customProductSelect">
+<option value="">Loading products...</option>
+</select>
+<button id="openCustomOptions" type="button" style="margin-top:12px;width:100%">
++ Add Custom Option
+</button>
+</div>
+
 <form id="productForm" hidden>
 <h3 id="productFormTitle">Add Product</h3>
 <input id="pId" type="hidden">
@@ -140,9 +156,12 @@ main{padding:12px}
 <div id="productsTable"></div>
 
 <section id="variantPanel" class="panel" hidden>
+<div class="row" style="justify-content:space-between">
 <h3 id="variantHeading">Custom Product Options</h3>
+<button id="closeVariants" type="button" class="secondary">Close</button>
+</div>
 <p class="muted">Apni marzi ka option name likho: Color, Size, Design, Fabric etc. Har value ka stock aur picture alag hogi.</p>
-<button id="newVariant">+ Add Custom</button>
+<button id="newVariant" type="button">+ Add Custom</button>
 
 <form id="variantForm" hidden>
 <input id="vId" type="hidden">
@@ -229,7 +248,10 @@ function tab(name){
 ["overview","products","categories","orders"].forEach(id=>$(id).hidden=id!==name);
 document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
 }
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+tab(b.dataset.tab);
+});
 
 function table(headers,rows){
 if(!rows.length)return '<p class="muted">No records found.</p>';
@@ -283,6 +305,7 @@ const sessions=new Set(analyticsEvents.map(e=>e.session_id).filter(Boolean));
 const views=analyticsEvents.filter(e=>["page_view","product_view"].includes(e.event_type)).length;
 const valid=orders.filter(o=>String(o.status||"").toLowerCase()!=="cancelled");
 const sales=valid.reduce((s,o)=>s+Number(o.total||0),0);
+
 $("liveVisitorCount").textContent=recent.size;
 $("sessionCount").textContent=sessions.size;
 $("pageViewCount").textContent=views;
@@ -308,6 +331,7 @@ renderProducts();
 renderCategories();
 renderOrders();
 fillCategorySelect();
+fillCustomProductSelect();
 
 try{
 analyticsEvents=await result(db.from("analytics_events").select("session_id,event_type,created_at").order("created_at",{ascending:false}).limit(10000));
@@ -322,13 +346,48 @@ notice("Could not load data: "+err.message,true);
 }
 }
 
+/* NEW: Product selector for direct Custom Options access */
+function fillCustomProductSelect(){
+const select=$("customProductSelect");
+const previous=select.value;
+
+if(!products.length){
+select.innerHTML='<option value="">No products yet — add a product first</option>';
+return;
+}
+
+select.innerHTML='<option value="">-- Select a product --</option>'+
+products.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join("");
+
+if(products.some(p=>String(p.id)===String(previous))){
+select.value=previous;
+}
+}
+
+$("openCustomOptions").onclick=async()=>{
+const id=$("customProductSelect").value;
+if(!id){
+alert("Pehle product select karo. Agar products nahi hain, + Add Product se product banao.");
+return;
+}
+tab("products");
+await openVariants(id);
+};
+
+$("closeVariants").onclick=()=>{
+$("variantPanel").hidden=true;
+$("variantForm").hidden=true;
+};
+
 function renderProducts(){
 $("productsTable").innerHTML=table(
 ["Product","Retail","Sale","Discount","Stock","Active","Actions"],
 products.map(p=>[
-esc(p.name),esc(money(p.retail_price)),
+esc(p.name),
+esc(money(p.retail_price)),
 esc(p.sale_price==null?"—":money(p.sale_price)),
-esc(pct(p.retail_price,p.sale_price)),esc(p.stock_quantity),
+esc(pct(p.retail_price,p.sale_price)),
+esc(p.stock_quantity),
 p.is_active?"Yes":"No",
 '<button data-edit-product="'+esc(p.id)+'">Edit</button>'+
 '<button data-images="'+esc(p.id)+'" class="secondary">Images</button>'+
@@ -364,11 +423,13 @@ $("productForm").hidden=false;
 $("productFormTitle").textContent="Add Product";
 $("productForm").scrollIntoView({behavior:"smooth"});
 };
+
 $("cancelProduct").onclick=resetProduct;
 
 function editProduct(id){
 const p=products.find(x=>String(x.id)===String(id));
 if(!p)return;
+
 $("pId").value=p.id;
 $("pName").value=p.name||"";
 $("pSlug").value=p.slug||"";
@@ -388,20 +449,36 @@ $("productForm").scrollIntoView({behavior:"smooth"});
 }
 
 async function uploadToStorage(file,path){
-if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw Error("Use JPG, PNG or WebP images.");
-if(file.size>5*1024*1024)throw Error("Each image must be 5 MB or smaller.");
-const {error}=await db.storage.from("veyora-products").upload(path,file,{upsert:true,contentType:file.type});
+if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+throw Error("Use JPG, PNG or WebP images.");
+}
+if(file.size>5*1024*1024){
+throw Error("Each image must be 5 MB or smaller.");
+}
+
+const {error}=await db.storage.from("veyora-products").upload(path,file,{
+upsert:true,contentType:file.type
+});
 if(error)throw error;
+
 return db.storage.from("veyora-products").getPublicUrl(path).data.publicUrl;
 }
 
 async function saveProductImages(productId,fileList){
-const sort=await result(db.from("product_images").select("sort_order").eq("product_id",productId).order("sort_order",{ascending:false}).limit(1));
+const sort=await result(
+db.from("product_images").select("sort_order")
+.eq("product_id",productId)
+.order("sort_order",{ascending:false}).limit(1)
+);
+
 let n=(sort[0]?.sort_order??-1)+1;
+
 for(const file of fileList){
 const path="products/"+productId+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 const url=await uploadToStorage(file,path);
-const {error}=await db.from("product_images").insert({product_id:productId,image_url:url,alt_text:file.name,sort_order:n++});
+const {error}=await db.from("product_images").insert({
+product_id:productId,image_url:url,alt_text:file.name,sort_order:n++
+});
 if(error)throw error;
 }
 }
@@ -410,24 +487,35 @@ $("productForm").onsubmit=async e=>{
 e.preventDefault();
 const btn=$("saveProduct");
 btn.disabled=true;
+
 try{
 const id=$("pId").value;
 const retail=Number($("pRetail").value);
 const sale=$("pSale").value===""?null:Number($("pSale").value);
-if(sale!==null&&(sale<0||sale>retail))throw Error("Sale price must be between zero and retail price.");
+
+if(sale!==null&&(sale<0||sale>retail)){
+throw Error("Sale price must be between zero and retail price.");
+}
+
 const name=$("pName").value.trim();
+
 const payload={
-name,slug:$("pSlug").value.trim()||slugify(name),
+name,
+slug:$("pSlug").value.trim()||slugify(name),
 description:$("pDescription").value.trim()||null,
 category_id:$("pCategory").value||null,
 sku:$("pSku").value.trim()||null,
 barcode:$("pBarcode").value.trim()||null,
-retail_price:retail,sale_price:sale,
+retail_price:retail,
+sale_price:sale,
 stock_quantity:Number($("pStock").value),
-is_active:$("pActive").checked,is_featured:$("pFeatured").checked,
+is_active:$("pActive").checked,
+is_featured:$("pFeatured").checked,
 updated_at:new Date().toISOString()
 };
+
 let savedId=id;
+
 if(id){
 const {error}=await db.from("products").update(payload).eq("id",id);
 if(error)throw error;
@@ -436,10 +524,15 @@ const {data,error}=await db.from("products").insert(payload).select("id").single
 if(error)throw error;
 savedId=data.id;
 }
-if($("pImages").files.length)await saveProductImages(savedId,$("pImages").files);
+
+if($("pImages").files.length){
+await saveProductImages(savedId,$("pImages").files);
+}
+
 resetProduct();
 await loadAll();
 notice("Product saved successfully.");
+
 }catch(err){
 notice("Could not save product: "+err.message,true);
 }finally{
@@ -450,16 +543,25 @@ btn.disabled=false;
 async function deleteProduct(id){
 const p=products.find(x=>String(x.id)===String(id));
 if(!p||!confirm('Delete "'+p.name+'" and its images and options? This cannot be undone.'))return;
+
 try{
 let r=await db.from("product_images").delete().eq("product_id",id);
 if(r.error)throw r.error;
+
 r=await db.from("product_variants").delete().eq("product_id",id);
 if(r.error)throw r.error;
+
 r=await db.from("products").delete().eq("id",id);
 if(r.error)throw r.error;
-if(String(activeVariantProduct)===String(id))$("variantPanel").hidden=true;
+
+if(String(activeVariantProduct)===String(id)){
+$("variantPanel").hidden=true;
+activeVariantProduct=null;
+}
+
 await loadAll();
 notice("Product deleted.");
+
 }catch(err){
 notice("Delete failed: "+err.message,true);
 }
@@ -467,29 +569,48 @@ notice("Delete failed: "+err.message,true);
 
 async function uploadImages(id){
 const input=document.createElement("input");
-input.type="file";input.multiple=true;input.accept="image/jpeg,image/png,image/webp";
+input.type="file";
+input.multiple=true;
+input.accept="image/jpeg,image/png,image/webp";
+
 input.onchange=async()=>{
 if(!input.files.length)return;
-try{await saveProductImages(id,input.files);notice("Images uploaded.");}
-catch(err){notice("Image upload failed: "+err.message,true);}
+try{
+await saveProductImages(id,input.files);
+notice("Images uploaded.");
+}catch(err){
+notice("Image upload failed: "+err.message,true);
+}
 };
 input.click();
 }
 
 /* CUSTOM OPTIONS */
 async function openVariants(id){
-activeVariantProduct=id;
 const p=products.find(x=>String(x.id)===String(id));
-$("variantHeading").textContent="Custom Options: "+(p?.name||"Product");
+if(!p){
+notice("Product not found. Refresh the dashboard and try again.",true);
+return;
+}
+
+activeVariantProduct=id;
+$("customProductSelect").value=String(id);
+$("variantHeading").textContent="Custom Options: "+p.name;
 $("variantPanel").hidden=false;
 $("variantForm").hidden=true;
 $("variantPanel").scrollIntoView({behavior:"smooth"});
+
 await loadVariants();
 }
 
 async function loadVariants(){
 try{
-variants=await result(db.from("product_variants").select("*").eq("product_id",activeVariantProduct).order("sort_order"));
+variants=await result(
+db.from("product_variants").select("*")
+.eq("product_id",activeVariantProduct)
+.order("sort_order")
+);
+
 $("variantsTable").innerHTML=table(
 ["Option name","Value","Stock","Picture","Actions"],
 variants.map(v=>[
@@ -501,25 +622,40 @@ v.image_url?'<a href="'+esc(v.image_url)+'" target="_blank" rel="noopener">View 
 '<button data-delete-variant="'+esc(v.id)+'" class="danger">Delete</button>'
 ])
 );
-$("variantsTable").querySelectorAll("[data-edit-variant]").forEach(b=>b.onclick=()=>editVariant(b.dataset.editVariant));
-$("variantsTable").querySelectorAll("[data-delete-variant]").forEach(b=>b.onclick=()=>deleteVariant(b.dataset.deleteVariant));
+
+$("variantsTable").querySelectorAll("[data-edit-variant]").forEach(b=>{
+b.onclick=()=>editVariant(b.dataset.editVariant);
+});
+$("variantsTable").querySelectorAll("[data-delete-variant]").forEach(b=>{
+b.onclick=()=>deleteVariant(b.dataset.deleteVariant);
+});
+
 }catch(err){
 notice("Could not load custom options: "+err.message,true);
 }
 }
 
 $("newVariant").onclick=()=>{
+if(!activeVariantProduct){
+notice("Select a product first.",true);
+return;
+}
 $("variantForm").reset();
 $("vId").value="";
 $("vStock").value=0;
 $("variantForm").hidden=false;
+$("variantForm").scrollIntoView({behavior:"smooth"});
 $("vOptionName").focus();
 };
-$("cancelVariant").onclick=()=>{$("variantForm").hidden=true};
+
+$("cancelVariant").onclick=()=>{
+$("variantForm").hidden=true;
+};
 
 function editVariant(id){
 const v=variants.find(x=>String(x.id)===String(id));
 if(!v)return;
+
 $("vId").value=v.id;
 $("vOptionName").value=v.option_name||"";
 $("vOptionValue").value=v.option_value||"";
@@ -533,6 +669,7 @@ $("variantForm").onsubmit=async e=>{
 e.preventDefault();
 const btn=$("saveVariant");
 btn.disabled=true;
+
 try{
 const id=$("vId").value;
 const p=products.find(x=>String(x.id)===String(activeVariantProduct));
@@ -545,32 +682,48 @@ option_value:$("vOptionValue").value.trim(),
 stock_quantity:Number($("vStock").value),
 retail_price:Number(p.retail_price||0),
 sale_price:p.sale_price==null?null:Number(p.sale_price),
-sku:null,barcode:null
+sku:null,
+barcode:null
 };
-if(!payload.option_name||!payload.option_value)throw Error("Enter both custom option name and value.");
+
+if(!payload.option_name||!payload.option_value){
+throw Error("Enter both custom option name and value.");
+}
 
 let target=id;
+
 if(id){
 const {error}=await db.from("product_variants").update(payload).eq("id",id);
 if(error)throw error;
 }else{
-const {data,error}=await db.from("product_variants").insert({...payload,sort_order:variants.length}).select("id").single();
+const {data,error}=await db.from("product_variants").insert({
+...payload,sort_order:variants.length
+}).select("id").single();
+
 if(error)throw error;
 target=data.id;
 }
 
 const file=$("vImage").files[0];
+
 if(file){
 const path="variants/"+activeVariantProduct+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 const url=await uploadToStorage(file,path);
-const {error}=await db.from("product_variants").update({image_url:url}).eq("id",target);
+
+const {error}=await db.from("product_variants").update({
+image_url:url
+}).eq("id",target);
+
 if(error)throw error;
 }
 
 $("variantForm").hidden=true;
 await loadVariants();
 await loadAll();
+
+$("customProductSelect").value=String(activeVariantProduct);
 notice("Custom option value saved.");
+
 }catch(err){
 notice("Could not save custom option: "+err.message,true);
 }finally{
@@ -580,25 +733,38 @@ btn.disabled=false;
 
 async function deleteVariant(id){
 if(!confirm("Delete this option value?"))return;
+
 try{
 const {error}=await db.from("product_variants").delete().eq("id",id);
 if(error)throw error;
+
 await loadVariants();
 await loadAll();
 notice("Option value deleted.");
+
 }catch(err){
 notice("Delete failed: "+err.message,true);
 }
 }
 
 function renderCategories(){
-$("categoriesTable").innerHTML=table(["Category","Slug","Active","Actions"],categories.map(c=>[
-esc(c.name),esc(c.slug),c.is_active?"Yes":"No",
+$("categoriesTable").innerHTML=table(
+["Category","Slug","Active","Actions"],
+categories.map(c=>[
+esc(c.name),
+esc(c.slug),
+c.is_active?"Yes":"No",
 '<button data-edit-category="'+esc(c.id)+'">Edit</button>'+
 '<button data-delete-category="'+esc(c.id)+'" class="danger">Delete</button>'
-]));
-$("categoriesTable").querySelectorAll("[data-edit-category]").forEach(b=>b.onclick=()=>editCategory(b.dataset.editCategory));
-$("categoriesTable").querySelectorAll("[data-delete-category]").forEach(b=>b.onclick=()=>deleteCategory(b.dataset.deleteCategory));
+])
+);
+
+$("categoriesTable").querySelectorAll("[data-edit-category]").forEach(b=>{
+b.onclick=()=>editCategory(b.dataset.editCategory);
+});
+$("categoriesTable").querySelectorAll("[data-delete-category]").forEach(b=>{
+b.onclick=()=>deleteCategory(b.dataset.deleteCategory);
+});
 }
 
 function resetCategory(){
@@ -607,12 +773,18 @@ $("cId").value="";
 $("cActive").checked=true;
 $("categoryForm").hidden=true;
 }
-$("newCategory").onclick=()=>{resetCategory();$("categoryForm").hidden=false};
+
+$("newCategory").onclick=()=>{
+resetCategory();
+$("categoryForm").hidden=false;
+};
+
 $("cancelCategory").onclick=resetCategory;
 
 function editCategory(id){
 const c=categories.find(x=>String(x.id)===String(id));
 if(!c)return;
+
 $("cId").value=c.id;
 $("cName").value=c.name||"";
 $("cSlug").value=c.slug||"";
@@ -626,21 +798,30 @@ $("categoryForm").onsubmit=async e=>{
 e.preventDefault();
 const btn=$("saveCategory");
 btn.disabled=true;
+
 try{
 const id=$("cId").value;
 const name=$("cName").value.trim();
+
 const payload={
-name,slug:$("cSlug").value.trim()||slugify(name),
+name,
+slug:$("cSlug").value.trim()||slugify(name),
 image_url:$("cImage").value.trim()||null,
 sort_order:Number($("cSort").value),
 is_active:$("cActive").checked
 };
-const q=id?db.from("categories").update(payload).eq("id",id):db.from("categories").insert(payload);
+
+const q=id
+?db.from("categories").update(payload).eq("id",id)
+:db.from("categories").insert(payload);
+
 const {error}=await q;
 if(error)throw error;
+
 resetCategory();
 await loadAll();
 notice("Category saved.");
+
 }catch(err){
 notice("Could not save category: "+err.message,true);
 }finally{
@@ -653,12 +834,16 @@ if(products.some(p=>String(p.category_id)===String(id))){
 alert("This category has products. Move those products to another category first.");
 return;
 }
+
 if(!confirm("Delete this category?"))return;
+
 try{
 const {error}=await db.from("categories").delete().eq("id",id);
 if(error)throw error;
+
 await loadAll();
 notice("Category deleted.");
+
 }catch(err){
 notice("Delete failed: "+err.message,true);
 }
@@ -668,38 +853,62 @@ function renderOrders(){
 $("ordersTable").innerHTML=table(
 ["Order ID","Customer","Contact","City","Total","Payment","Status","Tracking","Date","Actions"],
 orders.map(o=>[
-esc(o.id),esc(o.customer_name),
+esc(o.id),
+esc(o.customer_name),
 esc((o.phone||"")+(o.email?" / "+o.email:"")),
-esc(o.city),esc(money(o.total)),esc(o.payment_method),esc(o.status),
+esc(o.city),
+esc(money(o.total)),
+esc(o.payment_method),
+esc(o.status),
 esc(o.tracking_number||"—"),
 esc(o.created_at?new Date(o.created_at).toLocaleDateString():"—"),
 '<button data-order="'+esc(o.id)+'">Update</button>'
 ])
 );
-$("ordersTable").querySelectorAll("[data-order]").forEach(b=>b.onclick=()=>updateOrder(b.dataset.order));
-$("recentOrders").innerHTML=table(["Order","Customer","Total","Status"],orders.slice(0,5).map(o=>[
+
+$("ordersTable").querySelectorAll("[data-order]").forEach(b=>{
+b.onclick=()=>updateOrder(b.dataset.order);
+});
+
+$("recentOrders").innerHTML=table(
+["Order","Customer","Total","Status"],
+orders.slice(0,5).map(o=>[
 esc(o.id),esc(o.customer_name),esc(money(o.total)),esc(o.status)
-]));
+])
+);
 }
 
 async function updateOrder(id){
 const o=orders.find(x=>String(x.id)===String(id));
 if(!o)return;
+
 const statuses=["Pending","Confirmed","Packed","Shipped","Dispatched","Delivered","Cancelled"];
 const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Pending";
 const status=prompt("Order status:\n"+statuses.join(", "),current);
+
 if(status===null)return;
+
 const chosen=statuses.find(s=>s.toLowerCase()===status.trim().toLowerCase());
-if(!chosen){alert("Choose one of the listed statuses.");return;}
+if(!chosen){
+alert("Choose one of the listed statuses.");
+return;
+}
+
 const tracking=prompt("Tracking number (leave blank to clear):",o.tracking_number||"");
 if(tracking===null)return;
+
 try{
 const {error}=await db.from("orders").update({
-status:chosen,tracking_number:tracking.trim()||null,updated_at:new Date().toISOString()
+status:chosen,
+tracking_number:tracking.trim()||null,
+updated_at:new Date().toISOString()
 }).eq("id",id);
+
 if(error)throw error;
+
 await loadAll();
 notice("Order updated.");
+
 }catch(err){
 notice("Could not update order: "+err.message,true);
 }
@@ -709,13 +918,16 @@ $("loginForm").onsubmit=async e=>{
 e.preventDefault();
 $("loginBtn").disabled=true;
 $("loginMessage").textContent="Checking login…";
+
 try{
 const {error}=await db.auth.signInWithPassword({
 email:$("email").value.trim(),
 password:$("password").value
 });
+
 if(error)throw error;
 await verifyAdmin();
+
 }catch(err){
 $("loginMessage").textContent=err.message||"Login failed.";
 }finally{
@@ -727,8 +939,12 @@ $("logout").onclick=async()=>{
 await db.auth.signOut();
 showLogin("Signed out.");
 };
+
 $("refresh").onclick=loadAll;
-verifyAdmin().catch(err=>showLogin("Could not verify session: "+err.message));
+
+verifyAdmin().catch(err=>{
+showLogin("Could not verify session: "+err.message);
+});
 </script>
 </body>
 </html>
