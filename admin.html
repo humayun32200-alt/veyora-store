@@ -14,7 +14,8 @@ button{cursor:pointer}
 .top{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line);background:#171713}
 .brand{font-size:24px;font-weight:bold;letter-spacing:4px;color:var(--gold)}
 main{max-width:1250px;margin:auto;padding:20px}
-h1{font-size:27px}h2{font-size:21px}
+h1{font-size:27px}
+h2{font-size:21px}
 .panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .metric{font-size:28px;color:var(--gold);font-weight:bold;margin-top:8px}
@@ -41,12 +42,22 @@ td button{margin:3px;padding:7px 9px}
 .thumb{width:54px;height:54px;object-fit:cover;border-radius:6px}
 #login{max-width:420px;margin:8vh auto}
 [hidden]{display:none!important}
-@media(max-width:650px){main{padding:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.formgrid{grid-template-columns:1fr}.field{min-width:100%}.top{padding:14px}}
+@media(max-width:650px){
+  main{padding:12px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .formgrid{grid-template-columns:1fr}
+  .field{min-width:100%}
+  .top{padding:14px}
+}
 </style>
 </head>
 <body>
+
 <header class="top">
-  <div><div class="brand">VEYORA</div><div class="muted">MAYU WORLD · ADMIN</div></div>
+  <div>
+    <div class="brand">VEYORA</div>
+    <div class="muted">MAYU WORLD · ADMIN</div>
+  </div>
   <button id="logout" class="secondary" hidden>Sign out</button>
 </header>
 
@@ -54,8 +65,10 @@ td button{margin:3px;padding:7px 9px}
   <h1>Admin Login</h1>
   <p class="muted">Sign in with your authorized admin account.</p>
   <form id="loginForm">
-    <label>Email</label><input id="email" type="email" autocomplete="username" required>
-    <label>Password</label><input id="password" type="password" autocomplete="current-password" required>
+    <label>Email</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password" required>
     <button style="width:100%;margin-top:18px" id="loginBtn">Sign In</button>
   </form>
   <div id="loginMessage" class="notice" role="status"></div>
@@ -66,20 +79,18 @@ td button{margin:3px;padding:7px 9px}
   <h1>Admin Dashboard</h1>
   <p class="muted">Manage your Veyora store.</p>
   <div id="notice" class="notice">Connecting...</div>
-  
-<div class="grid">
-  <div class="card">Products<div id="productCount" class="metric">—</div></div>
-  <div class="card">Categories<div id="categoryCount" class="metric">—</div></div>
-  <div class="card">Orders<div id="orderCount" class="metric">—</div></div>
-  <div class="card">Pending Orders<div id="pendingCount" class="metric">—</div></div>
 
-  <div class="card">Live Visitors<div id="liveVisitorCount" class="metric">—</div></div>
-  <div class="card">Total Sessions<div id="sessionCount" class="metric">—</div></div>
-  <div class="card">Page Views<div id="pageViewCount" class="metric">—</div></div>
-  <div class="card">Total Sales<div id="totalSalesCount" class="metric">—</div></div>
-  <div class="card">Conversion Rate<div id="conversionRate" class="metric">—</div></div>
-</div>
-
+  <div class="grid">
+    <div class="card">Products<div id="productCount" class="metric">—</div></div>
+    <div class="card">Categories<div id="categoryCount" class="metric">—</div></div>
+    <div class="card">Orders<div id="orderCount" class="metric">—</div></div>
+    <div class="card">Pending Orders<div id="pendingCount" class="metric">—</div></div>
+    <div class="card">Live Visitors<div id="liveVisitorCount" class="metric">—</div><div class="muted">Activity in last 5 minutes</div></div>
+    <div class="card">Total Sessions<div id="sessionCount" class="metric">—</div></div>
+    <div class="card">Page Views<div id="pageViewCount" class="metric">—</div></div>
+    <div class="card">Total Sales<div id="totalSalesCount" class="metric">—</div></div>
+    <div class="card">Conversion Rate<div id="conversionRate" class="metric">—</div></div>
+  </div>
 
   <nav class="tabs">
     <button class="tab active" data-tab="overview">Overview</button>
@@ -90,15 +101,18 @@ td button{margin:3px;padding:7px 9px}
 
   <section id="overview" class="panel">
     <div class="row" style="justify-content:space-between">
-      <h2>Recent Orders</h2><button id="refresh" class="secondary">Refresh</button>
+      <h2>Recent Orders</h2>
+      <button id="refresh" class="secondary">Refresh</button>
     </div>
     <div id="recentOrders"></div>
   </section>
 
   <section id="products" class="panel" hidden>
     <div class="row" style="justify-content:space-between">
-      <h2>Products</h2><button id="newProduct">+ Add Product</button>
+      <h2>Products</h2>
+      <button id="newProduct">+ Add Product</button>
     </div>
+
     <form id="productForm" hidden>
       <h3 id="productFormTitle">Add Product</h3>
       <input id="pId" type="hidden">
@@ -112,23 +126,31 @@ td button{margin:3px;padding:7px 9px}
         <div><label>Retail price (PKR) *</label><input id="pRetail" type="number" min="0" step="0.01" required></div>
         <div><label>Sale price (PKR)</label><input id="pSale" type="number" min="0" step="0.01"></div>
       </div>
-      <label>Description</label><textarea id="pDescription"></textarea>
+
+      <label>Description</label>
+      <textarea id="pDescription"></textarea>
+
       <label>Product images (JPG, PNG or WebP; max 5 MB each)</label>
       <input id="pImages" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+
       <div class="row" style="margin-top:14px">
         <label><input id="pActive" type="checkbox" checked style="width:auto"> Active</label>
         <label><input id="pFeatured" type="checkbox" style="width:auto"> Featured</label>
       </div>
+
       <div class="row" style="margin-top:14px">
         <button id="saveProduct" type="submit">Save Product</button>
         <button id="cancelProduct" class="secondary" type="button">Cancel</button>
       </div>
     </form>
+
     <div id="productsTable"></div>
+
     <section id="variantPanel" class="panel" hidden>
       <h3 id="variantHeading">Product Variants</h3>
       <p class="muted">Add options such as color or size. Each variant can have its own price, image, SKU, barcode and stock.</p>
       <button id="newVariant">+ Add Variant</button>
+
       <form id="variantForm" hidden>
         <input id="vId" type="hidden">
         <div class="formgrid">
@@ -146,14 +168,17 @@ td button{margin:3px;padding:7px 9px}
           <button type="button" id="cancelVariant" class="secondary">Cancel</button>
         </div>
       </form>
+
       <div id="variantsTable"></div>
     </section>
   </section>
 
   <section id="categories" class="panel" hidden>
     <div class="row" style="justify-content:space-between">
-      <h2>Categories</h2><button id="newCategory">+ Add Category</button>
+      <h2>Categories</h2>
+      <button id="newCategory">+ Add Category</button>
     </div>
+
     <form id="categoryForm" hidden>
       <input id="cId" type="hidden">
       <div class="formgrid">
@@ -168,6 +193,7 @@ td button{margin:3px;padding:7px 9px}
         <button type="button" id="cancelCategory" class="secondary">Cancel</button>
       </div>
     </form>
+
     <div id="categoriesTable"></div>
   </section>
 
@@ -184,66 +210,199 @@ td button{margin:3px;padding:7px 9px}
 const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
 const SUPABASE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
+}[c]));
+
 const money=v=>"Rs "+Number(v||0).toLocaleString("en-PK",{maximumFractionDigits:2});
 const slugify=s=>String(s||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+
 let products=[],categories=[],orders=[],images=[],variants=[],activeVariantProduct=null;
+let analyticsEvents=[];
 
 function notice(msg,error=false){
   $("notice").textContent=msg;
   $("notice").className="notice"+(error?" error":"");
 }
+
 function tab(name){
-  ["overview","products","categories","orders"].forEach(id=>$(id).hidden=id!==name);
-  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+  ["overview","products","categories","orders"].forEach(id=>{
+    $(id).hidden=id!==name;
+  });
+  document.querySelectorAll(".tab").forEach(b=>{
+    b.classList.toggle("active",b.dataset.tab===name);
+  });
 }
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+
+document.querySelectorAll(".tab").forEach(b=>{
+  b.onclick=()=>tab(b.dataset.tab);
+});
 
 function table(headers,rows){
   if(!rows.length)return '<p class="muted">No records found.</p>';
-  return '<div class="tablewrap"><table><thead><tr>'+headers.map(h=>'<th>'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
+
+  return '<div class="tablewrap"><table><thead><tr>'+
+    headers.map(h=>'<th>'+esc(h)+'</th>').join("")+
+    '</tr></thead><tbody>'+
+    rows.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join("")+'</tr>').join("")+
+    '</tbody></table></div>';
 }
+
 function pct(retail,sale){
   const r=Number(retail),s=Number(sale);
   return r>0&&s>=0&&s<r?Math.round((r-s)/r*100)+"% OFF":"—";
 }
+
 async function result(q){
   const {data,error}=await q;
   if(error)throw error;
   return data||[];
 }
+
 async function verifyAdmin(){
   const {data:{session},error}=await db.auth.getSession();
   if(error)throw error;
-  if(!session){showLogin();return;}
-  const {data:{user},error:e}=await db.auth.getUser();
-  if(e||!user||user.app_metadata?.role!=="admin"){
-    await db.auth.signOut();showLogin("This account is not authorized as admin.");return;
+
+  if(!session){
+    showLogin();
+    return;
   }
-  $("login").hidden=true;$("app").hidden=false;$("logout").hidden=false;
+
+  const {data:{user},error:e}=await db.auth.getUser();
+
+  if(e||!user||user.app_metadata?.role!=="admin"){
+    await db.auth.signOut();
+    showLogin("This account is not authorized as admin.");
+    return;
+  }
+
+  $("login").hidden=true;
+  $("app").hidden=false;
+  $("logout").hidden=false;
+
   await loadAll();
 }
+
 function showLogin(msg=""){
-  $("app").hidden=true;$("login").hidden=false;$("logout").hidden=true;
+  $("app").hidden=true;
+  $("login").hidden=false;
+  $("logout").hidden=true;
   $("loginMessage").textContent=msg;
 }
+
+/* ANALYTICS: update the dashboard cards */
+function updateAnalytics(){
+  const now=Date.now();
+  const fiveMinutesAgo=now-(5*60*1000);
+
+  const recentSessions=new Set(
+    analyticsEvents
+      .filter(e=>
+        e.created_at &&
+        new Date(e.created_at).getTime()>=fiveMinutesAgo
+      )
+      .map(e=>e.session_id)
+      .filter(Boolean)
+  );
+
+  const allSessions=new Set(
+    analyticsEvents
+      .map(e=>e.session_id)
+      .filter(Boolean)
+  );
+
+  const pageViews=analyticsEvents.filter(
+    e=>e.event_type==="page_view"
+  ).length;
+
+  const validOrders=orders.filter(
+    o=>String(o.status||"").toLowerCase()!=="cancelled"
+  );
+
+  const sales=validOrders.reduce(
+    (sum,o)=>sum+Number(o.total||0),0
+  );
+
+  const conversion=allSessions.size
+    ?(validOrders.length/allSessions.size*100)
+    :0;
+
+  $("liveVisitorCount").textContent=recentSessions.size;
+  $("sessionCount").textContent=allSessions.size;
+  $("pageViewCount").textContent=pageViews;
+  $("totalSalesCount").textContent=money(sales);
+  $("conversionRate").textContent=conversion.toFixed(2)+"%";
+}
+
 async function loadAll(){
   notice("Loading store data…");
+
   try{
     [products,categories,orders]=await Promise.all([
-      result(db.from("products").select("*").order("created_at",{ascending:false}).limit(500)),
-      result(db.from("categories").select("*").order("sort_order").limit(300)),
-      result(db.from("orders").select("*").order("created_at",{ascending:false}).limit(500))
+      result(
+        db.from("products")
+          .select("*")
+          .order("created_at",{ascending:false})
+          .limit(500)
+      ),
+      result(
+        db.from("categories")
+          .select("*")
+          .order("sort_order")
+          .limit(300)
+      ),
+      result(
+        db.from("orders")
+          .select("*")
+          .order("created_at",{ascending:false})
+          .limit(500)
+      )
     ]);
+
     $("productCount").textContent=products.length;
     $("categoryCount").textContent=categories.length;
     $("orderCount").textContent=orders.length;
-    $("pendingCount").textContent=orders.filter(o=>!["delivered","cancelled"].includes(String(o.status||"").toLowerCase())).length;
-    renderProducts();renderCategories();renderOrders();fillCategorySelect();
+
+    $("pendingCount").textContent=orders.filter(o=>
+      !["delivered","cancelled"].includes(
+        String(o.status||"").toLowerCase()
+      )
+    ).length;
+
+    renderProducts();
+    renderCategories();
+    renderOrders();
+    fillCategorySelect();
+
+    /* Load analytics separately so analytics errors
+       do not stop products, categories or orders. */
+    try{
+      analyticsEvents=await result(
+        db.from("analytics_events")
+          .select("session_id,event_type,created_at")
+          .order("created_at",{ascending:false})
+          .limit(10000)
+      );
+    }catch(analyticsError){
+      analyticsEvents=[];
+      console.error("Analytics loading error:",analyticsError);
+    }
+
+    updateAnalytics();
+
     notice("Connected. Store data loaded.");
-  }catch(e){notice("Could not load data: "+e.message,true);}
+  }catch(e){
+    notice("Could not load data: "+e.message,true);
+  }
 }
+
 function renderProducts(){
   $("productsTable").innerHTML=table(
     ["Product","Retail","Sale","Discount","Stock","Active","Actions"],
@@ -260,252 +419,629 @@ function renderProducts(){
       '<button data-delete-product="'+esc(p.id)+'" class="danger">Delete</button>'
     ])
   );
-  $("productsTable").querySelectorAll("[data-edit-product]").forEach(b=>b.onclick=()=>editProduct(b.dataset.editProduct));
-  $("productsTable").querySelectorAll("[data-delete-product]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.deleteProduct));
-  $("productsTable").querySelectorAll("[data-images]").forEach(b=>b.onclick=()=>uploadImages(b.dataset.images));
-  $("productsTable").querySelectorAll("[data-variants]").forEach(b=>b.onclick=()=>openVariants(b.dataset.variants));
+
+  $("productsTable").querySelectorAll("[data-edit-product]").forEach(b=>{
+    b.onclick=()=>editProduct(b.dataset.editProduct);
+  });
+
+  $("productsTable").querySelectorAll("[data-delete-product]").forEach(b=>{
+    b.onclick=()=>deleteProduct(b.dataset.deleteProduct);
+  });
+
+  $("productsTable").querySelectorAll("[data-images]").forEach(b=>{
+    b.onclick=()=>uploadImages(b.dataset.images);
+  });
+
+  $("productsTable").querySelectorAll("[data-variants]").forEach(b=>{
+    b.onclick=()=>openVariants(b.dataset.variants);
+  });
 }
+
 function fillCategorySelect(){
-  $("pCategory").innerHTML='<option value="">No category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("");
+  $("pCategory").innerHTML=
+    '<option value="">No category</option>'+
+    categories.map(c=>
+      '<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>'
+    ).join("");
 }
+
 function resetProduct(){
-  $("productForm").reset();$("pId").value="";$("pActive").checked=true;
-  $("productFormTitle").textContent="Add Product";$("productForm").hidden=true;
+  $("productForm").reset();
+  $("pId").value="";
+  $("pActive").checked=true;
+  $("productFormTitle").textContent="Add Product";
+  $("productForm").hidden=true;
 }
-$("newProduct").onclick=()=>{resetProduct();$("productForm").hidden=false;$("productFormTitle").textContent="Add Product";$("productForm").scrollIntoView({behavior:"smooth"});};
+
+$("newProduct").onclick=()=>{
+  resetProduct();
+  $("productForm").hidden=false;
+  $("productFormTitle").textContent="Add Product";
+  $("productForm").scrollIntoView({behavior:"smooth"});
+};
+
 $("cancelProduct").onclick=resetProduct;
+
 function editProduct(id){
-  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
-  $("pId").value=p.id;$("pName").value=p.name||"";$("pSlug").value=p.slug||"";
-  $("pCategory").value=p.category_id||"";$("pSku").value=p.sku||"";
-  $("pBarcode").value=p.barcode||"";$("pStock").value=p.stock_quantity??0;
-  $("pRetail").value=p.retail_price??"";$("pSale").value=p.sale_price??"";
-  $("pDescription").value=p.description||"";$("pActive").checked=!!p.is_active;
-  $("pFeatured").checked=!!p.is_featured;$("pImages").value="";
+  const p=products.find(x=>String(x.id)===String(id));
+  if(!p)return;
+
+  $("pId").value=p.id;
+  $("pName").value=p.name||"";
+  $("pSlug").value=p.slug||"";
+  $("pCategory").value=p.category_id||"";
+  $("pSku").value=p.sku||"";
+  $("pBarcode").value=p.barcode||"";
+  $("pStock").value=p.stock_quantity??0;
+  $("pRetail").value=p.retail_price??"";
+  $("pSale").value=p.sale_price??"";
+  $("pDescription").value=p.description||"";
+  $("pActive").checked=!!p.is_active;
+  $("pFeatured").checked=!!p.is_featured;
+  $("pImages").value="";
+
   $("productFormTitle").textContent="Edit Product";
-  $("productForm").hidden=false;$("productForm").scrollIntoView({behavior:"smooth"});
+  $("productForm").hidden=false;
+  $("productForm").scrollIntoView({behavior:"smooth"});
 }
+
 async function uploadToStorage(file,path){
-  if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw Error("Use JPG, PNG or WebP images.");
-  if(file.size>5*1024*1024)throw Error("Each image must be 5 MB or smaller.");
-  const {error}=await db.storage.from("veyora-products").upload(path,file,{upsert:true,contentType:file.type});
+  if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
+    throw Error("Use JPG, PNG or WebP images.");
+  }
+
+  if(file.size>5*1024*1024){
+    throw Error("Each image must be 5 MB or smaller.");
+  }
+
+  const {error}=await db.storage
+    .from("veyora-products")
+    .upload(path,file,{
+      upsert:true,
+      contentType:file.type
+    });
+
   if(error)throw error;
-  const {data}=db.storage.from("veyora-products").getPublicUrl(path);
+
+  const {data}=db.storage
+    .from("veyora-products")
+    .getPublicUrl(path);
+
   return data.publicUrl;
 }
+
 async function saveProductImages(productId,fileList){
-  let sort=await result(db.from("product_images").select("sort_order").eq("product_id",productId).order("sort_order",{ascending:false}).limit(1));
+  const sort=await result(
+    db.from("product_images")
+      .select("sort_order")
+      .eq("product_id",productId)
+      .order("sort_order",{ascending:false})
+      .limit(1)
+  );
+
   let n=(sort[0]?.sort_order??-1)+1;
+
   for(const file of fileList){
-    const path="products/"+productId+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path="products/"+productId+"/"+
+      crypto.randomUUID()+"-"+
+      file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+
     const url=await uploadToStorage(file,path);
-    const {error}=await db.from("product_images").insert({product_id:productId,image_url:url,alt_text:file.name,sort_order:n++});
+
+    const {error}=await db.from("product_images").insert({
+      product_id:productId,
+      image_url:url,
+      alt_text:file.name,
+      sort_order:n++
+    });
+
     if(error)throw error;
   }
 }
+
 $("productForm").onsubmit=async e=>{
-  e.preventDefault();const btn=$("saveProduct");btn.disabled=true;
+  e.preventDefault();
+
+  const btn=$("saveProduct");
+  btn.disabled=true;
+
   try{
     const id=$("pId").value;
     const retail=Number($("pRetail").value);
     const sale=$("pSale").value===""?null:Number($("pSale").value);
-    if(sale!==null&&sale>retail)throw Error("Sale price cannot be higher than retail price.");
-    if(sale!==null&&sale<0)throw Error("Sale price cannot be negative.");
+
+    if(sale!==null&&sale>retail){
+      throw Error("Sale price cannot be higher than retail price.");
+    }
+
+    if(sale!==null&&sale<0){
+      throw Error("Sale price cannot be negative.");
+    }
+
     const name=$("pName").value.trim();
+
     const payload={
-      name,slug:$("pSlug").value.trim()||slugify(name),
+      name,
+      slug:$("pSlug").value.trim()||slugify(name),
       description:$("pDescription").value.trim()||null,
       category_id:$("pCategory").value||null,
-      sku:$("pSku").value.trim()||null,barcode:$("pBarcode").value.trim()||null,
-      retail_price:retail,sale_price:sale,stock_quantity:Number($("pStock").value),
-      is_active:$("pActive").checked,is_featured:$("pFeatured").checked,
+      sku:$("pSku").value.trim()||null,
+      barcode:$("pBarcode").value.trim()||null,
+      retail_price:retail,
+      sale_price:sale,
+      stock_quantity:Number($("pStock").value),
+      is_active:$("pActive").checked,
+      is_featured:$("pFeatured").checked,
       updated_at:new Date().toISOString()
     };
+
     let savedId=id;
+
     if(id){
-      const {error}=await db.from("products").update(payload).eq("id",id);if(error)throw error;
+      const {error}=await db.from("products")
+        .update(payload)
+        .eq("id",id);
+
+      if(error)throw error;
     }else{
-      const {data,error}=await db.from("products").insert(payload).select("id").single();
-      if(error)throw error;savedId=data.id;
+      const {data,error}=await db.from("products")
+        .insert(payload)
+        .select("id")
+        .single();
+
+      if(error)throw error;
+      savedId=data.id;
     }
+
     const files=$("pImages").files;
     if(files.length)await saveProductImages(savedId,files);
-    resetProduct();await loadAll();notice("Product saved successfully.");
-  }catch(e){notice("Could not save product: "+e.message,true);}
-  finally{btn.disabled=false;}
+
+    resetProduct();
+    await loadAll();
+    notice("Product saved successfully.");
+  }catch(e){
+    notice("Could not save product: "+e.message,true);
+  }finally{
+    btn.disabled=false;
+  }
 };
+
 async function deleteProduct(id){
   const p=products.find(x=>String(x.id)===String(id));
-  if(!p||!confirm('Delete "'+p.name+'" and its images and variants? This cannot be undone.'))return;
+
+  if(!p||!confirm(
+    'Delete "'+p.name+'" and its images and variants? This cannot be undone.'
+  ))return;
+
   try{
-    const {error:e1}=await db.from("product_images").delete().eq("product_id",id);if(e1)throw e1;
-    const {error:e2}=await db.from("product_variants").delete().eq("product_id",id);if(e2)throw e2;
-    const {error:e3}=await db.from("products").delete().eq("id",id);if(e3)throw e3;
-    if(String(activeVariantProduct)===String(id))$("variantPanel").hidden=true;
-    await loadAll();notice("Product deleted.");
-  }catch(e){notice("Delete failed: "+e.message,true);}
+    const {error:e1}=await db.from("product_images")
+      .delete().eq("product_id",id);
+    if(e1)throw e1;
+
+    const {error:e2}=await db.from("product_variants")
+      .delete().eq("product_id",id);
+    if(e2)throw e2;
+
+    const {error:e3}=await db.from("products")
+      .delete().eq("id",id);
+    if(e3)throw e3;
+
+    if(String(activeVariantProduct)===String(id)){
+      $("variantPanel").hidden=true;
+    }
+
+    await loadAll();
+    notice("Product deleted.");
+  }catch(e){
+    notice("Delete failed: "+e.message,true);
+  }
 }
+
 async function uploadImages(id){
-  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
-  const input=document.createElement("input");input.type="file";input.multiple=true;input.accept="image/jpeg,image/png,image/webp";
+  const p=products.find(x=>String(x.id)===String(id));
+  if(!p)return;
+
+  const input=document.createElement("input");
+  input.type="file";
+  input.multiple=true;
+  input.accept="image/jpeg,image/png,image/webp";
+
   input.onchange=async()=>{
     if(!input.files.length)return;
-    try{await saveProductImages(id,input.files);notice("Images uploaded.");}
-    catch(e){notice("Image upload failed: "+e.message,true);}
-  };input.click();
+
+    try{
+      await saveProductImages(id,input.files);
+      notice("Images uploaded.");
+    }catch(e){
+      notice("Image upload failed: "+e.message,true);
+    }
+  };
+
+  input.click();
 }
+
 async function openVariants(id){
   activeVariantProduct=id;
+
   const p=products.find(x=>String(x.id)===String(id));
+
   $("variantHeading").textContent="Variants: "+(p?.name||"Product");
-  $("variantPanel").hidden=false;$("variantForm").hidden=true;
+  $("variantPanel").hidden=false;
+  $("variantForm").hidden=true;
   $("variantPanel").scrollIntoView({behavior:"smooth"});
+
   await loadVariants();
 }
+
 async function loadVariants(){
   try{
-    variants=await result(db.from("product_variants").select("*").eq("product_id",activeVariantProduct).order("sort_order"));
-    $("variantsTable").innerHTML=table(["Option","Retail","Sale","Discount","Stock","SKU / Barcode","Image","Actions"],
+    variants=await result(
+      db.from("product_variants")
+        .select("*")
+        .eq("product_id",activeVariantProduct)
+        .order("sort_order")
+    );
+
+    $("variantsTable").innerHTML=table(
+      ["Option","Retail","Sale","Discount","Stock","SKU / Barcode","Image","Actions"],
       variants.map(v=>[
         esc((v.option_name||"Option")+": "+(v.option_value||"")),
-        esc(money(v.retail_price)),esc(v.sale_price==null?"—":money(v.sale_price)),
-        esc(pct(v.retail_price,v.sale_price)),esc(v.stock_quantity),
+        esc(money(v.retail_price)),
+        esc(v.sale_price==null?"—":money(v.sale_price)),
+        esc(pct(v.retail_price,v.sale_price)),
+        esc(v.stock_quantity),
         esc((v.sku||"—")+" / "+(v.barcode||"—")),
-        v.image_url?'<a target="_blank" rel="noopener" href="'+esc(v.image_url)+'">View</a>':"—",
-        '<button data-edit-variant="'+esc(v.id)+'">Edit</button><button class="danger" data-delete-variant="'+esc(v.id)+'">Delete</button>'
-      ]));
-    $("variantsTable").querySelectorAll("[data-edit-variant]").forEach(b=>b.onclick=()=>editVariant(b.dataset.editVariant));
-    $("variantsTable").querySelectorAll("[data-delete-variant]").forEach(b=>b.onclick=()=>deleteVariant(b.dataset.deleteVariant));
-  }catch(e){notice("Could not load variants: "+e.message,true);}
+        v.image_url
+          ?'<a target="_blank" rel="noopener" href="'+esc(v.image_url)+'">View</a>'
+          :"—",
+        '<button data-edit-variant="'+esc(v.id)+'">Edit</button>'+
+        '<button class="danger" data-delete-variant="'+esc(v.id)+'">Delete</button>'
+      ])
+    );
+
+    $("variantsTable").querySelectorAll("[data-edit-variant]").forEach(b=>{
+      b.onclick=()=>editVariant(b.dataset.editVariant);
+    });
+
+    $("variantsTable").querySelectorAll("[data-delete-variant]").forEach(b=>{
+      b.onclick=()=>deleteVariant(b.dataset.deleteVariant);
+    });
+  }catch(e){
+    notice("Could not load variants: "+e.message,true);
+  }
 }
+
 $("newVariant").onclick=()=>{
-  $("variantForm").reset();$("vId").value="";$("variantForm").hidden=false;
+  $("variantForm").reset();
+  $("vId").value="";
+  $("variantForm").hidden=false;
+
   const p=products.find(x=>String(x.id)===String(activeVariantProduct));
-  $("vRetail").value=p?.retail_price??"";$("vSale").value=p?.sale_price??"";
+
+  $("vRetail").value=p?.retail_price??"";
+  $("vSale").value=p?.sale_price??"";
 };
-$("cancelVariant").onclick=()=>{$("variantForm").hidden=true;};
+
+$("cancelVariant").onclick=()=>{
+  $("variantForm").hidden=true;
+};
+
 function editVariant(id){
-  const v=variants.find(x=>String(x.id)===String(id));if(!v)return;
-  $("vId").value=v.id;$("vOptionName").value=v.option_name||"";
-  $("vOptionValue").value=v.option_value||"";$("vSku").value=v.sku||"";
-  $("vBarcode").value=v.barcode||"";$("vRetail").value=v.retail_price??"";
-  $("vSale").value=v.sale_price??"";$("vStock").value=v.stock_quantity??0;
-  $("vImage").value="";$("variantForm").hidden=false;
+  const v=variants.find(x=>String(x.id)===String(id));
+  if(!v)return;
+
+  $("vId").value=v.id;
+  $("vOptionName").value=v.option_name||"";
+  $("vOptionValue").value=v.option_value||"";
+  $("vSku").value=v.sku||"";
+  $("vBarcode").value=v.barcode||"";
+  $("vRetail").value=v.retail_price??"";
+  $("vSale").value=v.sale_price??"";
+  $("vStock").value=v.stock_quantity??0;
+  $("vImage").value="";
+  $("variantForm").hidden=false;
 }
+
 $("variantForm").onsubmit=async e=>{
-  e.preventDefault();const btn=$("saveVariant");btn.disabled=true;
+  e.preventDefault();
+
+  const btn=$("saveVariant");
+  btn.disabled=true;
+
   try{
-    const id=$("vId").value,retail=Number($("vRetail").value);
+    const id=$("vId").value;
+    const retail=Number($("vRetail").value);
     const sale=$("vSale").value===""?null:Number($("vSale").value);
-    if(sale!==null&&(sale<0||sale>retail))throw Error("Sale price must be between zero and retail price.");
+
+    if(sale!==null&&(sale<0||sale>retail)){
+      throw Error("Sale price must be between zero and retail price.");
+    }
+
     const payload={
-      product_id:activeVariantProduct,option_name:$("vOptionName").value.trim(),
-      option_value:$("vOptionValue").value.trim(),sku:$("vSku").value.trim()||null,
-      barcode:$("vBarcode").value.trim()||null,retail_price:retail,sale_price:sale,
+      product_id:activeVariantProduct,
+      option_name:$("vOptionName").value.trim(),
+      option_value:$("vOptionValue").value.trim(),
+      sku:$("vSku").value.trim()||null,
+      barcode:$("vBarcode").value.trim()||null,
+      retail_price:retail,
+      sale_price:sale,
       stock_quantity:Number($("vStock").value)
     };
+
     if(id){
-      const {error}=await db.from("product_variants").update(payload).eq("id",id);if(error)throw error;
+      const {error}=await db.from("product_variants")
+        .update(payload).eq("id",id);
+      if(error)throw error;
     }else{
-      const {data,error}=await db.from("product_variants").insert({...payload,sort_order:variants.length}).select("id").single();
-      if(error)throw error;payload.id=data.id;
+      const {data,error}=await db.from("product_variants")
+        .insert({...payload,sort_order:variants.length})
+        .select("id")
+        .single();
+
+      if(error)throw error;
+      payload.id=data.id;
     }
+
     const file=$("vImage").files[0];
+
     if(file){
-      const path="variants/"+activeVariantProduct+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+      const path="variants/"+activeVariantProduct+"/"+
+        crypto.randomUUID()+"-"+
+        file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+
       const url=await uploadToStorage(file,path);
       const target=id||payload.id;
-      const {error}=await db.from("product_variants").update({image_url:url}).eq("id",target);if(error)throw error;
+
+      const {error}=await db.from("product_variants")
+        .update({image_url:url}).eq("id",target);
+
+      if(error)throw error;
     }
-    $("variantForm").hidden=true;await loadVariants();await loadAll();notice("Variant saved.");
-  }catch(e){notice("Could not save variant: "+e.message,true);}
-  finally{btn.disabled=false;}
+
+    $("variantForm").hidden=true;
+    await loadVariants();
+    await loadAll();
+    notice("Variant saved.");
+  }catch(e){
+    notice("Could not save variant: "+e.message,true);
+  }finally{
+    btn.disabled=false;
+  }
 };
+
 async function deleteVariant(id){
   if(!confirm("Delete this variant?"))return;
+
   try{
-    const {error}=await db.from("product_variants").delete().eq("id",id);if(error)throw error;
-    await loadVariants();await loadAll();notice("Variant deleted.");
-  }catch(e){notice("Delete failed: "+e.message,true);}
+    const {error}=await db.from("product_variants")
+      .delete().eq("id",id);
+
+    if(error)throw error;
+
+    await loadVariants();
+    await loadAll();
+    notice("Variant deleted.");
+  }catch(e){
+    notice("Delete failed: "+e.message,true);
+  }
 }
+
 function renderCategories(){
-  $("categoriesTable").innerHTML=table(["Category","Slug","Active","Actions"],
+  $("categoriesTable").innerHTML=table(
+    ["Category","Slug","Active","Actions"],
     categories.map(c=>[
-      esc(c.name),esc(c.slug),c.is_active?"Yes":"No",
-      '<button data-edit-category="'+esc(c.id)+'">Edit</button><button class="danger" data-delete-category="'+esc(c.id)+'">Delete</button>'
-    ]));
-  $("categoriesTable").querySelectorAll("[data-edit-category]").forEach(b=>b.onclick=()=>editCategory(b.dataset.editCategory));
-  $("categoriesTable").querySelectorAll("[data-delete-category]").forEach(b=>b.onclick=()=>deleteCategory(b.dataset.deleteCategory));
+      esc(c.name),
+      esc(c.slug),
+      c.is_active?"Yes":"No",
+      '<button data-edit-category="'+esc(c.id)+'">Edit</button>'+
+      '<button class="danger" data-delete-category="'+esc(c.id)+'">Delete</button>'
+    ])
+  );
+
+  $("categoriesTable").querySelectorAll("[data-edit-category]").forEach(b=>{
+    b.onclick=()=>editCategory(b.dataset.editCategory);
+  });
+
+  $("categoriesTable").querySelectorAll("[data-delete-category]").forEach(b=>{
+    b.onclick=()=>deleteCategory(b.dataset.deleteCategory);
+  });
 }
-function resetCategory(){$("categoryForm").reset();$("cId").value="";$("cActive").checked=true;$("categoryForm").hidden=true;}
-$("newCategory").onclick=()=>{resetCategory();$("categoryForm").hidden=false;};
-$("cancelCategory").onclick=resetCategory;
-function editCategory(id){
-  const c=categories.find(x=>String(x.id)===String(id));if(!c)return;
-  $("cId").value=c.id;$("cName").value=c.name||"";$("cSlug").value=c.slug||"";
-  $("cImage").value=c.image_url||"";$("cSort").value=c.sort_order??0;
-  $("cActive").checked=!!c.is_active;$("categoryForm").hidden=false;
+
+function resetCategory(){
+  $("categoryForm").reset();
+  $("cId").value="";
+  $("cActive").checked=true;
+  $("categoryForm").hidden=true;
 }
-$("categoryForm").onsubmit=async e=>{
-  e.preventDefault();const btn=$("saveCategory");btn.disabled=true;
-  try{
-    const id=$("cId").value,name=$("cName").value.trim();
-    const payload={name,slug:$("cSlug").value.trim()||slugify(name),image_url:$("cImage").value.trim()||null,sort_order:Number($("cSort").value),is_active:$("cActive").checked};
-    const q=id?db.from("categories").update(payload).eq("id",id):db.from("categories").insert(payload);
-    const {error}=await q;if(error)throw error;
-    resetCategory();await loadAll();notice("Category saved.");
-  }catch(e){notice("Could not save category: "+e.message,true);}
-  finally{btn.disabled=false;}
+
+$("newCategory").onclick=()=>{
+  resetCategory();
+  $("categoryForm").hidden=false;
 };
+
+$("cancelCategory").onclick=resetCategory;
+
+function editCategory(id){
+  const c=categories.find(x=>String(x.id)===String(id));
+  if(!c)return;
+
+  $("cId").value=c.id;
+  $("cName").value=c.name||"";
+  $("cSlug").value=c.slug||"";
+  $("cImage").value=c.image_url||"";
+  $("cSort").value=c.sort_order??0;
+  $("cActive").checked=!!c.is_active;
+  $("categoryForm").hidden=false;
+}
+
+$("categoryForm").onsubmit=async e=>{
+  e.preventDefault();
+
+  const btn=$("saveCategory");
+  btn.disabled=true;
+
+  try{
+    const id=$("cId").value;
+    const name=$("cName").value.trim();
+
+    const payload={
+      name,
+      slug:$("cSlug").value.trim()||slugify(name),
+      image_url:$("cImage").value.trim()||null,
+      sort_order:Number($("cSort").value),
+      is_active:$("cActive").checked
+    };
+
+    const q=id
+      ?db.from("categories").update(payload).eq("id",id)
+      :db.from("categories").insert(payload);
+
+    const {error}=await q;
+    if(error)throw error;
+
+    resetCategory();
+    await loadAll();
+    notice("Category saved.");
+  }catch(e){
+    notice("Could not save category: "+e.message,true);
+  }finally{
+    btn.disabled=false;
+  }
+};
+
 async function deleteCategory(id){
   if(products.some(p=>String(p.category_id)===String(id))){
-    alert("This category has products. Move those products to another category first.");return;
+    alert("This category has products. Move those products to another category first.");
+    return;
   }
+
   if(!confirm("Delete this category?"))return;
-  try{const {error}=await db.from("categories").delete().eq("id",id);if(error)throw error;await loadAll();notice("Category deleted.");}
-  catch(e){notice("Delete failed: "+e.message,true);}
+
+  try{
+    const {error}=await db.from("categories").delete().eq("id",id);
+    if(error)throw error;
+
+    await loadAll();
+    notice("Category deleted.");
+  }catch(e){
+    notice("Delete failed: "+e.message,true);
+  }
 }
+
 function renderOrders(){
-  const headers=["Order ID","Customer","Contact","City","Total","Payment","Status","Tracking","Date","Actions"];
+  const headers=[
+    "Order ID","Customer","Contact","City","Total",
+    "Payment","Status","Tracking","Date","Actions"
+  ];
+
   $("ordersTable").innerHTML=table(headers,orders.map(o=>[
-    esc(o.id),esc(o.customer_name),esc(o.phone+(o.email?" / "+o.email:"")),
-    esc(o.city),esc(money(o.total)),esc(o.payment_method),esc(o.status),
-    esc(o.tracking_number||"—"),esc(o.created_at?new Date(o.created_at).toLocaleDateString():"—"),
+    esc(o.id),
+    esc(o.customer_name),
+    esc(o.phone+(o.email?" / "+o.email:"")),
+    esc(o.city),
+    esc(money(o.total)),
+    esc(o.payment_method),
+    esc(o.status),
+    esc(o.tracking_number||"—"),
+    esc(o.created_at?new Date(o.created_at).toLocaleDateString():"—"),
     '<button data-order="'+esc(o.id)+'">Update</button>'
   ]));
-  $("ordersTable").querySelectorAll("[data-order]").forEach(b=>b.onclick=()=>updateOrder(b.dataset.order));
-  $("recentOrders").innerHTML=table(["Order","Customer","Total","Status"],
-    orders.slice(0,5).map(o=>[esc(o.id),esc(o.customer_name),esc(money(o.total)),esc(o.status)]));
+
+  $("ordersTable").querySelectorAll("[data-order]").forEach(b=>{
+    b.onclick=()=>updateOrder(b.dataset.order);
+  });
+
+  $("recentOrders").innerHTML=table(
+    ["Order","Customer","Total","Status"],
+    orders.slice(0,5).map(o=>[
+      esc(o.id),
+      esc(o.customer_name),
+      esc(money(o.total)),
+      esc(o.status)
+    ])
+  );
 }
+
 async function updateOrder(id){
-  const o=orders.find(x=>String(x.id)===String(id));if(!o)return;
-  const statuses=["Pending","Confirmed","Packed","Shipped","Dispatched","Delivered","Cancelled"];
-  const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Pending";
+  const o=orders.find(x=>String(x.id)===String(id));
+  if(!o)return;
+
+  const statuses=[
+    "Pending","Confirmed","Packed","Shipped",
+    "Dispatched","Delivered","Cancelled"
+  ];
+
+  const current=statuses.find(s=>
+    s.toLowerCase()===String(o.status||"").toLowerCase()
+  )||"Pending";
+
   const status=prompt("Order status:\n"+statuses.join(", "),current);
   if(status===null)return;
-  const chosen=statuses.find(s=>s.toLowerCase()===status.trim().toLowerCase());
-  if(!chosen){alert("Choose one of the listed statuses.");return;}
-  const tracking=prompt("Tracking number (leave blank to clear):",o.tracking_number||"");
+
+  const chosen=statuses.find(s=>
+    s.toLowerCase()===status.trim().toLowerCase()
+  );
+
+  if(!chosen){
+    alert("Choose one of the listed statuses.");
+    return;
+  }
+
+  const tracking=prompt(
+    "Tracking number (leave blank to clear):",
+    o.tracking_number||""
+  );
+
   if(tracking===null)return;
+
   try{
     const {error}=await db.from("orders").update({
-      status:chosen,tracking_number:tracking.trim()||null,updated_at:new Date().toISOString()
+      status:chosen,
+      tracking_number:tracking.trim()||null,
+      updated_at:new Date().toISOString()
     }).eq("id",id);
+
     if(error)throw error;
-    await loadAll();notice("Order updated.");
-  }catch(e){notice("Could not update order: "+e.message,true);}
+
+    await loadAll();
+    notice("Order updated.");
+  }catch(e){
+    notice("Could not update order: "+e.message,true);
+  }
 }
+
 $("loginForm").onsubmit=async e=>{
-  e.preventDefault();$("loginBtn").disabled=true;$("loginMessage").textContent="Checking login…";
+  e.preventDefault();
+
+  $("loginBtn").disabled=true;
+  $("loginMessage").textContent="Checking login…";
+
   try{
-    const {error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
-    if(error)throw error;await verifyAdmin();
-  }catch(e){$("loginMessage").textContent=e.message||"Login failed.";}
-  finally{$("loginBtn").disabled=false;}
+    const {error}=await db.auth.signInWithPassword({
+      email:$("email").value.trim(),
+      password:$("password").value
+    });
+
+    if(error)throw error;
+
+    await verifyAdmin();
+  }catch(e){
+    $("loginMessage").textContent=e.message||"Login failed.";
+  }finally{
+    $("loginBtn").disabled=false;
+  }
 };
-$("logout").onclick=async()=>{await db.auth.signOut();showLogin("Signed out.");};
+
+$("logout").onclick=async()=>{
+  await db.auth.signOut();
+  showLogin("Signed out.");
+};
+
 $("refresh").onclick=loadAll;
-verifyAdmin().catch(e=>showLogin("Could not verify session: "+e.message));
+
+verifyAdmin().catch(e=>{
+  showLogin("Could not verify session: "+e.message);
+});
 </script>
 </body>
 </html>
