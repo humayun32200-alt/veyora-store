@@ -4,68 +4,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VEYORA | Secure Admin</title>
+<title>VEYORA | Admin Dashboard</title>
 <style>
+:root{--bg:#10100e;--panel:#1b1b17;--gold:#c9a45c;--text:#f6ecd5;--muted:#aaa596;--line:#383327}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at top,#29251a,#10100e 65%);color:#f5e8c8;font-family:Arial,sans-serif}
-.panel{width:100%;max-width:400px;padding:30px;border:1px solid #a88746;border-radius:16px;background:#191916;box-shadow:0 20px 60px #0008}
-h1{margin:0;letter-spacing:4px;color:#d6b66e}
-p{color:#c3bba8;line-height:1.5}
-label{display:block;margin:18px 0 7px}
-input{width:100%;padding:13px;border-radius:8px;border:1px solid #625333;background:#10100e;color:white;font-size:16px}
-button{width:100%;margin-top:22px;padding:13px;background:#c9a45c;border:0;border-radius:8px;font-weight:bold;font-size:16px;cursor:pointer}
-button:disabled{opacity:.6;cursor:wait}
-#message{overflow-wrap:anywhere;font-size:14px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px;border-bottom:1px solid var(--line);background:#171713;position:sticky;top:0;z-index:2}
+.brand{font-size:23px;font-weight:800;letter-spacing:4px;color:var(--gold)}
+.sub{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:5px}
+.btn{border:1px solid var(--gold);border-radius:8px;padding:10px 14px;background:var(--gold);color:#17140d;font-weight:bold}
+.btn.secondary{background:transparent;color:var(--text)}
+main{max-width:1200px;margin:auto;padding:24px}
+h1{font-size:27px;margin:0 0 8px}
+.muted{color:var(--muted);font-size:14px;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:24px 0}
+.card,.section{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px;min-width:0}
+.metric{font-size:30px;font-weight:bold;color:var(--gold);margin-top:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}
+.tab{padding:10px 15px;border:1px solid var(--line);border-radius:8px;background:#191915;color:var(--text)}
+.tab.active{border-color:var(--gold);color:var(--gold)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--gold);font-weight:600}
+.status{color:var(--gold)}
+.notice{padding:13px;border:1px solid var(--line);border-radius:8px;color:var(--muted);margin:14px 0;overflow-wrap:anywhere}
+.error{color:#ffb2a9;border-color:#75453f}
+#app,#login{display:none}
+#login{max-width:410px;margin:10vh auto;padding:25px}
+label{display:block;margin:16px 0 7px}
+input{width:100%;padding:12px;border:1px solid var(--line);background:#10100e;color:white;border-radius:8px}
+.full{width:100%;margin-top:20px}
+@media(max-width:700px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:16px}.top{padding:14px 16px}.metric{font-size:25px}}
+@media(max-width:380px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<main class="panel">
-<h1>VEYORA</h1>
-<p>MAYU WORLD · Secure Admin Panel</p>
-<form id="loginForm">
-<label for="email">Admin Email</label>
-<input id="email" type="email" autocomplete="username" placeholder="Your admin email" required>
-<label for="password">Password</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="Password" required>
-<button id="loginBtn" type="submit">Sign In</button>
-<p id="message" role="status">Sign in with your authorized admin account.</p>
-</form>
+<header class="top">
+  <div>
+    <div class="brand">VEYORA</div>
+    <div class="sub">MAYU WORLD · ADMIN</div>
+  </div>
+  <button id="logout" class="btn secondary" hidden>Sign out</button>
+</header>
+
+<section id="login" class="section">
+  <h1>Admin Login</h1>
+  <p class="muted">Sign in with your authorized Veyora administrator account.</p>
+  <form id="loginForm">
+    <label for="email">Admin email</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <button class="btn full" id="loginBtn">Sign In</button>
+  </form>
+  <div id="loginMessage" class="notice" role="status"></div>
+</section>
+
+<div id="app">
+<main>
+  <h1>Admin Dashboard</h1>
+  <p class="muted">Manage your store from one place.</p>
+  <div id="notice" class="notice">Connecting to your store database…</div>
+
+  <div class="grid">
+    <div class="card"><div class="muted">Products</div><div id="productCount" class="metric">—</div></div>
+    <div class="card"><div class="muted">Categories</div><div id="categoryCount" class="metric">—</div></div>
+    <div class="card"><div class="muted">Total Orders</div><div id="orderCount" class="metric">—</div></div>
+    <div class="card"><div class="muted">Pending Orders</div><div id="pendingCount" class="metric">—</div></div>
+  </div>
+
+  <nav class="tabs" aria-label="Admin sections">
+    <button class="tab active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="products">Products</button>
+    <button class="tab" data-tab="orders">Orders</button>
+    <button class="tab" data-tab="categories">Categories</button>
+  </nav>
+
+  <section class="section" id="overview">
+    <div class="section-head"><h2>Recent Orders</h2><button class="btn secondary" id="refresh">Refresh</button></div>
+    <div id="recentOrders" class="muted">Loading orders…</div>
+  </section>
+
+  <section class="section" id="products" hidden>
+    <div class="section-head"><h2>Products</h2></div>
+    <p class="muted">Product editing and image uploads will be connected in the next step.</p>
+    <div id="productsTable" class="muted">Loading products…</div>
+  </section>
+
+  <section class="section" id="orders" hidden>
+    <div class="section-head"><h2>Orders</h2></div>
+    <p class="muted">Order status editing and tracking controls will be connected next.</p>
+    <div id="ordersTable" class="muted">Loading orders…</div>
+  </section>
+
+  <section class="section" id="categories" hidden>
+    <div class="section-head"><h2>Categories</h2></div>
+    <p class="muted">Category creation and editing will be connected next.</p>
+    <div id="categoriesTable" class="muted">Loading categories…</div>
+  </section>
 </main>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://fudkfvwwbqmflmtkbtkk.supabase.co";
-const SUPABASE_KEY = "sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
+const SUPABASE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const form = document.getElementById("loginForm");
-const message = document.getElementById("message");
-const button = document.getElementById("loginBtn");
+const $=id=>document.getElementById(id);
+const safe=value=>String(value??"—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const showNotice=(message,isError=false)=>{
+  $("notice").textContent=message;
+  $("notice").className="notice"+(isError?" error":"");
+};
+const money=value=>value==null?"—":"Rs "+Number(value).toLocaleString("en-PK");
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  button.disabled = true;
-  message.textContent = "Checking your login...";
+function tableHTML(headers,rows){
+  if(!rows.length)return '<p class="muted">No records found yet.</p>';
+  return '<div class="table-wrap"><table><thead><tr>'+
+    headers.map(h=>"<th>"+safe(h)+"</th>").join("")+
+    '</tr></thead><tbody>'+
+    rows.map(row=>"<tr>"+row.map(v=>"<td>"+safe(v)+"</td>").join("")+"</tr>").join("")+
+    '</tbody></table></div>';
+}
 
-  try {
-    const { data, error } = await db.auth.signInWithPassword({
-      email: document.getElementById("email").value.trim(),
-      password: document.getElementById("password").value
-    });
+function showSection(name){
+  ["overview","products","orders","categories"].forEach(id=>$(id).hidden=id!==name);
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.tab)));
 
-    if (error) throw error;
-
-    if (data.user?.app_metadata?.role !== "admin") {
-      await db.auth.signOut();
-      throw new Error("This account is not authorized as an admin.");
-    }
-
-    message.textContent = "Admin login successful. Next, we will connect your dashboard.";
-  } catch (error) {
-    message.textContent = error.message || "Login failed. Please try again.";
-  } finally {
-    button.disabled = false;
+async function verifyAdmin(){
+  const {data:{session},error}=await db.auth.getSession();
+  if(error)throw error;
+  if(!session){showLogin();return false;}
+  const {data:{user},error:userError}=await db.auth.getUser();
+  if(userError||!user){await db.auth.signOut();showLogin();return false;}
+  if(user.app_metadata?.role!=="admin"){
+    await db.auth.signOut();
+    showLogin("This account is not authorized as an admin.");
+    return false;
   }
+  $("login").style.display="none";
+  $("app").style.display="block";
+  $("logout").hidden=false;
+  await loadDashboard();
+  return true;
+}
+
+function showLogin(message=""){
+  $("app").style.display="none";
+  $("login").style.display="block";
+  $("logout").hidden=true;
+  $("loginMessage").textContent=message;
+}
+
+async function loadDashboard(){
+  showNotice("Loading store data…");
+  const [p,c,o]=await Promise.all([
+    db.from("products").select("*").order("created_at",{ascending:false}).limit(200),
+    db.from("categories").select("*").limit(200),
+    db.from("orders").select("*").order("created_at",{ascending:false}).limit(200)
+  ]);
+
+  const errors=[p.error,c.error,o.error].filter(Boolean);
+  const products=p.data||[],categories=c.data||[],orders=o.data||[];
+
+  $("productCount").textContent=p.error?"Error":products.length;
+  $("categoryCount").textContent=c.error?"Error":categories.length;
+  $("orderCount").textContent=o.error?"Error":orders.length;
+
+  const pending=orders.filter(x=>!["Delivered","Cancelled"].includes(String(x.status||""))).length;
+  $("pendingCount").textContent=o.error?"Error":pending;
+
+  $("productsTable").innerHTML=p.error?
+    '<p class="muted">Products could not load: '+safe(p.error.message)+'</p>':
+    tableHTML(["Product","SKU","Retail Price","Sale Price","Stock","Active"],
+      products.map(x=>[x.name||x.title,x.sku,money(x.retail_price),money(x.sale_price),x.stock,x.is_active?"Yes":"No"]));
+
+  $("categoriesTable").innerHTML=c.error?
+    '<p class="muted">Categories could not load: '+safe(c.error.message)+'</p>':
+    tableHTML(["Category","ID"],categories.map(x=>[x.name,x.id]));
+
+  const orderRows=orders.map(x=>[x.order_number||x.id,x.customer_name||x.full_name,x.status,money(x.total_amount??x.total),x.tracking_number,x.created_at?new Date(x.created_at).toLocaleDateString():"—"]);
+  const orderHeaders=["Order","Customer","Status","Total","Tracking","Date"];
+  $("ordersTable").innerHTML=o.error?
+    '<p class="muted">Orders could not load: '+safe(o.error.message)+'</p>':
+    tableHTML(orderHeaders,orderRows);
+
+  $("recentOrders").innerHTML=o.error?
+    '<p class="muted">Orders could not load: '+safe(o.error.message)+'</p>':
+    tableHTML(orderHeaders,orderRows.slice(0,5));
+
+  if(errors.length){
+    showNotice("Some database tables could not load. Check the displayed errors and Supabase table permissions.",true);
+  }else{
+    showNotice("Connected. Data shown here is read-only in this first dashboard version.");
+  }
+}
+
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const btn=$("loginBtn");
+  btn.disabled=true;
+  $("loginMessage").textContent="Checking login…";
+  try{
+    const {error}=await db.auth.signInWithPassword({
+      email:$("email").value.trim(),
+      password:$("password").value
+    });
+    if(error)throw error;
+    await verifyAdmin();
+  }catch(err){
+    $("loginMessage").textContent=err.message||"Login failed.";
+  }finally{btn.disabled=false;}
+});
+
+$("logout").addEventListener("click",async()=>{
+  await db.auth.signOut();
+  showLogin("You have signed out.");
+});
+
+$("refresh").addEventListener("click",loadDashboard);
+
+verifyAdmin().catch(err=>{
+  showLogin("Could not verify your session: "+(err.message||"Unknown error"));
 });
 </script>
 </body>
