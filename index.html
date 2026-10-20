@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -198,14 +197,17 @@ nav a,nav button{font-size:9px;letter-spacing:.5px}
 <a href="#products" class="gold-button">EXPLORE COLLECTION</a>
 </div>
 </section>
+
 <section class="section" id="categories">
 <div class="section-heading"><h2>Shop by Category</h2><p>Find something made for your everyday.</p></div>
 <div class="category-list" id="categoryList"><button class="category-button active" data-category="all">All Products</button></div>
 </section>
+
 <section class="section" id="products">
 <div class="section-heading"><h2>Our Collection</h2><p>Discover your next favourite.</p></div>
 <div class="product-grid" id="productGrid"><div class="empty-state">Loading VEYORA collection...</div></div>
 </section>
+
 <section class="about">
 <div class="about-inner"><details>
 <summary><span>About VEYORA</span><span class="plus">+</span></summary>
@@ -308,15 +310,6 @@ nav a,nav button{font-size:9px;letter-spacing:.5px}
 const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
 
-/*
- DELIVERY RULE:
- First unit in each category = Rs 200
- Every additional unit in that same category = Rs 50
- Example:
- 1 women's suit = 200
- 2 women's suits = 250
- 2 women's + 2 men's suits = 500
-*/
 const BASE_DELIVERY_PER_CATEGORY=200;
 const EXTRA_UNIT_DELIVERY=50;
 
@@ -374,8 +367,6 @@ function getProductCategory(p){
   return c?.name||p.category||"Collection";
 }
 
-/* Use the category ID when available so products in the same
-   database category receive the same delivery calculation. */
 function getDeliveryCategoryKey(cartItem){
   const product=products.find(p=>String(p.id)===String(cartItem.id));
 
@@ -383,14 +374,10 @@ function getDeliveryCategoryKey(cartItem){
     return "category-id:"+String(product.category_id);
   }
 
-  const categoryName=String(
-    product?getProductCategory(product):"Collection"
-  ).trim().toLowerCase();
-
+  const categoryName=String(product?getProductCategory(product):"Collection").trim().toLowerCase();
   return "category-name:"+(categoryName||"collection");
 }
 
-/* Calculate delivery from quantities across the entire cart. */
 function calculateDeliveryCharges(items){
   const categoryQuantities={};
 
@@ -403,7 +390,6 @@ function calculateDeliveryCharges(items){
   });
 
   let total=0;
-
   Object.values(categoryQuantities).forEach(quantity=>{
     if(quantity>0){
       total+=BASE_DELIVERY_PER_CATEGORY;
@@ -429,10 +415,7 @@ function getDeliveryBreakdown(items=cart){
     const key=getDeliveryCategoryKey(item);
     if(!grouped[key]){
       const product=products.find(p=>String(p.id)===String(item.id));
-      grouped[key]={
-        name:product?getProductCategory(product):"Collection",
-        quantity:0
-      };
+      grouped[key]={name:product?getProductCategory(product):"Collection",quantity:0};
     }
     grouped[key].quantity+=Math.max(0,Number(item.quantity)||0);
   });
@@ -555,9 +538,14 @@ function addToCart(p,v){
     existing.quantity++;
   }else{
     cart.push({
-      key,id:p.id,variant_id:v?.id||null,name:p.name,
+      key,
+      id:p.id,
+      variant_id:v?.id||null,
+      name:p.name,
       variant_name:v?(String(v.option_name||"Design")+": "+String(v.option_value||"")):"",
-      image,price,quantity:1
+      image,
+      price,
+      quantity:1
     });
   }
 
@@ -701,7 +689,7 @@ function showProductDetails(id){
   openModal("productModal");
 }
 
-/* PREMIUM ORDER TRACKING */
+/* ORDER TRACKING */
 const trackingSteps=["Confirmed","Dispatched","Shipping","Delivered"];
 
 const statusDescriptions={
@@ -811,7 +799,7 @@ document.querySelectorAll("[data-policy]").forEach(a=>{
   });
 });
 
-/* Checkout: calculate category-wise delivery dynamically */
+/* CHECKOUT SUMMARY */
 $("checkoutButton").addEventListener("click",()=>{
   if(!cart.length)return;
 
@@ -836,7 +824,12 @@ $("checkoutButton").addEventListener("click",()=>{
   openModal("checkoutModal");
 });
 
-/* Submit COD order with the exact calculated delivery amount */
+/*
+ IMPORTANT:
+ The order and order_items inserts are separate database requests.
+ If the second request fails, the error is displayed clearly.
+ Do not assume the order has all products unless the items insert succeeds.
+*/
 $("checkoutForm").addEventListener("submit",async e=>{
   e.preventDefault();
 
@@ -856,6 +849,7 @@ $("checkoutForm").addEventListener("submit",async e=>{
   result.textContent="Submitting your order. Please wait.";
 
   let createdOrder=null;
+  let itemsSaved=false;
 
   try{
     const customerName=$("customerName").value.trim();
@@ -877,7 +871,10 @@ $("checkoutForm").addEventListener("submit",async e=>{
     const orderPayload={
       tracking_number:trackingNumber,
       customer_name:customerName,
-      phone,email,address,city,
+      phone,
+      email,
+      address,
+      city,
       subtotal,
       delivery_charges:deliveryCharges,
       total,
@@ -892,41 +889,88 @@ $("checkoutForm").addEventListener("submit",async e=>{
       .single();
 
     if(orderError)throw orderError;
+    if(!order||!order.id)throw new Error("The database did not return an order ID.");
+
     createdOrder=order;
 
+    /*
+     Each cart product becomes a separate order_items row.
+     Keep product_id and variant_id from the selected database records.
+    */
     const itemRows=checkoutCart.map(i=>({
       order_id:order.id,
       product_id:i.id,
       variant_id:i.variant_id||null,
-      product_name:i.name,
+      product_name:String(i.name||"Product"),
       variant_name:i.variant_name||null,
       product_image:i.image||null,
-      quantity:i.quantity,
-      unit_price:i.price,
-      line_total:i.price*i.quantity
+      quantity:Number(i.quantity)||1,
+      unit_price:Number(i.price)||0,
+      line_total:(Number(i.price)||0)*(Number(i.quantity)||1)
     }));
 
-    const {error:itemError}=await db.from("order_items").insert(itemRows);
+    if(!itemRows.length){
+      throw new Error("No products were found in the checkout cart.");
+    }
+
+    const {data:insertedItems,error:itemError}=await db
+      .from("order_items")
+      .insert(itemRows)
+      .select("id,order_id,product_name,quantity");
 
     if(itemError){
-      console.error("Order items could not be saved:",itemError);
-      result.textContent=
-        "Your order reference is "+(order.tracking_number||trackingNumber)+
-        ", but product details could not be saved. Please contact VEYORA before placing another order. Error: "+itemError.message;
-      return;
+      console.error("Order items insert failed:",itemError);
+      throw new Error(
+        "The order record was created, but its product rows could not be saved. "+
+        "Database message: "+itemError.message+
+        ". Check the order_items table columns, foreign keys and Supabase INSERT policy."
+      );
     }
+
+    /*
+     Verify that all rows were inserted before telling the customer
+     that the order is fully successful.
+    */
+    const {data:verifyRows,error:verifyError}=await db
+      .from("order_items")
+      .select("id,order_id")
+      .eq("order_id",order.id);
+
+    if(verifyError){
+      console.error("Order item verification failed:",verifyError);
+      throw new Error(
+        "Products were submitted, but their saved records could not be verified. "+
+        "Please check the order in the admin panel before retrying."
+      );
+    }
+
+    if(!verifyRows||verifyRows.length!==itemRows.length){
+      throw new Error(
+        "The database verification found "+(verifyRows||[]).length+
+        " product row(s), but "+itemRows.length+
+        " were expected. Please check Supabase permissions and the order_items table."
+      );
+    }
+
+    itemsSaved=true;
 
     const ref=order.tracking_number||trackingNumber;
 
     result.innerHTML=
       "<strong>Order submitted successfully!</strong><br>"+
       "Tracking number: <strong>"+escapeHTML(ref)+"</strong><br>"+
+      "Products saved: "+verifyRows.length+"<br>"+
       "Subtotal: "+money(subtotal)+"<br>"+
       "Delivery: "+money(deliveryCharges)+"<br>"+
       "Total payable: <strong>"+money(total)+"</strong><br>"+
       "Payment: Cash on Delivery<br><br>"+
       '<a class="gold-button" style="display:block;text-align:center" target="_blank" rel="noopener noreferrer" href="https://wa.me/923713763119?text='+
-      encodeURIComponent("Assalam-o-Alaikum VEYORA, please confirm my order "+ref+". Subtotal: "+money(subtotal)+". Delivery: "+money(deliveryCharges)+". Total payable: "+money(total))+
+      encodeURIComponent(
+        "Assalam-o-Alaikum VEYORA, please confirm my order "+ref+
+        ". Subtotal: "+money(subtotal)+
+        ". Delivery: "+money(deliveryCharges)+
+        ". Total payable: "+money(total)
+      )+
       '">CONFIRM VIA WHATSAPP</a>';
 
     $("checkoutForm").reset();
@@ -937,10 +981,19 @@ $("checkoutForm").addEventListener("submit",async e=>{
 
   }catch(err){
     console.error("Checkout error:",err);
-    result.textContent=createdOrder
-      ?"An order record was created ("+(createdOrder.tracking_number||createdOrder.id)+"), but the remaining order details need checking. Contact VEYORA before retrying."
-      :"Order could not be submitted. "+(err.message||"Please try again later.")+
-       " If the error mentions permission or policy, Supabase database permissions need configuring.";
+
+    if(createdOrder&&!itemsSaved){
+      result.innerHTML=
+        "<strong>Order requires attention.</strong><br>"+
+        "Order reference: "+escapeHTML(createdOrder.tracking_number||createdOrder.id)+"<br>"+
+        escapeHTML(err.message||"Product details could not be saved.")+
+        "<br><br>Please contact VEYORA support before placing the same order again.";
+    }else{
+      result.textContent=
+        "Order could not be submitted. "+
+        (err.message||"Please try again later.")+
+        " If the error mentions permission or policy, Supabase database permissions need configuring.";
+    }
   }finally{
     button.disabled=false;
     button.textContent="PLACE COD ORDER";
