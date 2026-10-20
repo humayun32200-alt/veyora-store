@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,14 +9,14 @@
 
 <style>
 :root{
-  --bg:#f7f4ed;
-  --ink:#191813;
-  --gold:#c5a15b;
-  --gold-light:#ead7a5;
-  --muted:#777267;
-  --line:#e6dece;
-  --white:#fff;
-  --dark:#171612;
+--bg:#f7f4ed;
+--ink:#191813;
+--gold:#c5a15b;
+--gold-light:#ead7a5;
+--muted:#777267;
+--line:#e6dece;
+--white:#fff;
+--dark:#171612;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:125px}
@@ -54,6 +53,7 @@ nav a:hover,nav button:hover{color:#a1803d}
 .hero p{color:#d1cfc7;font-size:14px;line-height:1.9;max-width:580px;margin:auto}
 .gold-button{display:inline-block;border:1px solid var(--gold-light);background:var(--gold);color:#171612;padding:14px 27px;font-size:10px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;margin-top:18px;border-radius:3px;transition:.2s}
 .gold-button:hover{background:var(--gold-light);transform:translateY(-1px)}
+.gold-button:disabled{opacity:.55;cursor:not-allowed;transform:none}
 .section{max-width:1400px;margin:auto;padding:48px 4%}
 .section-heading{text-align:center;margin-bottom:29px}
 .section-heading h2{font-family:Georgia,serif;font-size:30px;font-weight:400;margin:0 0 10px;color:#211e17}
@@ -116,34 +116,42 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 .variant-label{display:block;margin:15px 0 5px;font-size:12px;font-weight:bold}
 .variant-select{width:100%;padding:12px;border:1px solid var(--line);background:#fff}
 .variant-stock{font-size:11px;color:var(--muted);margin-top:6px}
+
+/* NEW: Shopify-style design buttons */
+.design-options{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0 16px}
+.design-option{min-width:48px;min-height:46px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-size:14px;cursor:pointer}
+.design-option.active{background:#000;color:#fff;border-color:#000}
+.design-option:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.design-image-label{font-size:12px;color:var(--muted);margin:6px 0 12px}
+
 .veyora-admin-shortcut{position:fixed;right:16px;bottom:18px;z-index:999;display:flex;align-items:center;gap:7px;padding:12px 17px;border:1px solid #d8b96f;border-radius:30px;background:#171612;color:#f0d99d;font-size:11px;font-weight:bold;letter-spacing:1px;text-decoration:none;box-shadow:0 5px 20px #0003;transition:.2s}
 .veyora-admin-shortcut:hover{background:var(--gold);color:#171612;transform:translateY(-2px)}
 @media(max-width:900px){
- .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
- .brand-name{font-size:20px}.search{max-width:300px}
- .header-main{gap:12px}nav{gap:18px}
+.product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.brand-name{font-size:20px}.search{max-width:300px}
+.header-main{gap:12px}nav{gap:18px}
 }
 @media(max-width:600px){
- .announcement{font-size:9px;letter-spacing:1px}
- .header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}
- .brand{min-width:0;flex:1}.logo-placeholder{width:35px;height:35px;font-size:17px}
- .brand-name{font-size:19px;letter-spacing:2px}.brand-sub{font-size:8px;letter-spacing:2px}
- .search{order:3;flex-basis:100%;max-width:none}
- .header-actions{gap:9px}.icon-button{font-size:19px}.icon-label{font-size:9px}
- nav{gap:15px;padding:12px 7px}nav a,nav button{font-size:9px;letter-spacing:.5px}
- .hero{min-height:320px;padding:45px 18px}.hero p{font-size:12px}
- .section{padding:34px 4%}.section-heading h2{font-size:25px}
- .category-list{gap:7px}.category-button{padding:11px 13px;font-size:9px}
- .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
- .product-card{border-radius:7px}.product-info{padding:10px}
- .product-name{font-size:12px;min-height:38px}
- .sale-price{font-size:13px}.old-price{font-size:10px}
- .small-button{font-size:8px;padding:10px 3px}
- .sale-badge{left:6px;top:6px;padding:6px;font-size:8px}
- .about{padding:22px 5%}.about summary{font-size:20px}
- .footer-grid{grid-template-columns:1fr 1fr;gap:27px 18px}
- .footer-about{grid-column:1/-1}.copyright{font-size:9px}
- .veyora-admin-shortcut{right:10px;bottom:12px;padding:11px 13px}
+.announcement{font-size:9px;letter-spacing:1px}
+.header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}
+.brand{min-width:0;flex:1}.logo-placeholder{width:35px;height:35px;font-size:17px}
+.brand-name{font-size:19px;letter-spacing:2px}.brand-sub{font-size:8px;letter-spacing:2px}
+.search{order:3;flex-basis:100%;max-width:none}
+.header-actions{gap:9px}.icon-button{font-size:19px}.icon-label{font-size:9px}
+nav{gap:15px;padding:12px 7px}nav a,nav button{font-size:9px;letter-spacing:.5px}
+.hero{min-height:320px;padding:45px 18px}.hero p{font-size:12px}
+.section{padding:34px 4%}.section-heading h2{font-size:25px}
+.category-list{gap:7px}.category-button{padding:11px 13px;font-size:9px}
+.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.product-card{border-radius:7px}.product-info{padding:10px}
+.product-name{font-size:12px;min-height:38px}
+.sale-price{font-size:13px}.old-price{font-size:10px}
+.small-button{font-size:8px;padding:10px 3px}
+.sale-badge{left:6px;top:6px;padding:6px;font-size:8px}
+.about{padding:22px 5%}.about summary{font-size:20px}
+.footer-grid{grid-template-columns:1fr 1fr;gap:27px 18px}
+.footer-about{grid-column:1/-1}.copyright{font-size:9px}
+.veyora-admin-shortcut{right:10px;bottom:12px;padding:11px 13px}
 }
 </style>
 </head>
@@ -151,105 +159,105 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 <div class="announcement">WELCOME TO VEYORA · CASH ON DELIVERY IN PAKISTAN</div>
 
 <header>
- <div class="header-main">
-  <a href="#" class="brand" aria-label="VEYORA Home">
-   <div class="logo-placeholder">V</div>
-   <div><div class="brand-name">VEYORA</div><div class="brand-sub">MAYU WORLD</div></div>
-  </a>
-  <div class="search">
-   <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
-   <button id="searchButton" aria-label="Search">⌕</button>
-  </div>
-  <div class="header-actions">
-   <button class="icon-button" id="accountButton" aria-label="My account">♙<span class="icon-label">Account</span></button>
-   <button class="icon-button" id="cartButton" aria-label="Shopping cart">♧<span class="cart-count" id="cartCount">0</span><span class="icon-label">Cart</span></button>
-  </div>
- </div>
- <nav aria-label="Main navigation">
-  <a href="#">Home</a><a href="#products" id="shopAllLink">Shop All</a><a href="#categories">Categories</a>
-  <button id="trackButton">Track Order</button>
- </nav>
+<div class="header-main">
+<a href="#" class="brand" aria-label="VEYORA Home">
+<div class="logo-placeholder">V</div>
+<div><div class="brand-name">VEYORA</div><div class="brand-sub">MAYU WORLD</div></div>
+</a>
+<div class="search">
+<input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
+<button id="searchButton" aria-label="Search">⌕</button>
+</div>
+<div class="header-actions">
+<button class="icon-button" id="accountButton" aria-label="My account">♙<span class="icon-label">Account</span></button>
+<button class="icon-button" id="cartButton" aria-label="Shopping cart">♧<span class="cart-count" id="cartCount">0</span><span class="icon-label">Cart</span></button>
+</div>
+</div>
+<nav aria-label="Main navigation">
+<a href="#">Home</a><a href="#products" id="shopAllLink">Shop All</a><a href="#categories">Categories</a>
+<button id="trackButton">Track Order</button>
+</nav>
 </header>
 
 <main>
- <section class="hero">
-  <div class="hero-inner">
-   <div class="eyebrow">THE VEYORA COLLECTION</div>
-   <h1>Elevate Your Everyday.</h1>
-   <p>Discover fashion, home essentials and everyday favourites, thoughtfully brought together for you.</p>
-   <a href="#products" class="gold-button">EXPLORE COLLECTION</a>
-  </div>
- </section>
+<section class="hero">
+<div class="hero-inner">
+<div class="eyebrow">THE VEYORA COLLECTION</div>
+<h1>Elevate Your Everyday.</h1>
+<p>Discover fashion, home essentials and everyday favourites, thoughtfully brought together for you.</p>
+<a href="#products" class="gold-button">EXPLORE COLLECTION</a>
+</div>
+</section>
 
- <section class="section" id="categories">
-  <div class="section-heading"><h2>Shop by Category</h2><p>Find something made for your everyday.</p></div>
-  <div class="category-list" id="categoryList"><button class="category-button active" data-category="all">All Products</button></div>
- </section>
+<section class="section" id="categories">
+<div class="section-heading"><h2>Shop by Category</h2><p>Find something made for your everyday.</p></div>
+<div class="category-list" id="categoryList"><button class="category-button active" data-category="all">All Products</button></div>
+</section>
 
- <section class="section" id="products">
-  <div class="section-heading"><h2>Our Collection</h2><p>Discover your next favourite.</p></div>
-  <div class="product-grid" id="productGrid"><div class="empty-state">Loading VEYORA collection...</div></div>
- </section>
+<section class="section" id="products">
+<div class="section-heading"><h2>Our Collection</h2><p>Discover your next favourite.</p></div>
+<div class="product-grid" id="productGrid"><div class="empty-state">Loading VEYORA collection...</div></div>
+</section>
 
- <section class="about">
-  <div class="about-inner"><details>
-   <summary><span>About VEYORA</span><span class="plus">+</span></summary>
-   <div class="about-text">VEYORA — MAYU WORLD brings together fashion, home essentials and everyday products. Our goal is to make discovering your next favourite product simple and convenient. Cash on Delivery is available across Pakistan, subject to delivery coverage.</div>
-  </details></div>
- </section>
+<section class="about">
+<div class="about-inner"><details>
+<summary><span>About VEYORA</span><span class="plus">+</span></summary>
+<div class="about-text">VEYORA — MAYU WORLD brings together fashion, home essentials and everyday products. Our goal is to make discovering your next favourite product simple and convenient. Cash on Delivery is available across Pakistan, subject to delivery coverage.</div>
+</details></div>
+</section>
 </main>
 
 <footer>
- <div class="footer-grid">
-  <div class="footer-about">
-   <div class="footer-brand">VEYORA<span>MAYU WORLD</span></div>
-   <p class="footer-description">Premium products for every life. Discover fashion, home essentials and everyday favourites at VEYORA.</p>
-   <div class="socials">
-    <a href="https://www.instagram.com/veyora_.pk/" target="_blank" rel="noopener noreferrer">IG</a>
-    <a href="https://www.tiktok.com/@veyora.pk" target="_blank" rel="noopener noreferrer">TK</a>
-    <a href="https://www.facebook.com/share/1WFCVZ9tsD/" target="_blank" rel="noopener noreferrer">FB</a>
-    <a href="https://www.youtube.com/@VeyoraStore-c8h" target="_blank" rel="noopener noreferrer">YT</a>
-    <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">WA</a>
-   </div>
-  </div>
-  <div><h3>QUICK LINKS</h3><div class="footer-links">
-   <a href="#products">Shop All</a><a href="#categories">Categories</a><a href="#" id="footerTrack">Track Order</a>
-   <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">Contact Us</a>
-  </div></div>
-  <div><h3>HELP & POLICIES</h3><div class="footer-links">
-   <a href="#" data-policy="About Us">About Us</a><a href="#" data-policy="FAQs">FAQs</a>
-   <a href="#" data-policy="Shipping & Delivery">Shipping & Delivery</a>
-   <a href="#" data-policy="Returns & Refunds">Returns & Refunds</a>
-   <a href="#" data-policy="Privacy Policy">Privacy Policy</a><a href="#" data-policy="Terms of Service">Terms of Service</a>
-  </div></div>
- </div>
- <div class="copyright"><span>© <span id="year"></span> VEYORA — MAYU WORLD. All rights reserved.</span><span>Designed for everyday living.</span></div>
+<div class="footer-grid">
+<div class="footer-about">
+<div class="footer-brand">VEYORA<span>MAYU WORLD</span></div>
+<p class="footer-description">Premium products for every life. Discover fashion, home essentials and everyday favourites at VEYORA.</p>
+<div class="socials">
+<a href="https://www.instagram.com/veyora_.pk/" target="_blank" rel="noopener noreferrer">IG</a>
+<a href="https://www.tiktok.com/@veyora.pk" target="_blank" rel="noopener noreferrer">TK</a>
+<a href="https://www.facebook.com/share/1WFCVZ9tsD/" target="_blank" rel="noopener noreferrer">FB</a>
+<a href="https://www.youtube.com/@VeyoraStore-c8h" target="_blank" rel="noopener noreferrer">YT</a>
+<a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">WA</a>
+</div>
+</div>
+<div><h3>QUICK LINKS</h3><div class="footer-links">
+<a href="#products">Shop All</a><a href="#categories">Categories</a><a href="#" id="footerTrack">Track Order</a>
+<a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">Contact Us</a>
+</div></div>
+<div><h3>HELP & POLICIES</h3><div class="footer-links">
+<a href="#" data-policy="About Us">About Us</a><a href="#" data-policy="FAQs">FAQs</a>
+<a href="#" data-policy="Shipping & Delivery">Shipping & Delivery</a>
+<a href="#" data-policy="Returns & Refunds">Returns & Refunds</a>
+<a href="#" data-policy="Privacy Policy">Privacy Policy</a><a href="#" data-policy="Terms of Service">Terms of Service</a>
+</div></div>
+</div>
+<div class="copyright"><span>© <span id="year"></span> VEYORA — MAYU WORLD. All rights reserved.</span><span>Designed for everyday living.</span></div>
 </footer>
 
 <a href="./admin.html" class="veyora-admin-shortcut" aria-label="Open admin panel">⚙ ADMIN</a>
 
 <div class="overlay" id="trackModal" role="dialog" aria-modal="true">
- <div class="modal"><button class="close" data-close="trackModal">×</button><h2>Track Your Order</h2>
-  <p class="notice">Enter the tracking number provided by VEYORA.</p>
-  <form id="trackForm"><label for="trackingNumber">Tracking number</label><input id="trackingNumber" required placeholder="Your tracking number"><button class="gold-button" type="submit">CHECK STATUS</button></form>
-  <div class="result" id="trackResult"></div>
- </div>
+<div class="modal"><button class="close" data-close="trackModal">×</button><h2>Track Your Order</h2>
+<p class="notice">Enter the tracking number provided by VEYORA.</p>
+<form id="trackForm"><label for="trackingNumber">Tracking number</label><input id="trackingNumber" required placeholder="Your tracking number"><button class="gold-button" type="submit">CHECK STATUS</button></form>
+<div class="result" id="trackResult"></div>
+</div>
 </div>
 
 <div class="overlay" id="cartModal" role="dialog" aria-modal="true">
- <div class="modal"><button class="close" data-close="cartModal">×</button><h2>Your Cart</h2><div id="cartItems"></div><div id="cartTotal" style="margin-top:15px;font-weight:bold"></div><p class="notice">Order checkout will be available after the secure order backend is configured.</p></div>
+<div class="modal"><button class="close" data-close="cartModal">×</button><h2>Your Cart</h2><div id="cartItems"></div><div id="cartTotal" style="margin-top:15px;font-weight:bold"></div><p class="notice">Order checkout will be available after the secure order backend is configured.</p></div>
 </div>
 
 <div class="overlay" id="productModal" role="dialog" aria-modal="true">
- <div class="modal"><button class="close" data-close="productModal">×</button><div id="productDetails"></div></div>
+<div class="modal"><button class="close" data-close="productModal">×</button><div id="productDetails"></div></div>
 </div>
 
 <div class="overlay" id="accountModal" role="dialog" aria-modal="true">
- <div class="modal"><button class="close" data-close="accountModal">×</button><h2>My Account</h2><p class="notice">Customer accounts are optional. You can browse the VEYORA collection without creating an account.</p></div>
+<div class="modal"><button class="close" data-close="accountModal">×</button><h2>My Account</h2><p class="notice">Customer accounts are optional. You can browse the VEYORA collection without creating an account.</p></div>
 </div>
 
 <div class="overlay" id="policyModal" role="dialog" aria-modal="true">
- <div class="modal"><button class="close" data-close="policyModal">×</button><h2 id="policyTitle">Information</h2><p class="notice" id="policyContent"></p></div>
+<div class="modal"><button class="close" data-close="policyModal">×</button><h2 id="policyTitle">Information</h2><p class="notice" id="policyContent"></p></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -258,7 +266,7 @@ const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
 let db=null;
 if(window.supabase){
- db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 }
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -281,12 +289,12 @@ $("searchInput").addEventListener("input",renderProducts);
 $("shopAllLink").addEventListener("click",()=>{activeCategory="all";renderCategories();renderProducts()});
 
 function getProductImage(p){
- const found=productImages.find(i=>String(i.product_id)===String(p.id));
- return found?.image_url||found?.url||p.image_url||p.image||"";
+const found=productImages.find(i=>String(i.product_id)===String(p.id));
+return found?.image_url||found?.url||p.image_url||p.image||"";
 }
 function getProductCategory(p){
- const c=categories.find(x=>String(x.id)===String(p.category_id));
- return c?.name||p.category||"Collection";
+const c=categories.find(x=>String(x.id)===String(p.category_id));
+return c?.name||p.category||"Collection";
 }
 function isOnSale(p){return Number(p.sale_price)>0&&Number(p.retail_price)>Number(p.sale_price)}
 function discountPercent(p){return isOnSale(p)?Math.round((1-Number(p.sale_price)/Number(p.retail_price))*100):0}
@@ -294,142 +302,250 @@ function currentPrice(p){return isOnSale(p)?Number(p.sale_price):Number(p.retail
 function productIsActive(p){return p.is_active===true||p.is_active===undefined}
 
 function renderCategories(){
- const visible=categories.filter(c=>c.is_active!==false);
- $("categoryList").innerHTML=`<button class="category-button ${activeCategory==="all"?"active":""}" data-category="all">All Products</button>`+
- visible.map(c=>`<button class="category-button ${String(activeCategory)===String(c.id)?"active":""}" data-category="${escapeHTML(c.id)}">${escapeHTML(c.name||"Category")}</button>`).join("");
- $("categoryList").querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{activeCategory=b.dataset.category;renderCategories();renderProducts()}));
+const visible=categories.filter(c=>c.is_active!==false);
+$("categoryList").innerHTML=`<button class="category-button ${activeCategory==="all"?"active":""}" data-category="all">All Products</button>`+
+visible.map(c=>`<button class="category-button ${String(activeCategory)===String(c.id)?"active":""}" data-category="${escapeHTML(c.id)}">${escapeHTML(c.name||"Category")}</button>`).join("");
+$("categoryList").querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{activeCategory=b.dataset.category;renderCategories();renderProducts()}));
 }
 function renderProducts(){
- const query=$("searchInput").value.trim().toLowerCase();
- const filtered=products.filter(p=>{
-  if(!productIsActive(p))return false;
-  const cat=activeCategory==="all"||String(p.category_id)===String(activeCategory);
-  const search=!query||String(p.name||"").toLowerCase().includes(query)||String(p.description||"").toLowerCase().includes(query)||getProductCategory(p).toLowerCase().includes(query);
-  return cat&&search;
- });
- if(!filtered.length){
-  $("productGrid").innerHTML=`<div class="empty-state">${products.length?"No products found. Try another search or category.":"Your products will appear here after you add them in the admin panel."}</div>`;
-  return;
- }
- $("productGrid").innerHTML=filtered.map(p=>{
-  const image=getProductImage(p),sale=isOnSale(p),name=escapeHTML(p.name||"VEYORA product");
-  const img=image?`<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`:`<div class="image-placeholder">VEYORA</div>`;
-  return `<article class="product-card"><div class="image-wrap">${img}${sale?`<span class="sale-badge">${discountPercent(p)}% OFF</span>`:""}</div><div class="product-info"><div class="product-category">${escapeHTML(getProductCategory(p))}</div><div class="product-name">${name}</div><div class="prices"><span class="sale-price">${money(currentPrice(p))}</span>${sale?`<span class="old-price">${money(p.retail_price)}</span>`:""}</div><div class="product-actions"><button class="small-button" data-details="${escapeHTML(p.id)}">DETAILS</button><button class="small-button primary" data-add="${escapeHTML(p.id)}">ADD TO CART</button></div></div></article>`;
- }).join("");
- $("productGrid").querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>quickAdd(b.dataset.add)));
- $("productGrid").querySelectorAll("[data-details]").forEach(b=>b.addEventListener("click",()=>showProductDetails(b.dataset.details)));
+const query=$("searchInput").value.trim().toLowerCase();
+const filtered=products.filter(p=>{
+if(!productIsActive(p))return false;
+const cat=activeCategory==="all"||String(p.category_id)===String(activeCategory);
+const search=!query||String(p.name||"").toLowerCase().includes(query)||String(p.description||"").toLowerCase().includes(query)||getProductCategory(p).toLowerCase().includes(query);
+return cat&&search;
+});
+if(!filtered.length){
+$("productGrid").innerHTML=`<div class="empty-state">${products.length?"No products found. Try another search or category.":"Your products will appear here after you add them in the admin panel."}</div>`;
+return;
+}
+$("productGrid").innerHTML=filtered.map(p=>{
+const image=getProductImage(p),sale=isOnSale(p),name=escapeHTML(p.name||"VEYORA product");
+const img=image?`<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`:`<div class="image-placeholder">VEYORA</div>`;
+return `<article class="product-card"><div class="image-wrap">${img}${sale?`<span class="sale-badge">${discountPercent(p)}% OFF</span>`:""}</div><div class="product-info"><div class="product-category">${escapeHTML(getProductCategory(p))}</div><div class="product-name">${name}</div><div class="prices"><span class="sale-price">${money(currentPrice(p))}</span>${sale?`<span class="old-price">${money(p.retail_price)}</span>`:""}</div><div class="product-actions"><button class="small-button" data-details="${escapeHTML(p.id)}">DETAILS</button><button class="small-button primary" data-add="${escapeHTML(p.id)}">ADD TO CART</button></div></div></article>`;
+}).join("");
+$("productGrid").querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>quickAdd(b.dataset.add)));
+$("productGrid").querySelectorAll("[data-details]").forEach(b=>b.addEventListener("click",()=>showProductDetails(b.dataset.details)));
 }
 function productVariants(id){return variants.filter(v=>String(v.product_id)===String(id))}
 function variantPrice(v,p){
- if(!v)return currentPrice(p);
- if(Number(v.sale_price)>0&&Number(v.retail_price)>Number(v.sale_price))return Number(v.sale_price);
- return Number(v.retail_price||currentPrice(p));
+if(!v)return currentPrice(p);
+if(Number(v.sale_price)>0&&Number(v.retail_price)>Number(v.sale_price))return Number(v.sale_price);
+return Number(v.retail_price||currentPrice(p));
 }
 function quickAdd(id){
- const p=products.find(x=>String(x.id)===String(id));
- if(!p)return;
- const vs=productVariants(id);
- if(vs.length){showProductDetails(id);return}
- addToCart(p,null);
- alert("Added to cart.");
+const p=products.find(x=>String(x.id)===String(id));
+if(!p)return;
+const vs=productVariants(id);
+if(vs.length){showProductDetails(id);return}
+addToCart(p,null);
+alert("Added to cart.");
 }
 function addToCart(p,v){
- const price=variantPrice(v,p);
- const key=String(p.id)+"_"+String(v?.id||"default");
- const existing=cart.find(i=>i.key===key);
- if(existing)existing.quantity++;
- else cart.push({key,id:p.id,variant_id:v?.id||null,name:p.name,variant_name:v?(v.option_name+": "+v.option_value):"",price,quantity:1});
- $("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);
+const price=variantPrice(v,p);
+const key=String(p.id)+"_"+String(v?.id||"default");
+const existing=cart.find(i=>i.key===key);
+if(existing)existing.quantity++;
+else cart.push({key,id:p.id,variant_id:v?.id||null,name:p.name,variant_name:v?(v.option_name+": "+v.option_value):"",price,quantity:1});
+$("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);
 }
 function renderCart(){
- if(!cart.length){$("cartItems").innerHTML='<p class="notice">Your cart is empty.</p>';$("cartTotal").textContent="";return}
- $("cartItems").innerHTML=cart.map(i=>`<div class="cart-item"><span>${escapeHTML(i.name)}${i.variant_name?"<br><small>"+escapeHTML(i.variant_name)+"</small>":""} × ${i.quantity}</span><span>${money(i.price*i.quantity)} <button data-remove="${escapeHTML(i.key)}">×</button></span></div>`).join("");
- $("cartTotal").textContent="Subtotal: "+money(cart.reduce((s,i)=>s+i.price*i.quantity,0));
- $("cartItems").querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{cart=cart.filter(i=>i.key!==b.dataset.remove);$("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);renderCart()}));
+if(!cart.length){$("cartItems").innerHTML='<p class="notice">Your cart is empty.</p>';$("cartTotal").textContent="";return}
+$("cartItems").innerHTML=cart.map(i=>`<div class="cart-item"><span>${escapeHTML(i.name)}${i.variant_name?"<br><small>"+escapeHTML(i.variant_name)+"</small>":""} × ${i.quantity}</span><span>${money(i.price*i.quantity)} <button data-remove="${escapeHTML(i.key)}">×</button></span></div>`).join("");
+$("cartTotal").textContent="Subtotal: "+money(cart.reduce((s,i)=>s+i.price*i.quantity,0));
+$("cartItems").querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{cart=cart.filter(i=>i.key!==b.dataset.remove);$("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);renderCart()}));
 }
+
+/* UPDATED PRODUCT DETAILS:
+   - Each variant appears as a selectable design button.
+   - Selecting a variant changes its image, price and stock.
+   - The selected variant is the one added to the cart.
+*/
 function showProductDetails(id){
- const p=products.find(x=>String(x.id)===String(id));if(!p)return;
- const image=getProductImage(p),vs=productVariants(id);
- const img=image?`<img class="detail-image" src="${escapeHTML(image)}" alt="${escapeHTML(p.name)}">`:"";
- const variantHTML=vs.length?`<label class="variant-label" for="variantSelect">Choose design / variant</label><select class="variant-select" id="variantSelect">${vs.map((v,i)=>`<option value="${escapeHTML(v.id)}">${escapeHTML([v.option_name,v.option_value].filter(Boolean).join(": ")||v.name||"Option "+(i+1))} — ${money(variantPrice(v,p))}${Number(v.stock_quantity)===0?" (Out of stock)":""}</option>`).join("")}</select><div class="variant-stock" id="variantStock"></div>`:"";
- $("productDetails").innerHTML=`${img}<p class="product-category">${escapeHTML(getProductCategory(p))}</p><h2 id="detailTitle">${escapeHTML(p.name)}</h2><p id="detailPrice"><strong>${money(currentPrice(p))}</strong></p>${variantHTML}<p class="notice">${escapeHTML(p.description||"Product details will be updated soon.")}</p><button class="gold-button" id="detailAdd">ADD TO CART</button>`;
- const select=$("variantSelect");
- function updateVariant(){
-  if(!select)return;
-  const v=vs.find(x=>String(x.id)===String(select.value));
-  $("detailPrice").innerHTML="<strong>"+money(variantPrice(v,p))+"</strong>";
-  $("variantStock").textContent=v?(Number(v.stock_quantity)>0?"Available stock: "+v.stock_quantity:Number(v.stock_quantity)===0?"Currently out of stock":"Stock availability not specified"):"";
- }
- if(select){select.addEventListener("change",updateVariant);updateVariant()}
- $("detailAdd").addEventListener("click",()=>{
-  const v=select?vs.find(x=>String(x.id)===String(select.value)):null;
-  if(v&&Number(v.stock_quantity)===0){alert("This variant is currently out of stock.");return}
-  addToCart(p,v);closeModal("productModal");renderCart();openModal("cartModal");
- });
- openModal("productModal");
+const p=products.find(x=>String(x.id)===String(id));
+if(!p)return;
+
+const mainImage=getProductImage(p);
+const vs=productVariants(id).slice().sort((a,b)=>Number(a.sort_order||0)-Number(b.sort_order||0));
+const firstVariant=vs[0]||null;
+const firstImage=firstVariant?.image_url||mainImage;
+
+const img=firstImage
+?`<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(p.name)}" onerror="this.onerror=null;this.style.display='none';">`
+:`<div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>`;
+
+const variantHTML=vs.length
+?`<label class="variant-label">Design</label>
+<div class="design-options" id="designOptions">
+${vs.map((v,i)=>`<button type="button" class="design-option ${i===0?"active":""}" data-variant="${escapeHTML(v.id)}" aria-pressed="${i===0?"true":"false"}">${escapeHTML(v.option_value||v.name||("Design "+(i+1)))}</button>`).join("")}
+</div>
+<div class="design-image-label" id="selectedDesignName"></div>
+<div class="variant-stock" id="variantStock"></div>`
+:"";
+
+$("productDetails").innerHTML=`${img}
+<p class="product-category">${escapeHTML(getProductCategory(p))}</p>
+<h2 id="detailTitle">${escapeHTML(p.name)}</h2>
+<p id="detailPrice"><strong>${money(variantPrice(firstVariant,p))}</strong></p>
+${variantHTML}
+<p class="notice">${escapeHTML(p.description||"Product details will be updated soon.")}</p>
+<button class="gold-button" id="detailAdd" type="button">ADD TO CART</button>`;
+
+let selectedVariant=firstVariant;
+
+function updateVariant(v){
+selectedVariant=v;
+
+const image=$("detailProductImage");
+const imageUrl=v?.image_url||mainImage;
+
+if(image){
+image.style.display=imageUrl?"block":"none";
+if(imageUrl){
+image.onerror=function(){
+this.onerror=null;
+if(mainImage&&this.src!==mainImage)this.src=mainImage;
+else this.style.display="none";
+};
+image.src=imageUrl;
+image.alt=p.name+(v?" - "+(v.option_name||"Design")+" "+(v.option_value||""):"");
 }
+}else if(imageUrl){
+const placeholder=$("detailImagePlaceholder");
+if(placeholder){
+placeholder.outerHTML=`<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageUrl)}" alt="${escapeHTML(p.name)}" onerror="this.style.display='none';">`;
+}
+}
+
+$("detailPrice").innerHTML="<strong>"+money(variantPrice(v,p))+"</strong>";
+
+const selectedName=$("selectedDesignName");
+if(selectedName){
+selectedName.textContent=v?"Selected: "+(v.option_name||"Design")+" "+(v.option_value||""):"";
+}
+
+const stock=$("variantStock");
+if(stock){
+stock.textContent=!v?"":Number(v.stock_quantity)===0
+?"Currently out of stock"
+:Number(v.stock_quantity)>0
+?"Available stock: "+v.stock_quantity
+:"Stock availability not specified";
+}
+
+document.querySelectorAll(".design-option").forEach(button=>{
+const active=String(button.dataset.variant)===String(v?.id);
+button.classList.toggle("active",active);
+button.setAttribute("aria-pressed",String(active));
+});
+
+$("detailAdd").disabled=!!v&&Number(v.stock_quantity)===0;
+$("detailAdd").textContent=v&&Number(v.stock_quantity)===0?"OUT OF STOCK":"ADD TO CART";
+}
+
+document.querySelectorAll(".design-option").forEach(button=>{
+button.addEventListener("click",()=>{
+const v=vs.find(x=>String(x.id)===String(button.dataset.variant));
+if(v)updateVariant(v);
+});
+});
+
+updateVariant(selectedVariant);
+
+$("detailAdd").addEventListener("click",()=>{
+if(selectedVariant&&Number(selectedVariant.stock_quantity)===0){
+alert("This variant is currently out of stock.");
+return;
+}
+addToCart(p,selectedVariant);
+closeModal("productModal");
+renderCart();
+openModal("cartModal");
+});
+
+openModal("productModal");
+}
+
 const statusDescriptions={"Confirmed":"Your order has been confirmed.","Packed":"Your order has been packed.","Shipped":"Your order has been shipped.","Out for Delivery":"Your order is out for delivery.","Delivered":"Your order has been delivered.","Cancelled":"This order has been cancelled."};
 $("trackForm").addEventListener("submit",async e=>{
- e.preventDefault();const n=$("trackingNumber").value.trim(),r=$("trackResult");r.textContent="Checking tracking number...";
- if(!db){r.textContent="Tracking is not connected yet.";return}
- try{
-  const {data,error}=await db.rpc("track_order",{p_tracking_number:n});if(error)throw error;
-  const o=Array.isArray(data)?data[0]:data;
-  if(!o){r.textContent="No order found. Please check the tracking number.";return}
-  const s=o.status||"Processing";r.textContent=(statusDescriptions[s]||"Order status: "+s)+(o.last_updated?"\nLast updated: "+new Date(o.last_updated).toLocaleString():"");
- }catch(err){console.error(err);r.textContent="We could not check the order right now. Please contact VEYORA on WhatsApp."}
+e.preventDefault();
+const n=$("trackingNumber").value.trim(),r=$("trackResult");
+r.textContent="Checking tracking number...";
+if(!db){r.textContent="Tracking is not connected yet.";return}
+try{
+const {data,error}=await db.rpc("track_order",{p_tracking_number:n});
+if(error)throw error;
+const o=Array.isArray(data)?data[0]:data;
+if(!o){r.textContent="No order found. Please check the tracking number.";return}
+const s=o.status||"Processing";
+r.textContent=(statusDescriptions[s]||"Order status: "+s)+(o.last_updated?"\nLast updated: "+new Date(o.last_updated).toLocaleString():"");
+}catch(err){
+console.error(err);
+r.textContent="We could not check the order right now. Please contact VEYORA on WhatsApp.";
+}
 });
+
 const policyTexts={
- "About Us":"VEYORA — MAYU WORLD offers fashion, home essentials and everyday products.",
- "FAQs":"For product and order support, contact VEYORA through WhatsApp.",
- "Shipping & Delivery":"Delivery is intended for Pakistan. Delivery charges and estimated delivery times may vary by location.",
- "Returns & Refunds":"Please contact VEYORA if an item arrives damaged or incorrect.",
- "Privacy Policy":"Customer information should be used only to process and support orders.",
- "Terms of Service":"Orders are subject to product availability and confirmation."
+"About Us":"VEYORA — MAYU WORLD offers fashion, home essentials and everyday products.",
+"FAQs":"For product and order support, contact VEYORA through WhatsApp.",
+"Shipping & Delivery":"Delivery is intended for Pakistan. Delivery charges and estimated delivery times may vary by location.",
+"Returns & Refunds":"Please contact VEYORA if an item arrives damaged or incorrect.",
+"Privacy Policy":"Customer information should be used only to process and support orders.",
+"Terms of Service":"Orders are subject to product availability and confirmation."
 };
 document.querySelectorAll("[data-policy]").forEach(a=>a.addEventListener("click",e=>{
- e.preventDefault();const t=a.dataset.policy;$("policyTitle").textContent=t;$("policyContent").textContent=policyTexts[t]||"Information coming soon.";openModal("policyModal");
+e.preventDefault();
+const t=a.dataset.policy;
+$("policyTitle").textContent=t;
+$("policyContent").textContent=policyTexts[t]||"Information coming soon.";
+openModal("policyModal");
 }));
 
 async function loadStore(){
- if(!db){$("productGrid").innerHTML='<div class="empty-state">Store connection unavailable. Check the Supabase configuration.</div>';return}
- try{
-  const [pr,cr,ir,vr]=await Promise.all([
-   db.from("products").select("*").eq("is_active",true).order("created_at",{ascending:false}),
-   db.from("categories").select("*"),
-   db.from("product_images").select("*"),
-   db.from("product_variants").select("*")
-  ]);
-  if(pr.error)throw pr.error;
-  products=pr.data||[];
-  categories=cr.error?[]:(cr.data||[]);
-  productImages=ir.error?[]:(ir.data||[]);
-  variants=vr.error?[]:(vr.data||[]);
-  renderCategories();renderProducts();
- }catch(err){
-  console.error("Store loading error:",err);
-  $("productGrid").innerHTML='<div class="empty-state">Products could not be loaded. Please check Supabase table permissions and public read policies.</div>';
- }
+if(!db){
+$("productGrid").innerHTML='<div class="empty-state">Store connection unavailable. Check the Supabase configuration.</div>';
+return;
+}
+try{
+const [pr,cr,ir,vr]=await Promise.all([
+db.from("products").select("*").eq("is_active",true).order("created_at",{ascending:false}),
+db.from("categories").select("*"),
+db.from("product_images").select("*"),
+db.from("product_variants").select("*")
+]);
+if(pr.error)throw pr.error;
+products=pr.data||[];
+categories=cr.error?[]:(cr.data||[]);
+productImages=ir.error?[]:(ir.data||[]);
+variants=vr.error?[]:(vr.data||[]);
+renderCategories();
+renderProducts();
+}catch(err){
+console.error("Store loading error:",err);
+$("productGrid").innerHTML='<div class="empty-state">Products could not be loaded. Please check Supabase table permissions and public read policies.</div>';
+}
 }
 loadStore();
 </script>
 
 <script>
 (function(){
- try{
-  const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
-  const SUPABASE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
-  let sessionId=sessionStorage.getItem("veyora_session_id");
-  if(!sessionId){
-   sessionId=crypto.randomUUID();
-   sessionStorage.setItem("veyora_session_id",sessionId);
-  }
-  fetch(SUPABASE_URL+"/rest/v1/analytics_events",{
-   method:"POST",
-   headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Prefer":"return=minimal"},
-   body:JSON.stringify({session_id:sessionId,event_type:"page_view",page_path:location.pathname,product_id:null})
-  }).catch(e=>console.error("Analytics error:",e));
- }catch(e){console.error("Analytics setup error:",e)}
+try{
+const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
+const SUPABASE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
+let sessionId=sessionStorage.getItem("veyora_session_id");
+if(!sessionId){
+sessionId=crypto.randomUUID();
+sessionStorage.setItem("veyora_session_id",sessionId);
+}
+fetch(SUPABASE_URL+"/rest/v1/analytics_events",{
+method:"POST",
+headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Prefer":"return=minimal"},
+body:JSON.stringify({session_id:sessionId,event_type:"page_view",page_path:location.pathname,product_id:null})
+}).catch(e=>console.error("Analytics error:",e));
+}catch(e){
+console.error("Analytics setup error:",e);
+}
 })();
 </script>
 </body>
