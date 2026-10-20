@@ -48,6 +48,7 @@ td button{margin:3px;padding:7px 9px}
 .variant-title{color:var(--gold);overflow-wrap:anywhere}
 .variant-image-preview{display:block;max-width:130px;max-height:130px;object-fit:contain;border:1px solid var(--line);border-radius:8px;margin-top:8px}
 .order-product-image{width:75px;height:75px;object-fit:contain;border:1px solid var(--line);border-radius:8px;background:#10100e}
+.field{flex:1;min-width:180px}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){main{padding:12px}.formgrid{grid-template-columns:1fr}.top{padding:14px}.metric{font-size:23px}}
 </style>
@@ -80,6 +81,28 @@ td button{margin:3px;padding:7px 9px}
   <h1>Admin Dashboard</h1>
   <p class="muted">Manage your Veyora store.</p>
   <div id="notice" class="notice">Connecting...</div>
+
+  <section class="panel">
+    <h2>Analytics & Start Fresh</h2>
+    <div class="row">
+      <div class="field">
+        <label>Analytics Period</label>
+        <select id="analyticsPeriod">
+          <option value="7">Last 7 Days</option>
+          <option value="1">1 Month</option>
+          <option value="3">3 Months</option>
+          <option value="6">6 Months</option>
+          <option value="12">1 Year</option>
+          <option value="all">All Time</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Reset Dashboard Counts</label>
+        <button type="button" id="resetAnalytics">Start Fresh From Now</button>
+      </div>
+    </div>
+    <p class="muted">Reset sirf dashboard ki counting reset karta hai. Purane customer orders database mein safe rehte hain. Reset tab tak active rahega jab tak tum dobara reset nahi karte.</p>
+  </section>
 
   <div class="grid">
     <div class="card">Products<div id="productCount" class="metric">—</div></div>
@@ -143,11 +166,7 @@ td button{margin:3px;padding:7px 9px}
 
       <div class="option-card">
         <h3 class="section-title">Options / Variants</h3>
-        <p class="muted">
-          Har option ka name ek baar likho aur values commas se separate karo.
-          Example: Design → 1, 2, 3; Size → S, M, L; Color → Black, White.
-          Har combination ka price, sale price, stock, SKU, barcode aur image alag set kar sakte ho.
-        </p>
+        <p class="muted">Har option ka name ek baar likho aur values commas se separate karo. Example: Design → 1, 2, 3; Size → S, M, L; Color → Black, White. Har combination ka price, sale price, stock, SKU, barcode aur image alag set kar sakte ho.</p>
         <div id="optionBuilder"></div>
         <div class="row" style="margin-top:12px">
           <button type="button" id="addOption" class="secondary">+ Add Option</button>
@@ -279,23 +298,80 @@ function showLogin(msg=""){
   $("loginMessage").textContent=msg;
 }
 
+/* ANALYTICS */
+
 function updateAnalytics(){
-  const cutoff=Date.now()-300000;
+  const resetAt=Number(localStorage.getItem("veyoraAnalyticsStart")||0);
+  const period=$("analyticsPeriod").value;
+  const now=new Date();
+  let periodStart=0;
+
+  if(period==="7"){
+    periodStart=now.getTime()-7*86400000;
+  }else if(period!=="all"){
+    const date=new Date(now);
+    date.setMonth(date.getMonth()-Number(period));
+    periodStart=date.getTime();
+  }
+
+  const startAt=Math.max(resetAt,periodStart);
+
+  const events=analyticsEvents.filter(e=>
+    e.created_at&&new Date(e.created_at).getTime()>=startAt
+  );
+
+  const sessions=new Set(
+    events.map(e=>e.session_id).filter(Boolean)
+  );
+
+  const views=events.filter(e=>
+    ["page_view","product_view"].includes(e.event_type)
+  ).length;
+
+  const cutoff=now.getTime()-300000;
   const recent=new Set(
-    analyticsEvents.filter(e=>e.created_at&&new Date(e.created_at).getTime()>=cutoff)
+    events.filter(e=>new Date(e.created_at).getTime()>=cutoff)
       .map(e=>e.session_id).filter(Boolean)
   );
-  const sessions=new Set(analyticsEvents.map(e=>e.session_id).filter(Boolean));
-  const views=analyticsEvents.filter(e=>["page_view","product_view"].includes(e.event_type)).length;
-  const valid=orders.filter(o=>String(o.status||"").toLowerCase()!=="cancelled");
-  const sales=valid.reduce((s,o)=>s+Number(o.total||0),0);
+
+  const filteredOrders=orders.filter(o=>
+    o.created_at&&new Date(o.created_at).getTime()>=startAt
+  );
+
+  const validOrders=filteredOrders.filter(o=>
+    String(o.status||"").toLowerCase()!=="cancelled"
+  );
+
+  const sales=validOrders.reduce(
+    (sum,o)=>sum+Number(o.total??(Number(o.subtotal||0)+Number(o.delivery_charges||0))),0
+  );
 
   $("liveVisitorCount").textContent=recent.size;
   $("sessionCount").textContent=sessions.size;
   $("pageViewCount").textContent=views;
+  $("orderCount").textContent=filteredOrders.length;
+
+  $("pendingCount").textContent=filteredOrders.filter(o=>
+    !["delivered","cancelled"].includes(String(o.status||"").toLowerCase())
+  ).length;
+
   $("totalSalesCount").textContent=money(sales);
-  $("conversionRate").textContent=(sessions.size?valid.length/sessions.size*100:0).toFixed(2)+"%";
+
+  $("conversionRate").textContent=
+    (sessions.size?validOrders.length/sessions.size*100:0).toFixed(2)+"%";
 }
+
+$("analyticsPeriod").addEventListener("change",updateAnalytics);
+
+$("resetAnalytics").addEventListener("click",()=>{
+  if(!confirm("Dashboard counting abhi se fresh start karni hai? Purane orders delete nahi honge."))return;
+
+  localStorage.setItem("veyoraAnalyticsStart",String(Date.now()));
+  updateAnalytics();
+  alert("Dashboard counting fresh start ho gayi!");
+});
+
+/* LOAD STORE DATA */
 
 async function loadAll(){
   notice("Loading store data…");
@@ -308,10 +384,6 @@ async function loadAll(){
 
     $("productCount").textContent=products.length;
     $("categoryCount").textContent=categories.length;
-    $("orderCount").textContent=orders.length;
-    $("pendingCount").textContent=orders.filter(o=>
-      !["delivered","cancelled"].includes(String(o.status||"").toLowerCase())
-    ).length;
 
     renderProducts();
     renderCategories();
