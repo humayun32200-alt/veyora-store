@@ -662,7 +662,7 @@ $("checkoutForm").addEventListener("submit",async e=>{
       delivery_charges:DELIVERY_CHARGES,
       total:subtotal+DELIVERY_CHARGES,
       payment_method:"COD",
-      status:"Pending"
+      status:"Confirmed"
     };
 
     const {data:order,error:orderError}=await db
