@@ -109,81 +109,58 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 .variant-label{display:block;margin:15px 0 5px;font-size:12px;font-weight:bold}
 .variant-stock,.design-image-label{font-size:11px;color:var(--muted);margin:6px 0 12px}
 .veyora-admin-shortcut{position:fixed;right:16px;bottom:18px;z-index:999;padding:12px 17px;border:1px solid #d8b96f;border-radius:30px;background:#171612;color:#f0d99d;font-size:11px;font-weight:bold;letter-spacing:1px;box-shadow:0 5px 20px #0003}
-
-/* Premium order tracking */
-.tracking-card{
-  margin-top:18px;padding:20px 14px;
-  background:linear-gradient(145deg,#201e18,#12120f);
-  border:1px solid #c5a15b;border-radius:10px;color:#fff;
-  box-shadow:0 8px 24px #00000012
-}
+.tracking-card{margin-top:18px;padding:20px 14px;background:linear-gradient(145deg,#201e18,#12120f);border:1px solid #c5a15b;border-radius:10px;color:#fff;box-shadow:0 8px 24px #00000012}
 .tracking-heading{color:#ead7a5;font-family:Georgia,serif;font-size:22px;margin-bottom:9px}
 .tracking-number{font-size:12px;color:#e7e0d0;overflow-wrap:anywhere}
-.tracking-current{
-  display:inline-block;padding:9px 13px;margin:12px 0 18px;
-  background:#c5a15b;color:#171612;border-radius:5px;
-  font-weight:bold;font-size:12px
-}
+.tracking-current{display:inline-block;padding:9px 13px;margin:12px 0 18px;background:#c5a15b;color:#171612;border-radius:5px;font-weight:bold;font-size:12px}
 .tracking-steps{display:flex;align-items:stretch;gap:5px;margin:12px 0}
-.tracking-step{
-  flex:1;min-width:0;text-align:center;padding:13px 3px;
-  border:1px solid #514a37;border-radius:7px;color:#aaa596;
-  background:#292720;font-size:10px;overflow-wrap:anywhere
-}
+.tracking-step{flex:1;min-width:0;text-align:center;padding:13px 3px;border:1px solid #514a37;border-radius:7px;color:#aaa596;background:#292720;font-size:10px;overflow-wrap:anywhere}
 .tracking-step .step-icon{display:block;font-size:19px;margin-bottom:7px}
-.tracking-step.done{
-  background:#c5a15b;border-color:#f1d99a;color:#171612;font-weight:bold
-}
-.tracking-step.current{
-  background:#f0dfad;border:2px solid #fff0be;color:#171612;
-  box-shadow:0 0 13px #c5a15b55;font-weight:bold
-}
+.tracking-step.done{background:#c5a15b;border-color:#f1d99a;color:#171612;font-weight:bold}
+.tracking-step.current{background:#f0dfad;border:2px solid #fff0be;color:#171612;box-shadow:0 0 13px #c5a15b55;font-weight:bold}
 .tracking-arrow{display:flex;align-items:center;color:#c5a15b;font-size:21px;font-weight:bold}
-.tracking-meta{
-  border-top:1px solid #514a37;margin-top:15px;padding-top:12px;
-  color:#e7e0d0;font-size:12px;line-height:1.9;overflow-wrap:anywhere
-}
+.tracking-meta{border-top:1px solid #514a37;margin-top:15px;padding-top:12px;color:#e7e0d0;font-size:12px;line-height:1.9;overflow-wrap:anywhere}
 .tracking-refresh{width:100%;margin-top:15px}
+.delivery-breakdown{margin-top:12px;padding:12px;background:#f8f5ee;border:1px solid var(--line);border-radius:5px;font-size:12px;line-height:1.9}
 @media(max-width:900px){
-  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-  .brand-name{font-size:20px}.search{max-width:300px}nav{gap:18px}
+.product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.brand-name{font-size:20px}.search{max-width:300px}nav{gap:18px}
 }
 @media(max-width:600px){
-  .announcement{font-size:9px;letter-spacing:1px}
-  .header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}
-  .brand{min-width:0;flex:1}
-  .logo-placeholder{width:35px;height:35px;font-size:17px}
-  .brand-name{font-size:19px;letter-spacing:2px}
-  .brand-sub{font-size:8px;letter-spacing:2px}
-  .search{order:3;flex-basis:100%;max-width:none}
-  .header-actions{gap:9px}.icon-button{font-size:19px}
-  .icon-label{font-size:9px}
-  nav{gap:15px;padding:12px 7px}
-  nav a,nav button{font-size:9px;letter-spacing:.5px}
-  .hero{min-height:320px;padding:45px 18px}
-  .hero p{font-size:12px}
-  .section{padding:34px 4%}
-  .section-heading h2{font-size:25px}
-  .category-list{gap:7px}
-  .category-button{padding:11px 13px;font-size:9px}
-  .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .product-info{padding:10px}
-  .product-name{font-size:12px;min-height:38px}
-  .sale-price{font-size:13px}
-  .small-button{font-size:8px;padding:10px 3px}
-  .sale-badge{left:6px;top:6px;padding:6px;font-size:8px}
-  .about{padding:22px 5%}
-  .about summary{font-size:20px}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:27px 18px}
-  .footer-about{grid-column:1/-1}
-  .copyright{font-size:9px}
-  .veyora-admin-shortcut{right:10px;bottom:12px;padding:11px 13px}
-  .modal{padding:21px}
-  .tracking-card{padding:16px 9px}
-  .tracking-steps{gap:3px}
-  .tracking-step{font-size:9px;padding:10px 2px}
-  .tracking-step .step-icon{font-size:16px}
-  .tracking-arrow{font-size:14px}
+.announcement{font-size:9px;letter-spacing:1px}
+.header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}
+.brand{min-width:0;flex:1}
+.logo-placeholder{width:35px;height:35px;font-size:17px}
+.brand-name{font-size:19px;letter-spacing:2px}
+.brand-sub{font-size:8px;letter-spacing:2px}
+.search{order:3;flex-basis:100%;max-width:none}
+.header-actions{gap:9px}.icon-button{font-size:19px}.icon-label{font-size:9px}
+nav{gap:15px;padding:12px 7px}
+nav a,nav button{font-size:9px;letter-spacing:.5px}
+.hero{min-height:320px;padding:45px 18px}
+.hero p{font-size:12px}
+.section{padding:34px 4%}
+.section-heading h2{font-size:25px}
+.category-list{gap:7px}
+.category-button{padding:11px 13px;font-size:9px}
+.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.product-info{padding:10px}
+.product-name{font-size:12px;min-height:38px}
+.sale-price{font-size:13px}
+.small-button{font-size:8px;padding:10px 3px}
+.sale-badge{left:6px;top:6px;padding:6px;font-size:8px}
+.about{padding:22px 5%}
+.about summary{font-size:20px}
+.footer-grid{grid-template-columns:1fr 1fr;gap:27px 18px}
+.footer-about{grid-column:1/-1}
+.copyright{font-size:9px}
+.veyora-admin-shortcut{right:10px;bottom:12px;padding:11px 13px}
+.modal{padding:21px}
+.tracking-card{padding:16px 9px}
+.tracking-steps{gap:3px}
+.tracking-step{font-size:9px;padding:10px 2px}
+.tracking-step .step-icon{font-size:16px}
+.tracking-arrow{font-size:14px}
 }
 </style>
 </head>
@@ -192,153 +169,156 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 <div class="announcement">WELCOME TO VEYORA · CASH ON DELIVERY IN PAKISTAN</div>
 
 <header>
-  <div class="header-main">
-    <a href="#" class="brand" aria-label="VEYORA Home">
-      <div class="logo-placeholder">V</div>
-      <div><div class="brand-name">VEYORA</div><div class="brand-sub">MAYU WORLD</div></div>
-    </a>
-    <div class="search">
-      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
-      <button id="searchButton" type="button" aria-label="Search">⌕</button>
-    </div>
-    <div class="header-actions">
-      <button class="icon-button" id="accountButton" type="button">♙<span class="icon-label">Account</span></button>
-      <button class="icon-button" id="cartButton" type="button">♧<span class="cart-count" id="cartCount">0</span><span class="icon-label">Cart</span></button>
-    </div>
-  </div>
-  <nav aria-label="Main navigation">
-    <a href="#">Home</a><a href="#products" id="shopAllLink">Shop All</a><a href="#categories">Categories</a>
-    <button id="trackButton" type="button">Track Order</button>
-  </nav>
+<div class="header-main">
+<a href="#" class="brand" aria-label="VEYORA Home">
+<div class="logo-placeholder">V</div>
+<div><div class="brand-name">VEYORA</div><div class="brand-sub">MAYU WORLD</div></div>
+</a>
+<div class="search">
+<input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
+<button id="searchButton" type="button" aria-label="Search">⌕</button>
+</div>
+<div class="header-actions">
+<button class="icon-button" id="accountButton" type="button">♙<span class="icon-label">Account</span></button>
+<button class="icon-button" id="cartButton" type="button">♧<span class="cart-count" id="cartCount">0</span><span class="icon-label">Cart</span></button>
+</div>
+</div>
+<nav aria-label="Main navigation">
+<a href="#">Home</a><a href="#products" id="shopAllLink">Shop All</a><a href="#categories">Categories</a>
+<button id="trackButton" type="button">Track Order</button>
+</nav>
 </header>
 
 <main>
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="eyebrow">THE VEYORA COLLECTION</div>
-      <h1>Elevate Your Everyday.</h1>
-      <p>Discover fashion, home essentials and everyday favourites, thoughtfully brought together for you.</p>
-      <a href="#products" class="gold-button">EXPLORE COLLECTION</a>
-    </div>
-  </section>
-
-  <section class="section" id="categories">
-    <div class="section-heading"><h2>Shop by Category</h2><p>Find something made for your everyday.</p></div>
-    <div class="category-list" id="categoryList"><button class="category-button active" data-category="all">All Products</button></div>
-  </section>
-
-  <section class="section" id="products">
-    <div class="section-heading"><h2>Our Collection</h2><p>Discover your next favourite.</p></div>
-    <div class="product-grid" id="productGrid"><div class="empty-state">Loading VEYORA collection...</div></div>
-  </section>
-
-  <section class="about">
-    <div class="about-inner"><details>
-      <summary><span>About VEYORA</span><span class="plus">+</span></summary>
-      <div class="about-text">VEYORA — MAYU WORLD brings together fashion, home essentials and everyday products. Our goal is to make discovering your next favourite product simple and convenient. Cash on Delivery is available across Pakistan, subject to delivery coverage.</div>
-    </details></div>
-  </section>
+<section class="hero">
+<div class="hero-inner">
+<div class="eyebrow">THE VEYORA COLLECTION</div>
+<h1>Elevate Your Everyday.</h1>
+<p>Discover fashion, home essentials and everyday favourites, thoughtfully brought together for you.</p>
+<a href="#products" class="gold-button">EXPLORE COLLECTION</a>
+</div>
+</section>
+<section class="section" id="categories">
+<div class="section-heading"><h2>Shop by Category</h2><p>Find something made for your everyday.</p></div>
+<div class="category-list" id="categoryList"><button class="category-button active" data-category="all">All Products</button></div>
+</section>
+<section class="section" id="products">
+<div class="section-heading"><h2>Our Collection</h2><p>Discover your next favourite.</p></div>
+<div class="product-grid" id="productGrid"><div class="empty-state">Loading VEYORA collection...</div></div>
+</section>
+<section class="about">
+<div class="about-inner"><details>
+<summary><span>About VEYORA</span><span class="plus">+</span></summary>
+<div class="about-text">VEYORA — MAYU WORLD brings together fashion, home essentials and everyday products. Our goal is to make discovering your next favourite product simple and convenient. Cash on Delivery is available across Pakistan, subject to delivery coverage.</div>
+</details></div>
+</section>
 </main>
 
 <footer>
-  <div class="footer-grid">
-    <div class="footer-about">
-      <div class="footer-brand">VEYORA<span>MAYU WORLD</span></div>
-      <p class="footer-description">Premium products for every life. Discover fashion, home essentials and everyday favourites at VEYORA.</p>
-      <div class="socials">
-        <a href="https://www.instagram.com/veyora_.pk/" target="_blank" rel="noopener noreferrer">IG</a>
-        <a href="https://www.tiktok.com/@veyora.pk" target="_blank" rel="noopener noreferrer">TK</a>
-        <a href="https://www.facebook.com/share/1WFCVZ9tsD/" target="_blank" rel="noopener noreferrer">FB</a>
-        <a href="https://www.youtube.com/@VeyoraStore-c8h" target="_blank" rel="noopener noreferrer">YT</a>
-        <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">WA</a>
-      </div>
-    </div>
-    <div><h3>QUICK LINKS</h3><div class="footer-links">
-      <a href="#products">Shop All</a><a href="#categories">Categories</a><a href="#" id="footerTrack">Track Order</a>
-      <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">Contact Us</a>
-    </div></div>
-    <div><h3>HELP & POLICIES</h3><div class="footer-links">
-      <a href="#" data-policy="About Us">About Us</a><a href="#" data-policy="FAQs">FAQs</a>
-      <a href="#" data-policy="Shipping & Delivery">Shipping & Delivery</a>
-      <a href="#" data-policy="Returns & Refunds">Returns & Refunds</a>
-      <a href="#" data-policy="Privacy Policy">Privacy Policy</a><a href="#" data-policy="Terms of Service">Terms of Service</a>
-    </div></div>
-  </div>
-  <div class="copyright"><span>© <span id="year"></span> VEYORA — MAYU WORLD. All rights reserved.</span><span>Designed for everyday living.</span></div>
+<div class="footer-grid">
+<div class="footer-about">
+<div class="footer-brand">VEYORA<span>MAYU WORLD</span></div>
+<p class="footer-description">Premium products for every life. Discover fashion, home essentials and everyday favourites at VEYORA.</p>
+<div class="socials">
+<a href="https://www.instagram.com/veyora_.pk/" target="_blank" rel="noopener noreferrer">IG</a>
+<a href="https://www.tiktok.com/@veyora.pk" target="_blank" rel="noopener noreferrer">TK</a>
+<a href="https://www.facebook.com/share/1WFCVZ9tsD/" target="_blank" rel="noopener noreferrer">FB</a>
+<a href="https://www.youtube.com/@VeyoraStore-c8h" target="_blank" rel="noopener noreferrer">YT</a>
+<a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">WA</a>
+</div>
+</div>
+<div><h3>QUICK LINKS</h3><div class="footer-links">
+<a href="#products">Shop All</a><a href="#categories">Categories</a><a href="#" id="footerTrack">Track Order</a>
+<a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">Contact Us</a>
+</div></div>
+<div><h3>HELP & POLICIES</h3><div class="footer-links">
+<a href="#" data-policy="About Us">About Us</a><a href="#" data-policy="FAQs">FAQs</a>
+<a href="#" data-policy="Shipping & Delivery">Shipping & Delivery</a>
+<a href="#" data-policy="Returns & Refunds">Returns & Refunds</a>
+<a href="#" data-policy="Privacy Policy">Privacy Policy</a><a href="#" data-policy="Terms of Service">Terms of Service</a>
+</div></div>
+</div>
+<div class="copyright"><span>© <span id="year"></span> VEYORA — MAYU WORLD. All rights reserved.</span><span>Designed for everyday living.</span></div>
 </footer>
 
 <a href="./admin.html" class="veyora-admin-shortcut">⚙ ADMIN</a>
 
 <div class="overlay" id="trackModal" role="dialog" aria-modal="true">
-  <div class="modal">
-    <button class="close" data-close="trackModal" type="button">×</button>
-    <h2>Track Your Order</h2>
-    <p class="notice">Enter the tracking number provided by VEYORA.</p>
-    <form id="trackForm">
-      <label for="trackingNumber">Tracking number</label>
-      <input id="trackingNumber" required placeholder="Your tracking number" autocomplete="off">
-      <button class="gold-button" type="submit">CHECK STATUS</button>
-    </form>
-    <div class="result" id="trackResult" aria-live="polite"></div>
-  </div>
+<div class="modal">
+<button class="close" data-close="trackModal" type="button">×</button>
+<h2>Track Your Order</h2>
+<p class="notice">Enter the tracking number provided by VEYORA.</p>
+<form id="trackForm">
+<label for="trackingNumber">Tracking number</label>
+<input id="trackingNumber" required placeholder="Your tracking number" autocomplete="off">
+<button class="gold-button" type="submit">CHECK STATUS</button>
+</form>
+<div class="result" id="trackResult" aria-live="polite"></div>
+</div>
 </div>
 
 <div class="overlay" id="cartModal" role="dialog" aria-modal="true">
-  <div class="modal">
-    <button class="close" data-close="cartModal" type="button">×</button>
-    <h2>Your Cart</h2>
-    <div id="cartItems"></div>
-    <div id="cartTotal" style="margin-top:15px;font-weight:bold"></div>
-    <button class="gold-button" id="checkoutButton" type="button">PROCEED TO CHECKOUT</button>
-    <p class="notice">Payment method: Cash on Delivery.</p>
-  </div>
+<div class="modal">
+<button class="close" data-close="cartModal" type="button">×</button>
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div id="cartTotal" style="margin-top:15px;font-weight:bold"></div>
+<button class="gold-button" id="checkoutButton" type="button">PROCEED TO CHECKOUT</button>
+<p class="notice">Payment method: Cash on Delivery.</p>
+</div>
 </div>
 
 <div class="overlay" id="checkoutModal" role="dialog" aria-modal="true">
-  <div class="modal">
-    <button class="close" data-close="checkoutModal" type="button">×</button>
-    <h2>Checkout</h2>
-    <p class="notice">Enter your delivery details. Payment method: Cash on Delivery.</p>
-    <form id="checkoutForm">
-      <label for="customerName">Full name *</label>
-      <input id="customerName" required maxlength="120" autocomplete="name">
-
-      <label for="customerPhone">Phone number *</label>
-      <input id="customerPhone" type="tel" required maxlength="20" autocomplete="tel" placeholder="03XXXXXXXXX">
-
-      <label for="customerEmail">Email (optional)</label>
-      <input id="customerEmail" type="email" maxlength="254" autocomplete="email">
-
-      <label for="customerAddress">Complete address *</label>
-      <textarea id="customerAddress" required maxlength="500" autocomplete="street-address" rows="3" placeholder="House number, street, area"></textarea>
-
-      <label for="customerCity">City *</label>
-      <input id="customerCity" required maxlength="100" autocomplete="address-level2">
-
-      <div id="checkoutSummary" class="result"></div>
-      <button class="gold-button" id="placeOrderButton" type="submit">PLACE COD ORDER</button>
-    </form>
-    <div id="checkoutResult" class="result" aria-live="polite"></div>
-  </div>
+<div class="modal">
+<button class="close" data-close="checkoutModal" type="button">×</button>
+<h2>Checkout</h2>
+<p class="notice">Enter your delivery details. Payment method: Cash on Delivery.</p>
+<form id="checkoutForm">
+<label for="customerName">Full name *</label>
+<input id="customerName" required maxlength="120" autocomplete="name">
+<label for="customerPhone">Phone number *</label>
+<input id="customerPhone" type="tel" required maxlength="20" autocomplete="tel" placeholder="03XXXXXXXXX">
+<label for="customerEmail">Email (optional)</label>
+<input id="customerEmail" type="email" maxlength="254" autocomplete="email">
+<label for="customerAddress">Complete address *</label>
+<textarea id="customerAddress" required maxlength="500" autocomplete="street-address" rows="3" placeholder="House number, street, area"></textarea>
+<label for="customerCity">City *</label>
+<input id="customerCity" required maxlength="100" autocomplete="address-level2">
+<div id="checkoutSummary" class="result"></div>
+<button class="gold-button" id="placeOrderButton" type="submit">PLACE COD ORDER</button>
+</form>
+<div id="checkoutResult" class="result" aria-live="polite"></div>
+</div>
 </div>
 
 <div class="overlay" id="productModal" role="dialog" aria-modal="true">
-  <div class="modal"><button class="close" data-close="productModal" type="button">×</button><div id="productDetails"></div></div>
+<div class="modal"><button class="close" data-close="productModal" type="button">×</button><div id="productDetails"></div></div>
 </div>
 
 <div class="overlay" id="accountModal" role="dialog" aria-modal="true">
-  <div class="modal"><button class="close" data-close="accountModal" type="button">×</button><h2>My Account</h2><p class="notice">Customer accounts are optional. You can browse VEYORA without creating an account.</p></div>
+<div class="modal"><button class="close" data-close="accountModal" type="button">×</button><h2>My Account</h2><p class="notice">Customer accounts are optional. You can browse VEYORA without creating an account.</p></div>
 </div>
 
 <div class="overlay" id="policyModal" role="dialog" aria-modal="true">
-  <div class="modal"><button class="close" data-close="policyModal" type="button">×</button><h2 id="policyTitle">Information</h2><p class="notice" id="policyContent"></p></div>
+<div class="modal"><button class="close" data-close="policyModal" type="button">×</button><h2 id="policyTitle">Information</h2><p class="notice" id="policyContent"></p></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
-const DELIVERY_CHARGES=200;
+
+/*
+ DELIVERY RULE:
+ First unit in each category = Rs 200
+ Every additional unit in that same category = Rs 50
+ Example:
+ 1 women's suit = 200
+ 2 women's suits = 250
+ 2 women's + 2 men's suits = 500
+*/
+const BASE_DELIVERY_PER_CATEGORY=200;
+const EXTRA_UNIT_DELIVERY=50;
 
 let db=null;
 if(window.supabase){
@@ -388,10 +368,92 @@ function getProductImage(p){
   const found=productImages.find(i=>String(i.product_id)===String(p.id));
   return found?.image_url||found?.url||p.image_url||p.image||"";
 }
+
 function getProductCategory(p){
   const c=categories.find(x=>String(x.id)===String(p.category_id));
   return c?.name||p.category||"Collection";
 }
+
+/* Use the category ID when available so products in the same
+   database category receive the same delivery calculation. */
+function getDeliveryCategoryKey(cartItem){
+  const product=products.find(p=>String(p.id)===String(cartItem.id));
+
+  if(product&&product.category_id!==null&&product.category_id!==undefined&&product.category_id!==""){
+    return "category-id:"+String(product.category_id);
+  }
+
+  const categoryName=String(
+    product?getProductCategory(product):"Collection"
+  ).trim().toLowerCase();
+
+  return "category-name:"+(categoryName||"collection");
+}
+
+/* Calculate delivery from quantities across the entire cart. */
+function calculateDeliveryCharges(items){
+  const categoryQuantities={};
+
+  items.forEach(item=>{
+    const quantity=Math.max(0,Number(item.quantity)||0);
+    if(quantity===0)return;
+
+    const key=getDeliveryCategoryKey(item);
+    categoryQuantities[key]=(categoryQuantities[key]||0)+quantity;
+  });
+
+  let total=0;
+
+  Object.values(categoryQuantities).forEach(quantity=>{
+    if(quantity>0){
+      total+=BASE_DELIVERY_PER_CATEGORY;
+      total+=(Math.max(0,quantity-1))*EXTRA_UNIT_DELIVERY;
+    }
+  });
+
+  return total;
+}
+
+function getCartSubtotal(items=cart){
+  return items.reduce((sum,item)=>sum+(Number(item.price)||0)*(Number(item.quantity)||0),0);
+}
+
+function getCartTotal(items=cart){
+  return getCartSubtotal(items)+calculateDeliveryCharges(items);
+}
+
+function getDeliveryBreakdown(items=cart){
+  const grouped={};
+
+  items.forEach(item=>{
+    const key=getDeliveryCategoryKey(item);
+    if(!grouped[key]){
+      const product=products.find(p=>String(p.id)===String(item.id));
+      grouped[key]={
+        name:product?getProductCategory(product):"Collection",
+        quantity:0
+      };
+    }
+    grouped[key].quantity+=Math.max(0,Number(item.quantity)||0);
+  });
+
+  return Object.values(grouped).map(group=>{
+    const charge=group.quantity>0
+      ?BASE_DELIVERY_PER_CATEGORY+(group.quantity-1)*EXTRA_UNIT_DELIVERY
+      :0;
+    return {...group,charge};
+  });
+}
+
+function renderDeliveryBreakdown(items=cart){
+  const rows=getDeliveryBreakdown(items);
+  if(!rows.length)return "No delivery charges";
+
+  return rows.map(row=>
+    escapeHTML(row.name)+": "+row.quantity+" unit(s) — "+money(row.charge)
+  ).join("<br>");
+}
+
 function isOnSale(p){
   return Number(p.sale_price)>0&&Number(p.retail_price)>Number(p.sale_price);
 }
@@ -498,6 +560,7 @@ function addToCart(p,v){
       image,price,quantity:1
     });
   }
+
   $("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);
 }
 
@@ -522,7 +585,18 @@ function renderCart(){
     </div>
   `).join("");
 
-  $("cartTotal").textContent="Subtotal: "+money(cart.reduce((s,i)=>s+i.price*i.quantity,0));
+  const subtotal=getCartSubtotal();
+  const delivery=calculateDeliveryCharges(cart);
+
+  $("cartTotal").innerHTML=`
+    <div>Subtotal: ${money(subtotal)}</div>
+    <div class="delivery-breakdown">
+      <strong>Delivery breakdown</strong><br>
+      ${renderDeliveryBreakdown(cart)}
+    </div>
+    <div style="margin-top:8px">Delivery charges: ${money(delivery)}</div>
+    <div style="margin-top:8px;font-size:17px">Total payable: ${money(subtotal+delivery)}</div>
+  `;
 
   $("cartItems").querySelectorAll("[data-remove]").forEach(b=>{
     b.addEventListener("click",()=>{
@@ -638,11 +712,8 @@ const statusDescriptions={
 };
 
 function renderTracking(order,searchedNumber){
-  const status=String(order.status||"Processing").trim();
-  const currentIndex=trackingSteps.findIndex(
-    s=>s.toLowerCase()===status.toLowerCase()
-  );
-
+  const status=String(order.status||order.order_status||"Processing").trim();
+  const currentIndex=trackingSteps.findIndex(s=>s.toLowerCase()===status.toLowerCase());
   const displayStatus=currentIndex>=0?trackingSteps[currentIndex]:status;
 
   const stepsHTML=trackingSteps.map((step,index)=>{
@@ -657,45 +728,31 @@ function renderTracking(order,searchedNumber){
       symbol="✓";
     }
 
-    return `
-      ${index>0?'<span class="tracking-arrow" aria-hidden="true">›</span>':""}
+    return `${index>0?'<span class="tracking-arrow" aria-hidden="true">›</span>':""}
       <div class="${className}">
-        <span class="step-icon">${symbol}</span>
-        ${escapeHTML(step)}
-      </div>
-    `;
+        <span class="step-icon">${symbol}</span>${escapeHTML(step)}
+      </div>`;
   }).join("");
 
   const updatedAt=order.last_updated||order.updated_at||order.created_at;
   const formattedDate=updatedAt&&!Number.isNaN(new Date(updatedAt).getTime())
-    ?new Date(updatedAt).toLocaleString()
-    :"Not available";
+    ?new Date(updatedAt).toLocaleString():"Not available";
 
   $("trackResult").innerHTML=`
     <div class="tracking-card">
       <div class="tracking-heading">VEYORA Order Tracking</div>
-      <div class="tracking-number">
-        Tracking No: <strong>${escapeHTML(order.tracking_number||searchedNumber)}</strong>
-      </div>
-      <div class="tracking-current">
-        Current Status: ${escapeHTML(displayStatus)}
-      </div>
+      <div class="tracking-number">Tracking No: <strong>${escapeHTML(order.tracking_number||searchedNumber)}</strong></div>
+      <div class="tracking-current">Current Status: ${escapeHTML(displayStatus)}</div>
       <div class="tracking-steps">${stepsHTML}</div>
       <div class="tracking-meta">
         <strong>Order update:</strong><br>
         ${escapeHTML(statusDescriptions[displayStatus]||("Current order status: "+displayStatus))}
-        <br><strong>Last updated:</strong>
-        ${escapeHTML(formattedDate)}
+        <br><strong>Last updated:</strong> ${escapeHTML(formattedDate)}
       </div>
-      <button class="gold-button tracking-refresh" id="refreshTracking" type="button">
-        ↻ REFRESH STATUS
-      </button>
-    </div>
-  `;
+      <button class="gold-button tracking-refresh" id="refreshTracking" type="button">↻ REFRESH STATUS</button>
+    </div>`;
 
-  $("refreshTracking").addEventListener("click",()=>{
-    $("trackForm").requestSubmit();
-  });
+  $("refreshTracking").addEventListener("click",()=>$("trackForm").requestSubmit());
 }
 
 $("trackForm").addEventListener("submit",async e=>{
@@ -709,7 +766,6 @@ $("trackForm").addEventListener("submit",async e=>{
     result.textContent="Please enter your tracking number.";
     return;
   }
-
   if(!db){
     result.textContent="Tracking connection is unavailable.";
     return;
@@ -719,25 +775,18 @@ $("trackForm").addEventListener("submit",async e=>{
   result.textContent="Fetching your latest order status…";
 
   try{
-    const {data,error}=await db.rpc("track_order",{
-      p_tracking_number:trackingNumber
-    });
-
+    const {data,error}=await db.rpc("track_order",{p_tracking_number:trackingNumber});
     if(error)throw error;
 
     const order=Array.isArray(data)?data[0]:data;
-
     if(!order){
       result.textContent="No order found. Please check your tracking number.";
       return;
     }
-
     renderTracking(order,trackingNumber);
-
   }catch(err){
     console.error("Order tracking error:",err);
-    result.textContent=
-      "Could not load tracking information. Please contact VEYORA on WhatsApp.";
+    result.textContent="Could not load tracking information. Please contact VEYORA on WhatsApp.";
   }finally{
     button.disabled=false;
   }
@@ -746,7 +795,7 @@ $("trackForm").addEventListener("submit",async e=>{
 const policyTexts={
   "About Us":"VEYORA — MAYU WORLD offers fashion, home essentials and everyday products.",
   "FAQs":"For product and order support, contact VEYORA through WhatsApp.",
-  "Shipping & Delivery":"Delivery is intended for Pakistan. Delivery charges and estimated delivery times may vary by location.",
+  "Shipping & Delivery":"Delivery is intended for Pakistan. Delivery charges depend on product categories and quantities shown at checkout.",
   "Returns & Refunds":"Please contact VEYORA if an item arrives damaged or incorrect.",
   "Privacy Policy":"Customer information should be used only to process and support orders.",
   "Terms of Service":"Orders are subject to product availability and confirmation."
@@ -762,21 +811,32 @@ document.querySelectorAll("[data-policy]").forEach(a=>{
   });
 });
 
-/* Open checkout */
+/* Checkout: calculate category-wise delivery dynamically */
 $("checkoutButton").addEventListener("click",()=>{
   if(!cart.length)return;
+
   $("checkoutResult").textContent="";
   $("placeOrderButton").style.display="block";
   $("placeOrderButton").disabled=false;
-  $("checkoutSummary").textContent=
-    "Subtotal: "+money(cart.reduce((s,i)=>s+i.price*i.quantity,0))+
-    "\nDelivery: "+money(DELIVERY_CHARGES)+
-    "\nTotal payable: "+money(cart.reduce((s,i)=>s+i.price*i.quantity,0)+DELIVERY_CHARGES);
+
+  const subtotal=getCartSubtotal();
+  const delivery=calculateDeliveryCharges(cart);
+
+  $("checkoutSummary").innerHTML=`
+    <strong>Order summary</strong><br>
+    Subtotal: ${money(subtotal)}
+    <div class="delivery-breakdown">
+      <strong>Delivery breakdown</strong><br>
+      ${renderDeliveryBreakdown(cart)}
+    </div>
+    Delivery charges: ${money(delivery)}<br>
+    <strong>Total payable: ${money(subtotal+delivery)}</strong>`;
+
   closeModal("cartModal");
   openModal("checkoutModal");
 });
 
-/* Submit COD order */
+/* Submit COD order with the exact calculated delivery amount */
 $("checkoutForm").addEventListener("submit",async e=>{
   e.preventDefault();
 
@@ -809,7 +869,9 @@ $("checkoutForm").addEventListener("submit",async e=>{
     }
 
     const checkoutCart=cart.map(i=>({...i}));
-    const subtotal=checkoutCart.reduce((s,i)=>s+i.price*i.quantity,0);
+    const subtotal=getCartSubtotal(checkoutCart);
+    const deliveryCharges=calculateDeliveryCharges(checkoutCart);
+    const total=subtotal+deliveryCharges;
     const trackingNumber="VYR"+Date.now().toString().slice(-9);
 
     const orderPayload={
@@ -817,8 +879,8 @@ $("checkoutForm").addEventListener("submit",async e=>{
       customer_name:customerName,
       phone,email,address,city,
       subtotal,
-      delivery_charges:DELIVERY_CHARGES,
-      total:subtotal+DELIVERY_CHARGES,
+      delivery_charges:deliveryCharges,
+      total,
       payment_method:"COD",
       status:"Confirmed"
     };
@@ -854,18 +916,17 @@ $("checkoutForm").addEventListener("submit",async e=>{
       return;
     }
 
-    const total=subtotal+DELIVERY_CHARGES;
     const ref=order.tracking_number||trackingNumber;
 
     result.innerHTML=
       "<strong>Order submitted successfully!</strong><br>"+
       "Tracking number: <strong>"+escapeHTML(ref)+"</strong><br>"+
       "Subtotal: "+money(subtotal)+"<br>"+
-      "Delivery: "+money(DELIVERY_CHARGES)+"<br>"+
+      "Delivery: "+money(deliveryCharges)+"<br>"+
       "Total payable: <strong>"+money(total)+"</strong><br>"+
       "Payment: Cash on Delivery<br><br>"+
       '<a class="gold-button" style="display:block;text-align:center" target="_blank" rel="noopener noreferrer" href="https://wa.me/923713763119?text='+
-      encodeURIComponent("Assalam-o-Alaikum VEYORA, please confirm my order "+ref+". Total payable: "+money(total))+
+      encodeURIComponent("Assalam-o-Alaikum VEYORA, please confirm my order "+ref+". Subtotal: "+money(subtotal)+". Delivery: "+money(deliveryCharges)+". Total payable: "+money(total))+
       '">CONFIRM VIA WHATSAPP</a>';
 
     $("checkoutForm").reset();
@@ -901,6 +962,7 @@ async function loadStore(){
     ]);
 
     if(pr.error)throw pr.error;
+
     products=pr.data||[];
     categories=cr.error?[]:(cr.data||[]);
     productImages=ir.error?[]:(ir.data||[]);
