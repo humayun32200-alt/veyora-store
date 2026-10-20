@@ -16,10 +16,11 @@ button:disabled{opacity:.5;cursor:wait}
 .top{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line);background:#171713}
 .brand{font-size:24px;font-weight:bold;letter-spacing:4px;color:var(--gold)}
 main{max-width:1250px;margin:auto;padding:20px}
-h1{font-size:27px}h2{font-size:21px}
+h1{font-size:27px}
+h2{font-size:21px}
 .panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.metric{font-size:28px;color:var(--gold);font-weight:bold;margin-top:8px}
+.metric{font-size:28px;color:var(--gold);font-weight:bold;margin-top:8px;overflow-wrap:anywhere}
 .muted{color:var(--muted);font-size:13px;line-height:1.5}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}
 .tab{background:#191915;color:var(--text);border-color:var(--line)}
@@ -893,6 +894,7 @@ $("categoryForm").onsubmit=async e=>{
   try{
     const id=$("cId").value;
     const name=$("cName").value.trim();
+    if(!name)throw Error("Category name is required.");
     const payload={
       name,slug:$("cSlug").value.trim()||slugify(name),
       image_url:$("cImage").value.trim()||null,
@@ -935,13 +937,15 @@ async function renderOrders(){
   }
 
   $("ordersTable").innerHTML=table(
-    ["Order ID","Customer","Contact","City","Total","Payment","Status","Tracking","Date","Actions"],
+    ["Order ID","Customer","Contact","City","Subtotal","Delivery","Total","Payment","Status","Tracking","Date","Actions"],
     orders.map(o=>[
       esc(o.id),
       esc(o.customer_name),
       esc((o.phone||"")+(o.email?" / "+o.email:"")),
       esc(o.city),
-      esc(money(o.total)),
+      esc(money(o.subtotal)),
+      esc(money(o.delivery_charges)),
+      esc(money(o.total??(Number(o.subtotal||0)+Number(o.delivery_charges||0)))),
       esc(o.payment_method),
       esc(o.status),
       esc(o.tracking_number||"—"),
@@ -1022,10 +1026,14 @@ function showOrderDetails(orderId){
     html+='</tbody></table></div>';
   }
 
+  const subtotal=Number(o.subtotal||0);
+  const delivery=Number(o.delivery_charges||0);
+  const total=Number(o.total??(subtotal+delivery));
+
   html+='<div class="option-card">';
-  html+='<p><b>Subtotal:</b> '+esc(money(o.subtotal))+'</p>';
-  html+='<p><b>Delivery charges:</b> '+esc(money(o.delivery_charges))+'</p>';
-  html+='<h3>Total: '+esc(money(o.total))+'</h3>';
+  html+='<p><b>Subtotal:</b> '+esc(money(subtotal))+'</p>';
+  html+='<p><b>Delivery charges:</b> '+esc(money(delivery))+'</p>';
+  html+='<h3>Total: '+esc(money(total))+'</h3>';
   html+='</div>';
 
   html+='<div class="row"><button type="button" id="detailsUpdateOrder">Update Status / Tracking</button></div>';
@@ -1041,7 +1049,7 @@ async function updateOrder(id){
   const o=orders.find(x=>String(x.id)===String(id));
   if(!o)return;
 
-  const statuses=["Confirmed","Dispatched","Shipping","Delivered"];
+  const statuses=["Confirmed","Dispatched","Shipping","Delivered","Cancelled"];
   const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Confirmed";
   const status=prompt("Order status:\n"+statuses.join(", "),current);
   if(status===null)return;
@@ -1054,7 +1062,8 @@ async function updateOrder(id){
 
   try{
     const {error}=await db.from("orders").update({
-      status:chosen,tracking_number:tracking.trim()||null,
+      status:chosen,
+      tracking_number:tracking.trim()||null,
       updated_at:new Date().toISOString()
     }).eq("id",id);
 
