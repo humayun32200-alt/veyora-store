@@ -1041,8 +1041,8 @@ async function updateOrder(id){
   const o=orders.find(x=>String(x.id)===String(id));
   if(!o)return;
 
-  const statuses=["Pending","Confirmed","Packed","Shipped","Dispatched","Delivered","Cancelled"];
-  const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Pending";
+  const statuses=["Confirmed","Dispatched","Shipping","Delivered"];
+  const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Confirmed";
   const status=prompt("Order status:\n"+statuses.join(", "),current);
   if(status===null)return;
 
