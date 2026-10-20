@@ -9,7 +9,11 @@
 <title>VEYORA | Premium Everyday Living</title>
 
 <style>
-:root{--bg:#f7f4ed;--ink:#191813;--gold:#c5a15b;--gold-light:#ead7a5;--muted:#777267;--line:#e6dece;--white:#fff;--dark:#171612}
+:root{
+  --bg:#f7f4ed;--ink:#191813;--gold:#c5a15b;
+  --gold-light:#ead7a5;--muted:#777267;--line:#e6dece;
+  --white:#fff;--dark:#171612
+}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:125px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
@@ -37,7 +41,8 @@ nav a,nav button{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;ba
 nav a:hover,nav button:hover{color:#a1803d}
 .hero{min-height:430px;background:radial-gradient(ellipse at 50% 0%,#393326 0%,transparent 58%),linear-gradient(135deg,#11110f,#29251c 55%,#11110f);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:60px 20px;position:relative;overflow:hidden;border-bottom:2px solid var(--gold)}
 .hero:before,.hero:after{content:"";position:absolute;border:1px solid #b69a5838;border-radius:50%;width:420px;height:420px}
-.hero:before{left:-240px;top:-200px}.hero:after{right:-240px;bottom:-270px}
+.hero:before{left:-240px;top:-200px}
+.hero:after{right:-240px;bottom:-270px}
 .hero-inner{position:relative;z-index:1;max-width:760px}
 .eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold-light)}
 .hero h1{font-family:Georgia,serif;font-size:clamp(38px,6vw,68px);font-weight:400;line-height:1.1;margin:20px 0}
@@ -104,12 +109,86 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 .variant-label{display:block;margin:15px 0 5px;font-size:12px;font-weight:bold}
 .variant-stock,.design-image-label{font-size:11px;color:var(--muted);margin:6px 0 12px}
 .veyora-admin-shortcut{position:fixed;right:16px;bottom:18px;z-index:999;padding:12px 17px;border:1px solid #d8b96f;border-radius:30px;background:#171612;color:#f0d99d;font-size:11px;font-weight:bold;letter-spacing:1px;box-shadow:0 5px 20px #0003}
-@media(max-width:900px){.product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.brand-name{font-size:20px}.search{max-width:300px}nav{gap:18px}}
-@media(max-width:600px){.announcement{font-size:9px;letter-spacing:1px}.header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}.brand{min-width:0;flex:1}.logo-placeholder{width:35px;height:35px;font-size:17px}.brand-name{font-size:19px;letter-spacing:2px}.brand-sub{font-size:8px;letter-spacing:2px}.search{order:3;flex-basis:100%;max-width:none}.header-actions{gap:9px}.icon-button{font-size:19px}.icon-label{font-size:9px}nav{gap:15px;padding:12px 7px}nav a,nav button{font-size:9px;letter-spacing:.5px}.hero{min-height:320px;padding:45px 18px}.hero p{font-size:12px}.section{padding:34px 4%}.section-heading h2{font-size:25px}.category-list{gap:7px}.category-button{padding:11px 13px;font-size:9px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product-info{padding:10px}.product-name{font-size:12px;min-height:38px}.sale-price{font-size:13px}.small-button{font-size:8px;padding:10px 3px}.sale-badge{left:6px;top:6px;padding:6px;font-size:8px}.about{padding:22px 5%}.about summary{font-size:20px}.footer-grid{grid-template-columns:1fr 1fr;gap:27px 18px}.footer-about{grid-column:1/-1}.copyright{font-size:9px}.veyora-admin-shortcut{right:10px;bottom:12px;padding:11px 13px}.modal{padding:21px}}
+
+/* Premium order tracking */
+.tracking-card{
+  margin-top:18px;padding:20px 14px;
+  background:linear-gradient(145deg,#201e18,#12120f);
+  border:1px solid #c5a15b;border-radius:10px;color:#fff;
+  box-shadow:0 8px 24px #00000012
+}
+.tracking-heading{color:#ead7a5;font-family:Georgia,serif;font-size:22px;margin-bottom:9px}
+.tracking-number{font-size:12px;color:#e7e0d0;overflow-wrap:anywhere}
+.tracking-current{
+  display:inline-block;padding:9px 13px;margin:12px 0 18px;
+  background:#c5a15b;color:#171612;border-radius:5px;
+  font-weight:bold;font-size:12px
+}
+.tracking-steps{display:flex;align-items:stretch;gap:5px;margin:12px 0}
+.tracking-step{
+  flex:1;min-width:0;text-align:center;padding:13px 3px;
+  border:1px solid #514a37;border-radius:7px;color:#aaa596;
+  background:#292720;font-size:10px;overflow-wrap:anywhere
+}
+.tracking-step .step-icon{display:block;font-size:19px;margin-bottom:7px}
+.tracking-step.done{
+  background:#c5a15b;border-color:#f1d99a;color:#171612;font-weight:bold
+}
+.tracking-step.current{
+  background:#f0dfad;border:2px solid #fff0be;color:#171612;
+  box-shadow:0 0 13px #c5a15b55;font-weight:bold
+}
+.tracking-arrow{display:flex;align-items:center;color:#c5a15b;font-size:21px;font-weight:bold}
+.tracking-meta{
+  border-top:1px solid #514a37;margin-top:15px;padding-top:12px;
+  color:#e7e0d0;font-size:12px;line-height:1.9;overflow-wrap:anywhere
+}
+.tracking-refresh{width:100%;margin-top:15px}
+@media(max-width:900px){
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+  .brand-name{font-size:20px}.search{max-width:300px}nav{gap:18px}
+}
+@media(max-width:600px){
+  .announcement{font-size:9px;letter-spacing:1px}
+  .header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}
+  .brand{min-width:0;flex:1}
+  .logo-placeholder{width:35px;height:35px;font-size:17px}
+  .brand-name{font-size:19px;letter-spacing:2px}
+  .brand-sub{font-size:8px;letter-spacing:2px}
+  .search{order:3;flex-basis:100%;max-width:none}
+  .header-actions{gap:9px}.icon-button{font-size:19px}
+  .icon-label{font-size:9px}
+  nav{gap:15px;padding:12px 7px}
+  nav a,nav button{font-size:9px;letter-spacing:.5px}
+  .hero{min-height:320px;padding:45px 18px}
+  .hero p{font-size:12px}
+  .section{padding:34px 4%}
+  .section-heading h2{font-size:25px}
+  .category-list{gap:7px}
+  .category-button{padding:11px 13px;font-size:9px}
+  .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .product-info{padding:10px}
+  .product-name{font-size:12px;min-height:38px}
+  .sale-price{font-size:13px}
+  .small-button{font-size:8px;padding:10px 3px}
+  .sale-badge{left:6px;top:6px;padding:6px;font-size:8px}
+  .about{padding:22px 5%}
+  .about summary{font-size:20px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:27px 18px}
+  .footer-about{grid-column:1/-1}
+  .copyright{font-size:9px}
+  .veyora-admin-shortcut{right:10px;bottom:12px;padding:11px 13px}
+  .modal{padding:21px}
+  .tracking-card{padding:16px 9px}
+  .tracking-steps{gap:3px}
+  .tracking-step{font-size:9px;padding:10px 2px}
+  .tracking-step .step-icon{font-size:16px}
+  .tracking-arrow{font-size:14px}
+}
 </style>
 </head>
-<body>
 
+<body>
 <div class="announcement">WELCOME TO VEYORA · CASH ON DELIVERY IN PAKISTAN</div>
 
 <header>
@@ -197,10 +276,10 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
     <p class="notice">Enter the tracking number provided by VEYORA.</p>
     <form id="trackForm">
       <label for="trackingNumber">Tracking number</label>
-      <input id="trackingNumber" required placeholder="Your tracking number">
+      <input id="trackingNumber" required placeholder="Your tracking number" autocomplete="off">
       <button class="gold-button" type="submit">CHECK STATUS</button>
     </form>
-    <div class="result" id="trackResult"></div>
+    <div class="result" id="trackResult" aria-live="polite"></div>
   </div>
 </div>
 
@@ -260,6 +339,7 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
 const DELIVERY_CHARGES=200;
+
 let db=null;
 if(window.supabase){
   db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
@@ -268,8 +348,8 @@ if(window.supabase){
 const $=id=>document.getElementById(id);
 const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=value=>"Rs "+Number(value||0).toLocaleString("en-PK");
-let products=[],categories=[],productImages=[],variants=[],cart=[],activeCategory="all";
 
+let products=[],categories=[],productImages=[],variants=[],cart=[],activeCategory="all";
 $("year").textContent=new Date().getFullYear();
 
 function openModal(id){$(id).classList.add("open")}
@@ -413,17 +493,11 @@ function addToCart(p,v){
     existing.quantity++;
   }else{
     cart.push({
-      key,
-      id:p.id,
-      variant_id:v?.id||null,
-      name:p.name,
+      key,id:p.id,variant_id:v?.id||null,name:p.name,
       variant_name:v?(String(v.option_name||"Design")+": "+String(v.option_value||"")):"",
-      image,
-      price,
-      quantity:1
+      image,price,quantity:1
     });
   }
-
   $("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);
 }
 
@@ -553,31 +627,119 @@ function showProductDetails(id){
   openModal("productModal");
 }
 
+/* PREMIUM ORDER TRACKING */
+const trackingSteps=["Confirmed","Dispatched","Shipping","Delivered"];
+
 const statusDescriptions={
-  "Confirmed":"Your order has been confirmed.",
-  "Packed":"Your order has been packed.",
-  "Shipped":"Your order has been shipped.",
-  "Out for Delivery":"Your order is out for delivery.",
-  "Delivered":"Your order has been delivered.",
-  "Cancelled":"This order has been cancelled."
+  "Confirmed":"Your order has been confirmed by VEYORA.",
+  "Dispatched":"Your order has been dispatched.",
+  "Shipping":"Your order is on its way to you.",
+  "Delivered":"Your order has been delivered."
 };
+
+function renderTracking(order,searchedNumber){
+  const status=String(order.status||"Processing").trim();
+  const currentIndex=trackingSteps.findIndex(
+    s=>s.toLowerCase()===status.toLowerCase()
+  );
+
+  const displayStatus=currentIndex>=0?trackingSteps[currentIndex]:status;
+
+  const stepsHTML=trackingSteps.map((step,index)=>{
+    let className="tracking-step";
+    let symbol="○";
+
+    if(currentIndex>=0&&index<currentIndex){
+      className+=" done";
+      symbol="✓";
+    }else if(index===currentIndex){
+      className+=" current";
+      symbol="✓";
+    }
+
+    return `
+      ${index>0?'<span class="tracking-arrow" aria-hidden="true">›</span>':""}
+      <div class="${className}">
+        <span class="step-icon">${symbol}</span>
+        ${escapeHTML(step)}
+      </div>
+    `;
+  }).join("");
+
+  const updatedAt=order.last_updated||order.updated_at||order.created_at;
+  const formattedDate=updatedAt&&!Number.isNaN(new Date(updatedAt).getTime())
+    ?new Date(updatedAt).toLocaleString()
+    :"Not available";
+
+  $("trackResult").innerHTML=`
+    <div class="tracking-card">
+      <div class="tracking-heading">VEYORA Order Tracking</div>
+      <div class="tracking-number">
+        Tracking No: <strong>${escapeHTML(order.tracking_number||searchedNumber)}</strong>
+      </div>
+      <div class="tracking-current">
+        Current Status: ${escapeHTML(displayStatus)}
+      </div>
+      <div class="tracking-steps">${stepsHTML}</div>
+      <div class="tracking-meta">
+        <strong>Order update:</strong><br>
+        ${escapeHTML(statusDescriptions[displayStatus]||("Current order status: "+displayStatus))}
+        <br><strong>Last updated:</strong>
+        ${escapeHTML(formattedDate)}
+      </div>
+      <button class="gold-button tracking-refresh" id="refreshTracking" type="button">
+        ↻ REFRESH STATUS
+      </button>
+    </div>
+  `;
+
+  $("refreshTracking").addEventListener("click",()=>{
+    $("trackForm").requestSubmit();
+  });
+}
 
 $("trackForm").addEventListener("submit",async e=>{
   e.preventDefault();
-  const n=$("trackingNumber").value.trim(),r=$("trackResult");
-  r.textContent="Checking tracking number...";
-  if(!db){r.textContent="Tracking is not connected yet.";return}
+
+  const trackingNumber=$("trackingNumber").value.trim();
+  const result=$("trackResult");
+  const button=$("trackForm").querySelector('button[type="submit"]');
+
+  if(!trackingNumber){
+    result.textContent="Please enter your tracking number.";
+    return;
+  }
+
+  if(!db){
+    result.textContent="Tracking connection is unavailable.";
+    return;
+  }
+
+  button.disabled=true;
+  result.textContent="Fetching your latest order status…";
 
   try{
-    const {data,error}=await db.rpc("track_order",{p_tracking_number:n});
+    const {data,error}=await db.rpc("track_order",{
+      p_tracking_number:trackingNumber
+    });
+
     if(error)throw error;
-    const o=Array.isArray(data)?data[0]:data;
-    if(!o){r.textContent="No order found. Please check the tracking number.";return}
-    const s=o.status||"Processing";
-    r.textContent=(statusDescriptions[s]||"Order status: "+s)+(o.last_updated?"\nLast updated: "+new Date(o.last_updated).toLocaleString():"");
+
+    const order=Array.isArray(data)?data[0]:data;
+
+    if(!order){
+      result.textContent="No order found. Please check your tracking number.";
+      return;
+    }
+
+    renderTracking(order,trackingNumber);
+
   }catch(err){
-    console.error(err);
-    r.textContent="We could not check the order right now. Please contact VEYORA on WhatsApp.";
+    console.error("Order tracking error:",err);
+    result.textContent=
+      "Could not load tracking information. Please contact VEYORA on WhatsApp.";
+  }finally{
+    button.disabled=false;
   }
 });
 
@@ -600,7 +762,7 @@ document.querySelectorAll("[data-policy]").forEach(a=>{
   });
 });
 
-// Open checkout
+/* Open checkout */
 $("checkoutButton").addEventListener("click",()=>{
   if(!cart.length)return;
   $("checkoutResult").textContent="";
@@ -614,7 +776,7 @@ $("checkoutButton").addEventListener("click",()=>{
   openModal("checkoutModal");
 });
 
-// Submit COD order
+/* Submit COD order */
 $("checkoutForm").addEventListener("submit",async e=>{
   e.preventDefault();
 
@@ -646,7 +808,6 @@ $("checkoutForm").addEventListener("submit",async e=>{
       throw new Error("Please complete all required fields.");
     }
 
-    // Take a fixed snapshot of the cart before submitting.
     const checkoutCart=cart.map(i=>({...i}));
     const subtotal=checkoutCart.reduce((s,i)=>s+i.price*i.quantity,0);
     const trackingNumber="VYR"+Date.now().toString().slice(-9);
@@ -654,10 +815,7 @@ $("checkoutForm").addEventListener("submit",async e=>{
     const orderPayload={
       tracking_number:trackingNumber,
       customer_name:customerName,
-      phone,
-      email,
-      address,
-      city,
+      phone,email,address,city,
       subtotal,
       delivery_charges:DELIVERY_CHARGES,
       total:subtotal+DELIVERY_CHARGES,
@@ -692,7 +850,7 @@ $("checkoutForm").addEventListener("submit",async e=>{
       console.error("Order items could not be saved:",itemError);
       result.textContent=
         "Your order reference is "+(order.tracking_number||trackingNumber)+
-        ", but the product details could not be saved. Please contact VEYORA before placing another order. Error: "+itemError.message;
+        ", but product details could not be saved. Please contact VEYORA before placing another order. Error: "+itemError.message;
       return;
     }
 
@@ -721,7 +879,7 @@ $("checkoutForm").addEventListener("submit",async e=>{
     result.textContent=createdOrder
       ?"An order record was created ("+(createdOrder.tracking_number||createdOrder.id)+"), but the remaining order details need checking. Contact VEYORA before retrying."
       :"Order could not be submitted. "+(err.message||"Please try again later.")+
-       " If the error mentions permission or policy, the Supabase database permissions need configuring.";
+       " If the error mentions permission or policy, Supabase database permissions need configuring.";
   }finally{
     button.disabled=false;
     button.textContent="PLACE COD ORDER";
