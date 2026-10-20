@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,8 +25,9 @@ a{color:inherit;text-decoration:none}
 .announcement{background:var(--dark);color:var(--gold-light);text-align:center;padding:10px;font-size:10px;letter-spacing:1.7px}
 header{background:#fffdf8;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;box-shadow:0 3px 15px #00000008}
 .header-main{max-width:1400px;margin:auto;padding:15px 4%;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:10px;min-width:175px}
-.logo-placeholder{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;background:var(--dark);color:var(--gold-light);font-family:Georgia,serif;font-size:23px}
+.brand{display:flex;align-items:center;gap:10px;min-width:175px;flex-shrink:0}
+.logo-placeholder{width:56px;height:56px;min-width:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent;border:0;border-radius:0}
+.logo-placeholder img{width:100%;height:100%;object-fit:contain;display:block}
 .brand-name{font-family:Georgia,serif;font-size:24px;letter-spacing:3.5px;font-weight:bold}
 .brand-sub{font-size:9px;letter-spacing:3px;color:var(--gold);margin-top:4px}
 .search{flex:1;max-width:420px;position:relative}
@@ -86,35 +88,10 @@ footer{background:#151511;color:#fff;padding:42px 4% 18px;border-top:2px solid v
 footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;color:var(--gold-light)}
 .footer-links{display:flex;flex-direction:column;gap:12px}
 .footer-links a{font-size:12px;color:#c9c7bd}
-.socials{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:18px;
-  align-items:center;
-}
-.socials a{
-  width:42px;
-  height:42px;
-  border:1px solid #c5a15b;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#222119;
-  color:#ead7a5;
-  transition:transform .2s,background .2s;
-}
-.socials a:hover{
-  background:#c5a15b;
-  transform:translateY(-3px);
-}
-.socials a svg{
-  width:21px;
-  height:21px;
-  display:block;
-  fill:currentColor;
-}
+.socials{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.socials a{width:42px;height:42px;border:1px solid #c5a15b;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#222119;color:#ead7a5;transition:transform .2s,background .2s}
+.socials a:hover{background:#c5a15b;transform:translateY(-3px)}
+.socials a svg{width:21px;height:21px;display:block;fill:currentColor}
 .socials a .youtube-icon{width:24px}
 .socials a .whatsapp-icon{width:23px}
 .copyright{max-width:1400px;margin:30px auto 0;padding-top:17px;border-top:1px solid #3a3932;color:#a7a59b;font-size:10px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -157,8 +134,8 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:5px 0 17px;
 @media(max-width:600px){
 .announcement{font-size:9px;letter-spacing:1px}
 .header-main{padding:12px 4%;gap:8px;flex-wrap:wrap}
-.brand{min-width:0;flex:1}
-.logo-placeholder{width:35px;height:35px;font-size:17px}
+.brand{min-width:0;flex:1;gap:8px}
+.logo-placeholder{width:42px;height:42px;min-width:42px}
 .brand-name{font-size:19px;letter-spacing:2px}
 .brand-sub{font-size:8px;letter-spacing:2px}
 .search{order:3;flex-basis:100%;max-width:none}
@@ -199,19 +176,26 @@ nav a,nav button{font-size:9px;letter-spacing:.5px}
 <header>
 <div class="header-main">
 <a href="#" class="brand" aria-label="VEYORA Home">
-<div class="logo-placeholder">V</div>
-</div>
-<div><div class="brand-name">VEYORA</div><div class="brand-sub">MAYU WORLD</div></div>
+  <div class="logo-placeholder">
+    <img src="./WhatsApp%20Image%202026-10-12%20at%2011.22.27%20PM.jpeg" alt="VEYORA Logo">
+  </div>
+  <div>
+    <div class="brand-name">VEYORA</div>
+    <div class="brand-sub">MAYU WORLD</div>
+  </div>
 </a>
+
 <div class="search">
 <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
 <button id="searchButton" type="button" aria-label="Search">⌕</button>
 </div>
+
 <div class="header-actions">
 <button class="icon-button" id="accountButton" type="button">♙<span class="icon-label">Account</span></button>
 <button class="icon-button" id="cartButton" type="button">♧<span class="cart-count" id="cartCount">0</span><span class="icon-label">Cart</span></button>
 </div>
 </div>
+
 <nav aria-label="Main navigation">
 <a href="#">Home</a><a href="#products" id="shopAllLink">Shop All</a><a href="#categories">Categories</a>
 <button id="trackButton" type="button">Track Order</button>
@@ -253,54 +237,45 @@ nav a,nav button{font-size:9px;letter-spacing:.5px}
 <p class="footer-description">Premium products for every life. Discover fashion, home essentials and everyday favourites at VEYORA.</p>
 
 <div class="socials">
-  <a href="https://www.instagram.com/veyora_.pk/"
-     target="_blank" rel="noopener noreferrer"
-     aria-label="Instagram" title="Instagram">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-      <rect x="3" y="3" width="18" height="18" rx="5" fill="none"/>
-      <circle cx="12" cy="12" r="4" fill="none"/>
-      <circle cx="17.5" cy="6.5" r="1" stroke="none" fill="currentColor"/>
-    </svg>
-  </a>
+<a href="https://www.instagram.com/veyora_.pk/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+<rect x="3" y="3" width="18" height="18" rx="5" fill="none"/>
+<circle cx="12" cy="12" r="4" fill="none"/>
+<circle cx="17.5" cy="6.5" r="1" stroke="none" fill="currentColor"/>
+</svg>
+</a>
 
-  <a href="https://www.tiktok.com/@veyora.pk"
-     target="_blank" rel="noopener noreferrer"
-     aria-label="TikTok" title="TikTok">
-    <svg viewBox="0 0 24 24">
-      <path d="M19.6 7.1a6.8 6.8 0 0 1-4.1-1.4v9.1a6.1 6.1 0 1 1-5.3-6.05v3.25a2.9 2.9 0 1 0 2.05 2.8V2.5h3.25a6.8 6.8 0 0 0 4.1 4.6z"/>
-    </svg>
-  </a>
+<a href="https://www.tiktok.com/@veyora.pk" target="_blank" rel="noopener noreferrer" aria-label="TikTok" title="TikTok">
+<svg viewBox="0 0 24 24">
+<path d="M19.6 7.1a6.8 6.8 0 0 1-4.1-1.4v9.1a6.1 6.1 0 1 1-5.3-6.05v3.25a2.9 2.9 0 1 0 2.05 2.8V2.5h3.25a6.8 6.8 0 0 0 4.1 4.6z"/>
+</svg>
+</a>
 
-  <a href="https://www.facebook.com/share/1WFCVZ9tsD/"
-     target="_blank" rel="noopener noreferrer"
-     aria-label="Facebook" title="Facebook">
-    <svg viewBox="0 0 24 24">
-      <path d="M13.6 21v-8.2h2.8l.42-3.2H13.6V7.55c0-.93.26-1.56 1.6-1.56h1.72V3.13A22 22 0 0 0 14.4 3c-2.5 0-4.2 1.52-4.2 4.3v2.3H7.4v3.2h2.8V21z"/>
-    </svg>
-  </a>
+<a href="https://www.facebook.com/share/1WFCVZ9tsD/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+<svg viewBox="0 0 24 24">
+<path d="M13.6 21v-8.2h2.8l.42-3.2H13.6V7.55c0-.93.26-1.56 1.6-1.56h1.72V3.13A22 22 0 0 0 14.4 3c-2.5 0-4.2 1.52-4.2 4.3v2.3H7.4v3.2h2.8V21z"/>
+</svg>
+</a>
 
-  <a href="https://www.youtube.com/@VeyoraStore-c8h"
-     target="_blank" rel="noopener noreferrer"
-     aria-label="YouTube" title="YouTube">
-    <svg class="youtube-icon" viewBox="0 0 24 24">
-      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6z"/>
-    </svg>
-  </a>
+<a href="https://www.youtube.com/@VeyoraStore-c8h" target="_blank" rel="noopener noreferrer" aria-label="YouTube" title="YouTube">
+<svg class="youtube-icon" viewBox="0 0 24 24">
+<path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6z"/>
+</svg>
+</a>
 
-  <a href="https://wa.me/923713763119"
-     target="_blank" rel="noopener noreferrer"
-     aria-label="WhatsApp" title="WhatsApp">
-    <svg class="whatsapp-icon" viewBox="0 0 24 24">
-      <path d="M20.5 3.5A11.8 11.8 0 0 0 2 17.7L.5 23.5l6-1.55A11.8 11.8 0 0 0 20.5 3.5ZM12 21a9.7 9.7 0 0 1-4.95-1.36l-.35-.2-3.56.93.95-3.47-.23-.36A9.7 9.7 0 1 1 12 21Zm5.33-7.28c-.29-.15-1.7-.84-1.96-.93-.26-.1-.45-.15-.64.14-.2.29-.74.93-.9 1.12-.16.2-.33.22-.62.08-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.72-1.6-2.01-.16-.29-.02-.45.12-.6.13-.12.29-.33.43-.49.14-.16.19-.28.29-.47.1-.2.05-.36-.02-.5-.08-.15-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49h-.55c-.2 0-.5.07-.76.36-.26.28-.99.97-.99 2.37s1.02 2.75 1.16 2.94c.14.2 2 3.06 4.85 4.29.68.29 1.21.47 1.62.6.68.22 1.3.19 1.79.11.54-.08 1.7-.7 1.94-1.38.24-.68.24-1.27.17-1.39-.07-.12-.26-.19-.55-.34Z"/>
-    </svg>
-  </a>
+<a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" title="WhatsApp">
+<svg class="whatsapp-icon" viewBox="0 0 24 24">
+<path d="M20.5 3.5A11.8 11.8 0 0 0 2 17.7L.5 23.5l6-1.55A11.8 11.8 0 0 0 20.5 3.5ZM12 21a9.7 9.7 0 0 1-4.95-1.36l-.35-.2-3.56.93.95-3.47-.23-.36A9.7 9.7 0 1 1 12 21Zm5.33-7.28c-.29-.15-1.7-.84-1.96-.93-.26-.1-.45-.15-.64.14-.2.29-.74.93-.9 1.12-.16.2-.33.22-.62.08-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.72-1.6-2.01-.16-.29-.02-.45.12-.6.13-.12.29-.33.43-.49.14-.16.19-.28.29-.47.1-.2.05-.36-.02-.5-.08-.15-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49h-.55c-.2 0-.5.07-.76.36-.26.28-.99.97-.99 2.37s1.02 2.75 1.16 2.94c.14.2 2 3.06 4.85 4.29.68.29 1.21.47 1.62.6.68.22 1.3.19 1.79.11.54-.08 1.7-.7 1.94-1.38.24-.68.24-1.27.17-1.39-.07-.12-.26-.19-.55-.34Z"/>
+</svg>
+</a>
+</div>
 </div>
 
-</div>
 <div><h3>QUICK LINKS</h3><div class="footer-links">
 <a href="#products">Shop All</a><a href="#categories">Categories</a><a href="#" id="footerTrack">Track Order</a>
 <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">Contact Us</a>
 </div></div>
+
 <div><h3>HELP & POLICIES</h3><div class="footer-links">
 <a href="#" data-policy="About Us">About Us</a><a href="#" data-policy="FAQs">FAQs</a>
 <a href="#" data-policy="Shipping & Delivery">Shipping & Delivery</a>
@@ -961,10 +936,6 @@ $("checkoutForm").addEventListener("submit",async e=>{
 
     createdOrder=order;
 
-    /*
-     Each cart product becomes a separate order_items row.
-     Keep product_id and variant_id from the selected database records.
-    */
     const itemRows=checkoutCart.map(i=>({
       order_id:order.id,
       product_id:i.id,
@@ -981,7 +952,7 @@ $("checkoutForm").addEventListener("submit",async e=>{
       throw new Error("No products were found in the checkout cart.");
     }
 
-    const {data:insertedItems,error:itemError}=await db
+    const {error:itemError}=await db
       .from("order_items")
       .insert(itemRows)
       .select("id,order_id,product_name,quantity");
@@ -995,10 +966,6 @@ $("checkoutForm").addEventListener("submit",async e=>{
       );
     }
 
-    /*
-     Verify that all rows were inserted before telling the customer
-     that the order is fully successful.
-    */
     const {data:verifyRows,error:verifyError}=await db
       .from("order_items")
       .select("id,order_id")
