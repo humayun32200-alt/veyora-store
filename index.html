@@ -361,13 +361,95 @@ function addToCart(p,v){
  if(existing)existing.quantity++;else cart.push({key,id:p.id,variant_id:v?.id||null,name:p.name,variant_name:v?(String(v.option_name||"Design")+": "+String(v.option_value||"")):"",image,price,quantity:1});
  $("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);
 }
-function renderCart(){
- if(!cart.length){$("cartItems").innerHTML='<p class="notice">Your cart is empty.</p>';$("cartTotal").textContent="";$("checkoutButton").disabled=true;return}
- $("checkoutButton").disabled=false;
- $("cartItems").innerHTML=cart.map(i=>`<div class="cart-item">${i.image?`<img src="${escapeHTML(i.image)}" alt="" style="width:58px;height:65px;object-fit:cover" onerror="this.style.display='none'`:""}<span style="flex:1"><strong>${escapeHTML(i.name)}</strong>${i.variant_name?"<br><small>"+escapeHTML(i.variant_name)+"</small>":""}<br>Qty: ${i.quantity}<br>${money(i.price)} each</span><span>${money(i.price*i.quantity)} <button type="button" data-remove="${escapeHTML(i.key)}" aria-label="Remove item">×</button></span></div>`).join("");
- const subtotal=getCartSubtotal(),delivery=calculateDeliveryCharges(cart);
- $("cartTotal").innerHTML=`<div>Subtotal: ${money(subtotal)}</div><div class="delivery-breakdown"><strong>Delivery breakdown</strong><br>${renderDeliveryBreakdown(cart)}</div><div style="margin-top:8px">Delivery charges: ${money(delivery)}</div><div style="margin-top:8px;font-size:17px">Total payable: ${money(subtotal+delivery)}</div>`;
- $("cartItems").querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{cart=cart.filter(i=>i.key!==b.dataset.remove);$("cartCount").textContent=cart.reduce((s,i)=>s+i.quantity,0);renderCart()}));
+function renderCart() {
+  if (!cart.length) {
+    $("cartItems").innerHTML =
+      '<p class="notice">Your cart is empty.</p>';
+
+    $("cartTotal").textContent = "";
+    $("checkoutButton").disabled = true;
+    return;
+  }
+
+  $("checkoutButton").disabled = false;
+
+  $("cartItems").innerHTML = cart.map(item => `
+    <div class="cart-item">
+
+      ${
+        item.image
+          ? `<img
+              src="${escapeHTML(item.image)}"
+              alt="${escapeHTML(item.name)}"
+              style="width:58px;height:65px;object-fit:cover"
+              onerror="this.style.display='none'"
+            >`
+          : ""
+      }
+
+      <span style="flex:1">
+        <strong>${escapeHTML(item.name)}</strong>
+
+        ${
+          item.variant_name
+            ? `<br><small>${escapeHTML(item.variant_name)}</small>`
+            : ""
+        }
+
+        <br>Qty: ${Number(item.quantity) || 0}
+        <br>${money(item.price)} each
+      </span>
+
+      <span>
+        ${money(Number(item.price) * Number(item.quantity))}
+        <button
+          type="button"
+          data-remove="${escapeHTML(item.key)}"
+          aria-label="Remove item"
+        >×</button>
+      </span>
+
+    </div>
+  `).join("");
+
+  const subtotal = getCartSubtotal();
+  const delivery = calculateDeliveryCharges(cart);
+  const total = subtotal + delivery;
+
+  $("cartTotal").innerHTML = `
+    <div>Subtotal: ${money(subtotal)}</div>
+
+    <div class="delivery-breakdown">
+      <strong>Delivery breakdown</strong>
+      <br>
+      ${renderDeliveryBreakdown(cart)}
+    </div>
+
+    <div style="margin-top:8px">
+      Delivery charges: ${money(delivery)}
+    </div>
+
+    <div style="margin-top:8px;font-size:17px;color:#f0dba5">
+      Total payable: ${money(total)}
+    </div>
+  `;
+
+  $("cartItems")
+    .querySelectorAll("[data-remove]")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        cart = cart.filter(
+          item => String(item.key) !== String(button.dataset.remove)
+        );
+
+        $("cartCount").textContent = cart.reduce(
+          (sum, item) => sum + Number(item.quantity || 0),
+          0
+        );
+
+        renderCart();
+      });
+    });
 }
 function showProductDetails(id){
  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
