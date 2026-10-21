@@ -81,6 +81,20 @@ td button{margin:3px;padding:7px 9px}
   <h1>Admin Dashboard</h1>
   <p class="muted">Manage your Veyora store.</p>
   <div id="notice" class="notice">Connecting...</div>
+  
+  <section class="panel">
+    <h2>Change Admin Password</h2>
+    <p class="muted">Set a new password for your admin account.</p>
+    <form id="changePasswordForm">
+      <label>New Password</label>
+      <input id="newAdminPassword" type="password" minlength="12" autocomplete="new-password" required>
+      <label>Confirm New Password</label>
+      <input id="confirmAdminPassword" type="password" minlength="12" autocomplete="new-password" required>
+      <button type="submit" id="changePasswordBtn">Change Password</button>
+      <p id="passwordChangeMessage" class="muted" role="status"></p>
+    </form>
+  </section>
+
 
   <section class="panel">
     <h2>Analytics & Start Fresh</h2>
@@ -1174,6 +1188,63 @@ $("refresh").onclick=loadAll;
 $("refreshOrders").onclick=loadAll;
 
 verifyAdmin().catch(err=>showLogin("Could not verify session: "+err.message));
+  
+$("changePasswordForm").onsubmit = async e => {
+  e.preventDefault();
+
+  const newPassword = $("newAdminPassword").value;
+  const confirmPassword = $("confirmAdminPassword").value;
+  const btn = $("changePasswordBtn");
+  const message = $("passwordChangeMessage");
+
+  if (newPassword.length < 12) {
+    message.textContent = "Password must be at least 12 characters.";
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    message.textContent = "Passwords do not match.";
+    return;
+  }
+
+  if (!confirm("Change your VEYORA admin password now?")) return;
+
+  btn.disabled = true;
+  message.textContent = "Updating password...";
+
+  try {
+    const { data: { user }, error: userError } =
+      await db.auth.getUser();
+
+    if (userError) throw userError;
+
+    if (
+      !user ||
+      user.email?.toLowerCase() !== "humayun32200@gmail.com" ||
+      user.app_metadata?.role !== "admin"
+    ) {
+      throw new Error("Authorized admin session required.");
+    }
+
+    const { error } = await db.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) throw error;
+
+    $("newAdminPassword").value = "";
+    $("confirmAdminPassword").value = "";
+    message.textContent = "Password changed successfully! Sign in again with your new password.";
+
+    await db.auth.signOut();
+    showLogin("Password changed. Please sign in with your new password.");
+  } catch (err) {
+    message.textContent = "Could not change password: " + err.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
 </script>
 </body>
 </html>
