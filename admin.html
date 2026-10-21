@@ -16,10 +16,11 @@ button:disabled{opacity:.5;cursor:wait}
 .top{display:flex;justify-content:space-between;align-items:center;padding:18px;border-bottom:1px solid var(--line);background:#171713}
 .brand{font-size:24px;font-weight:bold;letter-spacing:4px;color:var(--gold)}
 main{max-width:1250px;margin:auto;padding:20px}
-h1{font-size:27px}h2{font-size:21px}
+h1{font-size:27px}
+h2{font-size:21px}
 .panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.metric{font-size:28px;color:var(--gold);font-weight:bold;margin-top:8px}
+.metric{font-size:28px;color:var(--gold);font-weight:bold;margin-top:8px;overflow-wrap:anywhere}
 .muted{color:var(--muted);font-size:13px;line-height:1.5}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}
 .tab{background:#191915;color:var(--text);border-color:var(--line)}
@@ -46,8 +47,10 @@ td button{margin:3px;padding:7px 9px}
 .variant-preview{width:65px;height:65px;object-fit:cover;border-radius:7px;border:1px solid var(--line);margin-top:5px}
 .variant-title{color:var(--gold);overflow-wrap:anywhere}
 .variant-image-preview{display:block;max-width:130px;max-height:130px;object-fit:contain;border:1px solid var(--line);border-radius:8px;margin-top:8px}
+.order-product-image{width:75px;height:75px;object-fit:contain;border:1px solid var(--line);border-radius:8px;background:#10100e}
+.field{flex:1;min-width:180px}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:650px){main{padding:12px}.formgrid{grid-template-columns:1fr}.top{padding:14px}}
+@media(max-width:650px){main{padding:12px}.formgrid{grid-template-columns:1fr}.top{padding:14px}.metric{font-size:23px}}
 </style>
 </head>
 <body>
@@ -78,6 +81,28 @@ td button{margin:3px;padding:7px 9px}
   <h1>Admin Dashboard</h1>
   <p class="muted">Manage your Veyora store.</p>
   <div id="notice" class="notice">Connecting...</div>
+
+  <section class="panel">
+    <h2>Analytics & Start Fresh</h2>
+    <div class="row">
+      <div class="field">
+        <label>Analytics Period</label>
+        <select id="analyticsPeriod">
+          <option value="7">Last 7 Days</option>
+          <option value="1">1 Month</option>
+          <option value="3">3 Months</option>
+          <option value="6">6 Months</option>
+          <option value="12">1 Year</option>
+          <option value="all">All Time</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Reset Dashboard Counts</label>
+        <button type="button" id="resetAnalytics">Start Fresh From Now</button>
+      </div>
+    </div>
+    <p class="muted">Reset sirf dashboard ki counting reset karta hai. Purane customer orders database mein safe rehte hain. Reset tab tak active rahega jab tak tum dobara reset nahi karte.</p>
+  </section>
 
   <div class="grid">
     <div class="card">Products<div id="productCount" class="metric">—</div></div>
@@ -141,11 +166,7 @@ td button{margin:3px;padding:7px 9px}
 
       <div class="option-card">
         <h3 class="section-title">Options / Variants</h3>
-        <p class="muted">
-          Shopify-style options. Har option ka name ek baar likho aur values commas se separate karo.
-          Example: Design → 1, 2, 3; Size → S, M, L; Color → Black, White.
-          Har combination ka price, sale price, stock, SKU, barcode aur image alag set kar sakte ho.
-        </p>
+        <p class="muted">Har option ka name ek baar likho aur values commas se separate karo. Example: Design → 1, 2, 3; Size → S, M, L; Color → Black, White. Har combination ka price, sale price, stock, SKU, barcode aur image alag set kar sakte ho.</p>
         <div id="optionBuilder"></div>
         <div class="row" style="margin-top:12px">
           <button type="button" id="addOption" class="secondary">+ Add Option</button>
@@ -188,9 +209,13 @@ td button{margin:3px;padding:7px 9px}
   </section>
 
   <section id="orders" class="panel" hidden>
-    <h2>Orders</h2>
-    <p class="muted">Update order status and tracking number.</p>
+    <div class="row" style="justify-content:space-between">
+      <h2>Orders</h2>
+      <button id="refreshOrders" class="secondary">Refresh Orders</button>
+    </div>
+    <p class="muted">View product images, variants, quantities, customer details, order status and tracking.</p>
     <div id="ordersTable"></div>
+    <div id="orderDetailsPanel" class="panel" hidden></div>
   </section>
 </main>
 </div>
@@ -214,6 +239,7 @@ let generatedVariants=[];
 let savedVariantImages={};
 let originalVariantIds=new Set();
 let optionCounter=0;
+let orderItemsCache=[];
 
 function notice(msg,error=false){
   $("notice").textContent=msg;
@@ -272,23 +298,80 @@ function showLogin(msg=""){
   $("loginMessage").textContent=msg;
 }
 
+/* ANALYTICS */
+
 function updateAnalytics(){
-  const cutoff=Date.now()-300000;
+  const resetAt=Number(localStorage.getItem("veyoraAnalyticsStart")||0);
+  const period=$("analyticsPeriod").value;
+  const now=new Date();
+  let periodStart=0;
+
+  if(period==="7"){
+    periodStart=now.getTime()-7*86400000;
+  }else if(period!=="all"){
+    const date=new Date(now);
+    date.setMonth(date.getMonth()-Number(period));
+    periodStart=date.getTime();
+  }
+
+  const startAt=Math.max(resetAt,periodStart);
+
+  const events=analyticsEvents.filter(e=>
+    e.created_at&&new Date(e.created_at).getTime()>=startAt
+  );
+
+  const sessions=new Set(
+    events.map(e=>e.session_id).filter(Boolean)
+  );
+
+  const views=events.filter(e=>
+    ["page_view","product_view"].includes(e.event_type)
+  ).length;
+
+  const cutoff=now.getTime()-300000;
   const recent=new Set(
-    analyticsEvents.filter(e=>e.created_at&&new Date(e.created_at).getTime()>=cutoff)
+    events.filter(e=>new Date(e.created_at).getTime()>=cutoff)
       .map(e=>e.session_id).filter(Boolean)
   );
-  const sessions=new Set(analyticsEvents.map(e=>e.session_id).filter(Boolean));
-  const views=analyticsEvents.filter(e=>["page_view","product_view"].includes(e.event_type)).length;
-  const valid=orders.filter(o=>String(o.status||"").toLowerCase()!=="cancelled");
-  const sales=valid.reduce((s,o)=>s+Number(o.total||0),0);
+
+  const filteredOrders=orders.filter(o=>
+    o.created_at&&new Date(o.created_at).getTime()>=startAt
+  );
+
+  const validOrders=filteredOrders.filter(o=>
+    String(o.status||"").toLowerCase()!=="cancelled"
+  );
+
+  const sales=validOrders.reduce(
+    (sum,o)=>sum+Number(o.total??(Number(o.subtotal||0)+Number(o.delivery_charges||0))),0
+  );
 
   $("liveVisitorCount").textContent=recent.size;
   $("sessionCount").textContent=sessions.size;
   $("pageViewCount").textContent=views;
+  $("orderCount").textContent=filteredOrders.length;
+
+  $("pendingCount").textContent=filteredOrders.filter(o=>
+    !["delivered","cancelled"].includes(String(o.status||"").toLowerCase())
+  ).length;
+
   $("totalSalesCount").textContent=money(sales);
-  $("conversionRate").textContent=(sessions.size?valid.length/sessions.size*100:0).toFixed(2)+"%";
+
+  $("conversionRate").textContent=
+    (sessions.size?validOrders.length/sessions.size*100:0).toFixed(2)+"%";
 }
+
+$("analyticsPeriod").addEventListener("change",updateAnalytics);
+
+$("resetAnalytics").addEventListener("click",()=>{
+  if(!confirm("Dashboard counting abhi se fresh start karni hai? Purane orders delete nahi honge."))return;
+
+  localStorage.setItem("veyoraAnalyticsStart",String(Date.now()));
+  updateAnalytics();
+  alert("Dashboard counting fresh start ho gayi!");
+});
+
+/* LOAD STORE DATA */
 
 async function loadAll(){
   notice("Loading store data…");
@@ -301,14 +384,9 @@ async function loadAll(){
 
     $("productCount").textContent=products.length;
     $("categoryCount").textContent=categories.length;
-    $("orderCount").textContent=orders.length;
-    $("pendingCount").textContent=orders.filter(o=>
-      !["delivered","cancelled"].includes(String(o.status||"").toLowerCase())
-    ).length;
 
     renderProducts();
     renderCategories();
-    renderOrders();
     fillCategorySelect();
 
     try{
@@ -323,6 +401,7 @@ async function loadAll(){
     }
 
     updateAnalytics();
+    await renderOrders();
     notice("Connected. Store data loaded.");
   }catch(err){
     notice("Could not load data: "+err.message,true);
@@ -431,28 +510,21 @@ async function editProduct(id){
 
     if(list.length){
       const defs=[];
-
       list.forEach(v=>{
         const names=String(v.option_name||"Option").split(" / ");
         const values=String(v.option_value||"").split(" / ");
-
         names.forEach((name,i)=>{
           let d=defs.find(x=>x.name.toLowerCase()===name.toLowerCase());
-          if(!d){
-            d={name,values:[]};
-            defs.push(d);
-          }
+          if(!d){d={name,values:[]};defs.push(d);}
           if(values[i]&&!d.values.includes(values[i]))d.values.push(values[i]);
         });
       });
-
       defs.slice(0,3).forEach(d=>addOptionRow(d.name,d.values.join(", ")));
       $("variantGenerationMessage").textContent=
         "Existing options loaded. Generate variants to edit combinations. Matching saved variants will be updated; unmatched variants will be preserved.";
     }else{
       addOptionRow("Design","");
-      $("variantGenerationMessage").textContent=
-        "No saved variants. Add option values and generate variants.";
+      $("variantGenerationMessage").textContent="No saved variants. Add option values and generate variants.";
     }
   }catch(err){
     addOptionRow("Design","");
@@ -472,7 +544,6 @@ function addOptionRow(name="",values=""){
   const div=document.createElement("div");
   div.className="option-card";
   div.dataset.optionId="opt"+optionCounter;
-
   div.innerHTML=
     '<div class="row" style="justify-content:space-between">'+
       '<strong>Option '+optionCounter+'</strong>'+
@@ -488,13 +559,9 @@ function addOptionRow(name="",values=""){
     div.remove();
     invalidateGeneratedVariants();
   };
-
   div.querySelectorAll("input").forEach(input=>{
-    input.addEventListener("input",()=>{
-      invalidateGeneratedVariants();
-    });
+    input.addEventListener("input",()=>invalidateGeneratedVariants());
   });
-
   $("optionBuilder").appendChild(div);
 }
 
@@ -507,23 +574,17 @@ function getOptionDefinitions(){
   for(const card of cards){
     const name=card.querySelector(".option-name").value.trim();
     const raw=card.querySelector(".option-values").value.trim();
-
     if(!name&&!raw)continue;
     if(!name||!raw)throw Error("Har option ka name aur values dono fill karo.");
 
     const values=[...new Set(raw.split(",").map(v=>v.trim()).filter(Boolean))];
     if(!values.length)throw Error("Option values enter karo.");
-
     defs.push({name,values});
   }
 
-  if(defs.length>3)throw Error("Maximum 3 options allowed: Design, Size, Color.");
-
+  if(defs.length>3)throw Error("Maximum 3 options allowed.");
   const names=defs.map(d=>d.name.toLowerCase());
-  if(new Set(names).size!==names.length){
-    throw Error("Har option ka name sirf ek baar likho. Values commas se separate karo.");
-  }
-
+  if(new Set(names).size!==names.length)throw Error("Option names duplicate nahi hone chahiye.");
   return defs;
 }
 
@@ -531,74 +592,54 @@ function combinations(defs){
   let combos=[[]];
   defs.forEach(def=>{
     const next=[];
-    combos.forEach(combo=>{
-      def.values.forEach(value=>next.push([...combo,{name:def.name,value}]));
-    });
+    combos.forEach(combo=>def.values.forEach(value=>next.push([...combo,{name:def.name,value}])));
     combos=next;
   });
   return combos;
 }
 
 function combinationKey(name,value){
-  return String(name||"").trim().toLowerCase()+"::"+
-    String(value||"").trim().toLowerCase();
+  return String(name||"").trim().toLowerCase()+"::"+String(value||"").trim().toLowerCase();
 }
 
 $("generateVariants").onclick=async()=>{
   const btn=$("generateVariants");
   btn.disabled=true;
-
   try{
     const defs=getOptionDefinitions();
     if(!defs.length)throw Error("Pehle option name aur values add karo.");
-
     const combos=combinations(defs);
-    if(combos.length>150){
-      throw Error("150 se zyada combinations hain. Values kam karo.");
-    }
+    if(combos.length>150)throw Error("150 se zyada combinations hain. Values kam karo.");
 
     const productId=$("pId").value;
     let existing=[];
-
     if(productId){
-      existing=await result(
-        db.from("product_variants").select("*")
-          .eq("product_id",productId).order("sort_order")
-      );
+      existing=await result(db.from("product_variants").select("*")
+        .eq("product_id",productId).order("sort_order"));
     }
 
     const existingMap=new Map();
-    existing.forEach(v=>{
-      existingMap.set(combinationKey(v.option_name,v.option_value),v);
-    });
-
+    existing.forEach(v=>existingMap.set(combinationKey(v.option_name,v.option_value),v));
     originalVariantIds=new Set(existing.map(v=>String(v.id)));
 
     generatedVariants=combos.map((combo,i)=>{
       const option_name=combo.map(x=>x.name).join(" / ");
       const option_value=combo.map(x=>x.value).join(" / ");
       const old=existingMap.get(combinationKey(option_name,option_value));
-
       return {
-        id:old?.id||null,
-        label:option_value,
-        option_name,
-        option_value,
+        id:old?.id||null,label:option_value,option_name,option_value,
         retail_price:old?.retail_price??$("pRetail").value??0,
         sale_price:old?.sale_price??$("pSale").value??"",
         stock_quantity:old?.stock_quantity??0,
-        sku:old?.sku||"",
-        barcode:old?.barcode||"",
-        image_url:old?.image_url||null,
-        sort_order:old?.sort_order??i
+        sku:old?.sku||"",barcode:old?.barcode||"",
+        image_url:old?.image_url||null,sort_order:old?.sort_order??i
       };
     });
 
     savedVariantImages={};
     renderVariantEditor();
-
     $("variantGenerationMessage").textContent=
-      combos.length+" combinations ready. Existing matching variants will update; unmatched saved variants will remain in the database.";
+      combos.length+" combinations ready. Existing matching variants will update; unmatched saved variants will remain.";
   }catch(err){
     $("variantGenerationMessage").textContent=err.message;
   }finally{
@@ -608,10 +649,7 @@ $("generateVariants").onclick=async()=>{
 
 function renderVariantEditor(){
   const root=$("variantEditor");
-  if(!generatedVariants.length){
-    root.innerHTML="";
-    return;
-  }
+  if(!generatedVariants.length){root.innerHTML="";return;}
 
   let html='<h3 class="section-title">Variant details</h3>'+
     '<p class="muted">Har combination ki price, sale price, stock, SKU, barcode aur image set karo.</p>';
@@ -621,48 +659,32 @@ function renderVariantEditor(){
       '<h4 class="variant-title">'+esc(v.label)+'</h4>'+
       '<div id="variantPreview'+i+'">'+
       (v.image_url?'<img class="variant-image-preview" src="'+esc(v.image_url)+'" alt="Variant image">':'')+
-      '</div>'+
-      '<div class="formgrid">'+
-        '<div><label>Retail price (PKR) *</label>'+
-          '<input type="number" min="0" step="0.01" data-vfield="retail_price" data-i="'+i+'" value="'+esc(v.retail_price)+'" required></div>'+
-        '<div><label>Sale price (PKR)</label>'+
-          '<input type="number" min="0" step="0.01" data-vfield="sale_price" data-i="'+i+'" value="'+esc(v.sale_price)+'"></div>'+
-        '<div><label>Stock quantity *</label>'+
-          '<input type="number" min="0" step="1" data-vfield="stock_quantity" data-i="'+i+'" value="'+esc(v.stock_quantity)+'" required></div>'+
-        '<div><label>SKU</label>'+
-          '<input data-vfield="sku" data-i="'+i+'" value="'+esc(v.sku)+'"></div>'+
-        '<div><label>Barcode</label>'+
-          '<input data-vfield="barcode" data-i="'+i+'" value="'+esc(v.barcode)+'"></div>'+
-        '<div><label>Variant image (optional)</label>'+
-          '<input type="file" accept="image/jpeg,image/png,image/webp" data-vimage="'+i+'"></div>'+
-      '</div>'+
-    '</div>';
+      '</div><div class="formgrid">'+
+      '<div><label>Retail price (PKR) *</label><input type="number" min="0" step="0.01" data-vfield="retail_price" data-i="'+i+'" value="'+esc(v.retail_price)+'" required></div>'+
+      '<div><label>Sale price (PKR)</label><input type="number" min="0" step="0.01" data-vfield="sale_price" data-i="'+i+'" value="'+esc(v.sale_price)+'"></div>'+
+      '<div><label>Stock quantity *</label><input type="number" min="0" step="1" data-vfield="stock_quantity" data-i="'+i+'" value="'+esc(v.stock_quantity)+'" required></div>'+
+      '<div><label>SKU</label><input data-vfield="sku" data-i="'+i+'" value="'+esc(v.sku)+'"></div>'+
+      '<div><label>Barcode</label><input data-vfield="barcode" data-i="'+i+'" value="'+esc(v.barcode)+'"></div>'+
+      '<div><label>Variant image</label><input type="file" accept="image/jpeg,image/png,image/webp" data-vimage="'+i+'"></div>'+
+      '</div></div>';
   });
 
   root.innerHTML=html;
-
   root.querySelectorAll("[data-vfield]").forEach(input=>{
-    input.oninput=()=>{
-      generatedVariants[Number(input.dataset.i)][input.dataset.vfield]=input.value;
-    };
+    input.oninput=()=>generatedVariants[Number(input.dataset.i)][input.dataset.vfield]=input.value;
   });
-
   root.querySelectorAll("[data-vimage]").forEach(input=>{
     input.onchange=()=>{
       const i=Number(input.dataset.vimage);
       savedVariantImages[i]=input.files[0]||null;
-
       const preview=$("variantPreview"+i);
       if(!preview)return;
-
       if(input.files[0]){
         const url=URL.createObjectURL(input.files[0]);
         preview.innerHTML='<img class="variant-image-preview" src="'+url+'" alt="Selected variant image">';
       }else{
         const old=generatedVariants[i].image_url;
-        preview.innerHTML=old
-          ?'<img class="variant-image-preview" src="'+esc(old)+'" alt="Variant image">'
-          :"";
+        preview.innerHTML=old?'<img class="variant-image-preview" src="'+esc(old)+'" alt="Variant image">':"";
       }
     };
   });
@@ -671,40 +693,24 @@ function renderVariantEditor(){
 /* IMAGE UPLOAD */
 
 async function uploadToStorage(file,path){
-  if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
-    throw Error("Use JPG, PNG or WebP images.");
-  }
-  if(file.size>5*1024*1024){
-    throw Error("Each image must be 5 MB or smaller.");
-  }
+  if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw Error("Use JPG, PNG or WebP images.");
+  if(file.size>5*1024*1024)throw Error("Each image must be 5 MB or smaller.");
 
-  const {error}=await db.storage.from("veyora-products").upload(
-    path,file,{upsert:true,contentType:file.type}
-  );
+  const {error}=await db.storage.from("veyora-products").upload(path,file,{upsert:true,contentType:file.type});
   if(error)throw error;
-
   return db.storage.from("veyora-products").getPublicUrl(path).data.publicUrl;
 }
 
 async function saveProductImages(productId,fileList){
-  const sort=await result(
-    db.from("product_images").select("sort_order")
-      .eq("product_id",productId)
-      .order("sort_order",{ascending:false}).limit(1)
-  );
-
+  const sort=await result(db.from("product_images").select("sort_order")
+    .eq("product_id",productId).order("sort_order",{ascending:false}).limit(1));
   let n=(sort[0]?.sort_order??-1)+1;
 
   for(const file of fileList){
-    const path="products/"+productId+"/"+crypto.randomUUID()+"-"+
-      file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path="products/"+productId+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
     const url=await uploadToStorage(file,path);
-
     const {error}=await db.from("product_images").insert({
-      product_id:productId,
-      image_url:url,
-      alt_text:file.name,
-      sort_order:n++
+      product_id:productId,image_url:url,alt_text:file.name,sort_order:n++
     });
     if(error)throw error;
   }
@@ -719,41 +725,26 @@ async function saveGeneratedVariants(productId){
     const sale=v.sale_price===""||v.sale_price==null?null:Number(v.sale_price);
     const stock=Number(v.stock_quantity);
 
-    if(!Number.isFinite(retail)||retail<0){
-      throw Error("Invalid retail price: "+v.label);
-    }
-    if(sale!==null&&(!Number.isFinite(sale)||sale<0||sale>retail)){
-      throw Error("Sale price must not exceed retail price: "+v.label);
-    }
-    if(!Number.isInteger(stock)||stock<0){
-      throw Error("Invalid stock quantity: "+v.label);
-    }
+    if(!Number.isFinite(retail)||retail<0)throw Error("Invalid retail price: "+v.label);
+    if(sale!==null&&(!Number.isFinite(sale)||sale<0||sale>retail))throw Error("Sale price invalid: "+v.label);
+    if(!Number.isInteger(stock)||stock<0)throw Error("Invalid stock quantity: "+v.label);
 
     let imageUrl=v.image_url||null;
     const file=savedVariantImages[i];
-
     if(file){
-      const path="variants/"+productId+"/"+crypto.randomUUID()+"-"+
-        file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+      const path="variants/"+productId+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
       imageUrl=await uploadToStorage(file,path);
     }
 
     const payload={
-      product_id:productId,
-      option_name:v.option_name,
-      option_value:v.option_value,
-      retail_price:retail,
-      sale_price:sale,
-      stock_quantity:stock,
-      sku:String(v.sku||"").trim()||null,
-      barcode:String(v.barcode||"").trim()||null,
-      image_url:imageUrl,
-      sort_order:i
+      product_id:productId,option_name:v.option_name,option_value:v.option_value,
+      retail_price:retail,sale_price:sale,stock_quantity:stock,
+      sku:String(v.sku||"").trim()||null,barcode:String(v.barcode||"").trim()||null,
+      image_url:imageUrl,sort_order:i
     };
 
     if(v.id){
-      const {error}=await db.from("product_variants")
-        .update(payload).eq("id",v.id).eq("product_id",productId);
+      const {error}=await db.from("product_variants").update(payload).eq("id",v.id).eq("product_id",productId);
       if(error)throw error;
     }else{
       const {error}=await db.from("product_variants").insert(payload);
@@ -766,7 +757,6 @@ async function saveGeneratedVariants(productId){
 
 $("productForm").onsubmit=async e=>{
   e.preventDefault();
-
   const btn=$("saveProduct");
   btn.disabled=true;
 
@@ -776,66 +766,41 @@ $("productForm").onsubmit=async e=>{
     const sale=$("pSale").value===""?null:Number($("pSale").value);
     const stock=Number($("pStock").value);
 
-    if(!Number.isFinite(retail)||retail<0){
-      throw Error("Enter a valid retail price.");
-    }
-    if(sale!==null&&(!Number.isFinite(sale)||sale<0||sale>retail)){
-      throw Error("Sale price must be between zero and retail price.");
-    }
-    if(!Number.isInteger(stock)||stock<0){
-      throw Error("Product stock must be a non-negative whole number.");
-    }
+    if(!Number.isFinite(retail)||retail<0)throw Error("Enter a valid retail price.");
+    if(sale!==null&&(!Number.isFinite(sale)||sale<0||sale>retail))throw Error("Sale price must not exceed retail price.");
+    if(!Number.isInteger(stock)||stock<0)throw Error("Product stock must be a non-negative whole number.");
 
     const name=$("pName").value.trim();
     if(!name)throw Error("Product name is required.");
 
     const payload={
-      name,
-      slug:$("pSlug").value.trim()||slugify(name),
+      name,slug:$("pSlug").value.trim()||slugify(name),
       description:$("pDescription").value.trim()||null,
       category_id:$("pCategory").value||null,
-      sku:$("pSku").value.trim()||null,
-      barcode:$("pBarcode").value.trim()||null,
-      retail_price:retail,
-      sale_price:sale,
-      stock_quantity:stock,
-      is_active:$("pActive").checked,
-      is_featured:$("pFeatured").checked,
+      sku:$("pSku").value.trim()||null,barcode:$("pBarcode").value.trim()||null,
+      retail_price:retail,sale_price:sale,stock_quantity:stock,
+      is_active:$("pActive").checked,is_featured:$("pFeatured").checked,
       updated_at:new Date().toISOString()
     };
 
     let savedId=id;
-
     if(id){
       const {error}=await db.from("products").update(payload).eq("id",id);
       if(error)throw error;
     }else{
       const originalSlug=payload.slug;
       let saved=false;
-
       for(let attempt=1;attempt<=20&&!saved;attempt++){
         payload.slug=attempt===1?originalSlug:originalSlug+"-"+attempt;
-
-        const {data,error}=await db.from("products")
-          .insert(payload).select("id").single();
-
-        if(!error){
-          savedId=data.id;
-          saved=true;
-        }else if(error.code!=="23505"){
-          throw error;
-        }
+        const {data,error}=await db.from("products").insert(payload).select("id").single();
+        if(!error){savedId=data.id;saved=true;}
+        else if(error.code!=="23505")throw error;
       }
-
       if(!saved)throw Error("Unique slug nahi ban saka. Slug change karo.");
     }
 
-    if($("pImages").files.length){
-      await saveProductImages(savedId,$("pImages").files);
-    }
-
+    if($("pImages").files.length)await saveProductImages(savedId,$("pImages").files);
     await saveGeneratedVariants(savedId);
-
     resetProduct();
     await loadAll();
     notice("Product saved successfully.");
@@ -858,55 +823,29 @@ async function manageExistingVariants(productId){
   panel.scrollIntoView({behavior:"smooth"});
 
   try{
-    const list=await result(
-      db.from("product_variants").select("*")
-        .eq("product_id",productId).order("sort_order")
-    );
-
-    let html='<div class="row" style="justify-content:space-between">'+
-      '<h3>Saved variants</h3>'+
-      '<button id="closeExistingVariants" class="secondary">Close</button></div>';
+    const list=await result(db.from("product_variants").select("*").eq("product_id",productId).order("sort_order"));
+    let html='<div class="row" style="justify-content:space-between"><h3>Saved variants</h3><button id="closeExistingVariants" class="secondary">Close</button></div>';
 
     if(list.length){
-      html+='<div class="tablewrap"><table><thead><tr>'+
-        '<th>Option</th><th>Value</th><th>Image</th><th>Retail</th>'+
-        '<th>Sale</th><th>Stock</th><th>SKU</th><th>Actions</th>'+
-        '</tr></thead><tbody>';
-
+      html+='<div class="tablewrap"><table><thead><tr><th>Option</th><th>Value</th><th>Image</th><th>Retail</th><th>Sale</th><th>Stock</th><th>SKU</th><th>Actions</th></tr></thead><tbody>';
       list.forEach(v=>{
-        html+='<tr>'+
-          '<td>'+esc(v.option_name)+'</td>'+
-          '<td>'+esc(v.option_value)+'</td>'+
+        html+='<tr><td>'+esc(v.option_name)+'</td><td>'+esc(v.option_value)+'</td>'+
           '<td>'+(v.image_url?'<img class="variant-preview" src="'+esc(v.image_url)+'" alt="">':'—')+'</td>'+
-          '<td>'+esc(money(v.retail_price))+'</td>'+
-          '<td>'+esc(v.sale_price==null?"—":money(v.sale_price))+'</td>'+
-          '<td>'+esc(v.stock_quantity)+'</td>'+
-          '<td>'+esc(v.sku||"—")+'</td>'+
-          '<td><button data-edit-v="'+esc(v.id)+'">Edit</button>'+
-          '<button class="danger" data-delete-v="'+esc(v.id)+'">Delete</button></td>'+
-          '</tr>';
+          '<td>'+esc(money(v.retail_price))+'</td><td>'+esc(v.sale_price==null?"—":money(v.sale_price))+'</td>'+
+          '<td>'+esc(v.stock_quantity)+'</td><td>'+esc(v.sku||"—")+'</td>'+
+          '<td><button data-edit-v="'+esc(v.id)+'">Edit</button><button class="danger" data-delete-v="'+esc(v.id)+'">Delete</button></td></tr>';
       });
-
       html+="</tbody></table></div>";
-    }else{
-      html+='<p class="muted">No saved variants yet.</p>';
-    }
+    }else html+='<p class="muted">No saved variants yet.</p>';
 
-    html+='<form id="existingVariantForm" hidden>'+
-      '<h3>Edit variant</h3><input id="evId" type="hidden">'+
-      '<div class="formgrid">'+
-      '<div><label>Option name</label><input id="evName" required></div>'+
-      '<div><label>Option value</label><input id="evValue" required></div>'+
+    html+='<form id="existingVariantForm" hidden><h3>Edit variant</h3><input id="evId" type="hidden"><div class="formgrid">'+
+      '<div><label>Option name</label><input id="evName" required></div><div><label>Option value</label><input id="evValue" required></div>'+
       '<div><label>Retail price</label><input id="evRetail" type="number" min="0" step="0.01" required></div>'+
       '<div><label>Sale price</label><input id="evSale" type="number" min="0" step="0.01"></div>'+
       '<div><label>Stock</label><input id="evStock" type="number" min="0" step="1" required></div>'+
-      '<div><label>SKU</label><input id="evSku"></div>'+
-      '<div><label>Barcode</label><input id="evBarcode"></div>'+
+      '<div><label>SKU</label><input id="evSku"></div><div><label>Barcode</label><input id="evBarcode"></div>'+
       '<div><label>Replace image (optional)</label><input id="evImage" type="file" accept="image/jpeg,image/png,image/webp"></div>'+
-      '</div><div class="row">'+
-      '<button type="submit" id="evSave">Save Variant</button>'+
-      '<button type="button" id="evCancel" class="secondary">Cancel</button>'+
-      '</div></form>';
+      '</div><div class="row"><button type="submit" id="evSave">Save Variant</button><button type="button" id="evCancel" class="secondary">Cancel</button></div></form>';
 
     panel.innerHTML=html;
     $("closeExistingVariants").onclick=()=>panel.hidden=true;
@@ -914,93 +853,53 @@ async function manageExistingVariants(productId){
     panel.querySelectorAll("[data-edit-v]").forEach(b=>b.onclick=()=>{
       const v=list.find(x=>String(x.id)===b.dataset.editV);
       if(!v)return;
-
       $("existingVariantForm").hidden=false;
-      $("evId").value=v.id;
-      $("evName").value=v.option_name||"";
-      $("evValue").value=v.option_value||"";
-      $("evRetail").value=v.retail_price??0;
-      $("evSale").value=v.sale_price??"";
-      $("evStock").value=v.stock_quantity??0;
-      $("evSku").value=v.sku||"";
-      $("evBarcode").value=v.barcode||"";
-      $("evImage").value="";
+      $("evId").value=v.id;$("evName").value=v.option_name||"";$("evValue").value=v.option_value||"";
+      $("evRetail").value=v.retail_price??0;$("evSale").value=v.sale_price??"";$("evStock").value=v.stock_quantity??0;
+      $("evSku").value=v.sku||"";$("evBarcode").value=v.barcode||"";$("evImage").value="";
       $("existingVariantForm").scrollIntoView({behavior:"smooth"});
     });
 
     panel.querySelectorAll("[data-delete-v]").forEach(b=>b.onclick=async()=>{
       if(!confirm("Delete this variant?"))return;
-
       try{
-        const {error}=await db.from("product_variants").delete()
-          .eq("id",b.dataset.deleteV).eq("product_id",productId);
+        const {error}=await db.from("product_variants").delete().eq("id",b.dataset.deleteV).eq("product_id",productId);
         if(error)throw error;
-
         notice("Variant deleted.");
         await manageExistingVariants(productId);
-      }catch(err){
-        notice("Delete failed: "+err.message,true);
-      }
+      }catch(err){notice("Delete failed: "+err.message,true);}
     });
 
     $("evCancel").onclick=()=>{$("existingVariantForm").hidden=true;};
-
     $("existingVariantForm").onsubmit=async e=>{
       e.preventDefault();
-      const btn=$("evSave");
-      btn.disabled=true;
-
+      const btn=$("evSave");btn.disabled=true;
       try{
         const retail=Number($("evRetail").value);
         const sale=$("evSale").value===""?null:Number($("evSale").value);
         const stock=Number($("evStock").value);
-
         if(!Number.isFinite(retail)||retail<0)throw Error("Invalid retail price.");
-        if(sale!==null&&(!Number.isFinite(sale)||sale<0||sale>retail)){
-          throw Error("Sale price must be between zero and retail price.");
-        }
-        if(!Number.isInteger(stock)||stock<0){
-          throw Error("Stock must be a non-negative whole number.");
-        }
+        if(sale!==null&&(!Number.isFinite(sale)||sale<0||sale>retail))throw Error("Invalid sale price.");
+        if(!Number.isInteger(stock)||stock<0)throw Error("Stock must be a non-negative whole number.");
 
         const old=list.find(x=>String(x.id)===$("evId").value);
         let imageUrl=old?.image_url||null;
         const file=$("evImage").files[0];
-
-        if(file){
-          imageUrl=await uploadToStorage(
-            file,"variants/"+productId+"/"+crypto.randomUUID()+"-"+
-            file.name.replace(/[^a-zA-Z0-9._-]/g,"_")
-          );
-        }
+        if(file)imageUrl=await uploadToStorage(file,"variants/"+productId+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_"));
 
         const payload={
-          option_name:$("evName").value.trim(),
-          option_value:$("evValue").value.trim(),
-          retail_price:retail,
-          sale_price:sale,
-          stock_quantity:stock,
-          sku:$("evSku").value.trim()||null,
-          barcode:$("evBarcode").value.trim()||null,
-          image_url:imageUrl
+          option_name:$("evName").value.trim(),option_value:$("evValue").value.trim(),
+          retail_price:retail,sale_price:sale,stock_quantity:stock,
+          sku:$("evSku").value.trim()||null,barcode:$("evBarcode").value.trim()||null,image_url:imageUrl
         };
-
-        const {error}=await db.from("product_variants").update(payload)
-          .eq("id",$("evId").value).eq("product_id",productId);
-
+        const {error}=await db.from("product_variants").update(payload).eq("id",$("evId").value).eq("product_id",productId);
         if(error)throw error;
-
         notice("Variant updated.");
         await manageExistingVariants(productId);
-      }catch(err){
-        notice("Could not save variant: "+err.message,true);
-      }finally{
-        btn.disabled=false;
-      }
+      }catch(err){notice("Could not save variant: "+err.message,true);}
+      finally{btn.disabled=false;}
     };
-  }catch(err){
-    panel.innerHTML="Could not load variants: "+esc(err.message);
-  }
+  }catch(err){panel.innerHTML="Could not load variants: "+esc(err.message);}
 }
 
 /* PRODUCT DELETE AND IMAGES */
@@ -1012,36 +911,23 @@ async function deleteProduct(id){
   try{
     let r=await db.from("product_images").delete().eq("product_id",id);
     if(r.error)throw r.error;
-
     r=await db.from("product_variants").delete().eq("product_id",id);
     if(r.error)throw r.error;
-
     r=await db.from("products").delete().eq("id",id);
     if(r.error)throw r.error;
-
     await loadAll();
     notice("Product deleted.");
-  }catch(err){
-    notice("Delete failed: "+err.message,true);
-  }
+  }catch(err){notice("Delete failed: "+err.message,true);}
 }
 
 async function uploadImages(id){
   const input=document.createElement("input");
-  input.type="file";
-  input.multiple=true;
-  input.accept="image/jpeg,image/png,image/webp";
-
+  input.type="file";input.multiple=true;input.accept="image/jpeg,image/png,image/webp";
   input.onchange=async()=>{
     if(!input.files.length)return;
-    try{
-      await saveProductImages(id,input.files);
-      notice("Images uploaded.");
-    }catch(err){
-      notice("Image upload failed: "+err.message,true);
-    }
+    try{await saveProductImages(id,input.files);notice("Images uploaded.");}
+    catch(err){notice("Image upload failed: "+err.message,true);}
   };
-
   input.click();
 }
 
@@ -1056,136 +942,192 @@ function renderCategories(){
       '<button data-delete-category="'+esc(c.id)+'" class="danger">Delete</button>'
     ])
   );
-
-  $("categoriesTable").querySelectorAll("[data-edit-category]")
-    .forEach(b=>b.onclick=()=>editCategory(b.dataset.editCategory));
-  $("categoriesTable").querySelectorAll("[data-delete-category]")
-    .forEach(b=>b.onclick=()=>deleteCategory(b.dataset.deleteCategory));
+  $("categoriesTable").querySelectorAll("[data-edit-category]").forEach(b=>b.onclick=()=>editCategory(b.dataset.editCategory));
+  $("categoriesTable").querySelectorAll("[data-delete-category]").forEach(b=>b.onclick=()=>deleteCategory(b.dataset.deleteCategory));
 }
 
 function resetCategory(){
-  $("categoryForm").reset();
-  $("cId").value="";
-  $("cActive").checked=true;
-  $("categoryForm").hidden=true;
+  $("categoryForm").reset();$("cId").value="";$("cActive").checked=true;$("categoryForm").hidden=true;
 }
-
-$("newCategory").onclick=()=>{
-  resetCategory();
-  $("categoryForm").hidden=false;
-};
+$("newCategory").onclick=()=>{resetCategory();$("categoryForm").hidden=false;};
 $("cancelCategory").onclick=resetCategory;
 
 function editCategory(id){
   const c=categories.find(x=>String(x.id)===String(id));
   if(!c)return;
-
-  $("cId").value=c.id;
-  $("cName").value=c.name||"";
-  $("cSlug").value=c.slug||"";
-  $("cImage").value=c.image_url||"";
-  $("cSort").value=c.sort_order??0;
-  $("cActive").checked=!!c.is_active;
-  $("categoryForm").hidden=false;
+  $("cId").value=c.id;$("cName").value=c.name||"";$("cSlug").value=c.slug||"";
+  $("cImage").value=c.image_url||"";$("cSort").value=c.sort_order??0;
+  $("cActive").checked=!!c.is_active;$("categoryForm").hidden=false;
 }
 
 $("categoryForm").onsubmit=async e=>{
   e.preventDefault();
-  const btn=$("saveCategory");
-  btn.disabled=true;
-
+  const btn=$("saveCategory");btn.disabled=true;
   try{
     const id=$("cId").value;
     const name=$("cName").value.trim();
-
+    if(!name)throw Error("Category name is required.");
     const payload={
-      name,
-      slug:$("cSlug").value.trim()||slugify(name),
+      name,slug:$("cSlug").value.trim()||slugify(name),
       image_url:$("cImage").value.trim()||null,
-      sort_order:Number($("cSort").value),
-      is_active:$("cActive").checked
+      sort_order:Number($("cSort").value),is_active:$("cActive").checked
     };
-
-    const q=id
-      ?db.from("categories").update(payload).eq("id",id)
-      :db.from("categories").insert(payload);
-
-    const {error}=await q;
-    if(error)throw error;
-
-    resetCategory();
-    await loadAll();
-    notice("Category saved.");
-  }catch(err){
-    notice("Could not save category: "+err.message,true);
-  }finally{
-    btn.disabled=false;
-  }
+    const q=id?db.from("categories").update(payload).eq("id",id):db.from("categories").insert(payload);
+    const {error}=await q;if(error)throw error;
+    resetCategory();await loadAll();notice("Category saved.");
+  }catch(err){notice("Could not save category: "+err.message,true);}
+  finally{btn.disabled=false;}
 };
 
 async function deleteCategory(id){
   if(products.some(p=>String(p.category_id)===String(id))){
-    alert("This category has products. Move those products to another category first.");
-    return;
+    alert("This category has products. Move those products to another category first.");return;
   }
-
   if(!confirm("Delete this category?"))return;
-
   try{
     const {error}=await db.from("categories").delete().eq("id",id);
     if(error)throw error;
-
-    await loadAll();
-    notice("Category deleted.");
-  }catch(err){
-    notice("Delete failed: "+err.message,true);
-  }
+    await loadAll();notice("Category deleted.");
+  }catch(err){notice("Delete failed: "+err.message,true);}
 }
 
-/* ORDERS */
+/* ORDERS AND ORDER ITEMS */
 
-function renderOrders(){
+async function renderOrders(){
+  $("ordersTable").innerHTML='<p class="muted">Loading orders and product items...</p>';
+
+  try{
+    orderItemsCache=await result(
+      db.from("order_items")
+        .select("id,order_id,product_id,variant_id,product_name,variant_name,quantity,unit_price,line_total,product_image,created_at")
+        .order("created_at",{ascending:false})
+        .limit(2000)
+    );
+  }catch(err){
+    orderItemsCache=[];
+    console.error("Could not load order items:",err);
+  }
+
   $("ordersTable").innerHTML=table(
-    ["Order ID","Customer","Contact","City","Total","Payment","Status","Tracking","Date","Actions"],
+    ["Order ID","Customer","Contact","City","Subtotal","Delivery","Total","Payment","Status","Tracking","Date","Actions"],
     orders.map(o=>[
       esc(o.id),
       esc(o.customer_name),
       esc((o.phone||"")+(o.email?" / "+o.email:"")),
       esc(o.city),
-      esc(money(o.total)),
+      esc(money(o.subtotal)),
+      esc(money(o.delivery_charges)),
+      esc(money(o.total??(Number(o.subtotal||0)+Number(o.delivery_charges||0)))),
       esc(o.payment_method),
       esc(o.status),
       esc(o.tracking_number||"—"),
       esc(o.created_at?new Date(o.created_at).toLocaleDateString():"—"),
+      '<button data-order-details="'+esc(o.id)+'">View Details</button>'+
       '<button data-order="'+esc(o.id)+'">Update</button>'
     ])
   );
 
-  $("ordersTable").querySelectorAll("[data-order]")
-    .forEach(b=>b.onclick=()=>updateOrder(b.dataset.order));
+  $("ordersTable").querySelectorAll("[data-order-details]").forEach(b=>{
+    b.onclick=()=>showOrderDetails(b.dataset.orderDetails);
+  });
+  $("ordersTable").querySelectorAll("[data-order]").forEach(b=>{
+    b.onclick=()=>updateOrder(b.dataset.order);
+  });
 
   $("recentOrders").innerHTML=table(
-    ["Order","Customer","Total","Status"],
+    ["Order","Customer","Total","Status","Details"],
     orders.slice(0,5).map(o=>[
-      esc(o.id),esc(o.customer_name),esc(money(o.total)),esc(o.status)
+      esc(o.id),esc(o.customer_name),esc(money(o.total)),esc(o.status),
+      '<button data-recent-details="'+esc(o.id)+'">View Details</button>'
     ])
   );
+
+  $("recentOrders").querySelectorAll("[data-recent-details]").forEach(b=>{
+    b.onclick=()=>showOrderDetails(b.dataset.recentDetails);
+  });
+}
+
+function showOrderDetails(orderId){
+  const o=orders.find(x=>String(x.id)===String(orderId));
+  if(!o)return;
+
+  const items=orderItemsCache.filter(item=>String(item.order_id)===String(orderId));
+  const panel=$("orderDetailsPanel");
+
+  let html='<div class="row" style="justify-content:space-between">'+
+    '<h2 class="section-title">Order Details</h2>'+
+    '<button type="button" class="secondary" id="closeOrderDetails">Close</button></div>';
+
+  html+='<div class="formgrid">';
+  html+='<div><p><b>Order ID</b><br>'+esc(o.id)+'</p></div>';
+  html+='<div><p><b>Customer</b><br>'+esc(o.customer_name||"—")+'</p></div>';
+  html+='<div><p><b>Phone</b><br>'+esc(o.phone||"—")+'</p></div>';
+  html+='<div><p><b>Email</b><br>'+esc(o.email||"Not provided")+'</p></div>';
+  html+='<div><p><b>Address</b><br>'+esc(o.address||"—")+'</p></div>';
+  html+='<div><p><b>City</b><br>'+esc(o.city||"—")+'</p></div>';
+  html+='<div><p><b>Payment method</b><br>'+esc(o.payment_method||"COD")+'</p></div>';
+  html+='<div><p><b>Status</b><br>'+esc(o.status||"Pending")+'</p></div>';
+  html+='<div><p><b>Tracking number</b><br>'+esc(o.tracking_number||"Not added")+'</p></div>';
+  html+='<div><p><b>Order date</b><br>'+esc(o.created_at?new Date(o.created_at).toLocaleString():"—")+'</p></div>';
+  html+='</div>';
+
+  html+='<h3 class="section-title">Products in this order</h3>';
+
+  if(!items.length){
+    html+='<div class="notice">No order items were found for this order. The checkout must also insert the products into the <b>order_items</b> table.</div>';
+  }else{
+    html+='<div class="tablewrap"><table><thead><tr>'+
+      '<th>Image</th><th>Product</th><th>Variant / Design</th><th>Quantity</th><th>Unit Price</th><th>Line Total</th>'+
+      '</tr></thead><tbody>';
+
+    items.forEach(item=>{
+      const image=item.product_image
+        ?'<img class="order-product-image" src="'+esc(item.product_image)+'" alt="'+esc(item.product_name||"Product")+'" onerror="this.style.display=\'none\'">'
+        :'<span class="muted">No image saved</span>';
+
+      html+='<tr>'+
+        '<td>'+image+'</td>'+
+        '<td>'+esc(item.product_name||"Product")+'</td>'+
+        '<td>'+esc(item.variant_name||"Default design")+'</td>'+
+        '<td>'+esc(item.quantity??0)+'</td>'+
+        '<td>'+esc(money(item.unit_price))+'</td>'+
+        '<td>'+esc(money(item.line_total))+'</td>'+
+        '</tr>';
+    });
+
+    html+='</tbody></table></div>';
+  }
+
+  const subtotal=Number(o.subtotal||0);
+  const delivery=Number(o.delivery_charges||0);
+  const total=Number(o.total??(subtotal+delivery));
+
+  html+='<div class="option-card">';
+  html+='<p><b>Subtotal:</b> '+esc(money(subtotal))+'</p>';
+  html+='<p><b>Delivery charges:</b> '+esc(money(delivery))+'</p>';
+  html+='<h3>Total: '+esc(money(total))+'</h3>';
+  html+='</div>';
+
+  html+='<div class="row"><button type="button" id="detailsUpdateOrder">Update Status / Tracking</button></div>';
+
+  panel.innerHTML=html;
+  panel.hidden=false;
+  $("closeOrderDetails").onclick=()=>panel.hidden=true;
+  $("detailsUpdateOrder").onclick=()=>updateOrder(o.id);
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 async function updateOrder(id){
   const o=orders.find(x=>String(x.id)===String(id));
   if(!o)return;
 
-  const statuses=["Pending","Confirmed","Packed","Shipped","Dispatched","Delivered","Cancelled"];
-  const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Pending";
+  const statuses=["Confirmed","Dispatched","Shipping","Delivered","Cancelled"];
+  const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Confirmed";
   const status=prompt("Order status:\n"+statuses.join(", "),current);
   if(status===null)return;
 
   const chosen=statuses.find(s=>s.toLowerCase()===status.trim().toLowerCase());
-  if(!chosen){
-    alert("Choose one of the listed statuses.");
-    return;
-  }
+  if(!chosen){alert("Choose one of the listed statuses.");return;}
 
   const tracking=prompt("Tracking number (leave blank to clear):",o.tracking_number||"");
   if(tracking===null)return;
@@ -1198,12 +1140,9 @@ async function updateOrder(id){
     }).eq("id",id);
 
     if(error)throw error;
-
     await loadAll();
     notice("Order updated.");
-  }catch(err){
-    notice("Could not update order: "+err.message,true);
-  }
+  }catch(err){notice("Could not update order: "+err.message,true);}
 }
 
 /* LOGIN */
@@ -1212,13 +1151,11 @@ $("loginForm").onsubmit=async e=>{
   e.preventDefault();
   $("loginBtn").disabled=true;
   $("loginMessage").textContent="Checking login…";
-
   try{
     const {error}=await db.auth.signInWithPassword({
       email:$("email").value.trim(),
       password:$("password").value
     });
-
     if(error)throw error;
     await verifyAdmin();
   }catch(err){
@@ -1234,6 +1171,7 @@ $("logout").onclick=async()=>{
 };
 
 $("refresh").onclick=loadAll;
+$("refreshOrders").onclick=loadAll;
 
 verifyAdmin().catch(err=>showLogin("Could not verify session: "+err.message));
 </script>
