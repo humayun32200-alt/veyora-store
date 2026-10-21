@@ -313,12 +313,6 @@ async function verifyAdmin() {
   }
 }
 
-  $("login").hidden=true;
-  $("app").hidden=false;
-  $("logout").hidden=false;
-  await loadAll();
-}
-
 function showLogin(msg=""){
   $("app").hidden=true;
   $("login").hidden=false;
