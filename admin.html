@@ -273,17 +273,45 @@ async function result(q){
   return data||[];
 }
 
-async function verifyAdmin(){
-  const {data:{session},error}=await db.auth.getSession();
-  if(error)throw error;
-  if(!session){showLogin();return;}
+async function verifyAdmin() {
+  try {
+    const { data: { session }, error } = await db.auth.getSession();
 
-  const {data:{user},error:e}=await db.auth.getUser();
-  if(e||!user||user.app_metadata?.role!=="admin"){
-    await db.auth.signOut();
-    showLogin("This account is not authorized as admin.");
-    return;
+    if (error) throw error;
+
+    if (!session) {
+      showLogin();
+      return;
+    }
+
+    const { data: { user }, error: userError } =
+      await db.auth.getUser();
+
+    const allowedEmail = "humayun32200@gmail.com";
+
+    if (
+      userError ||
+      !user ||
+      user.email?.toLowerCase() !== allowedEmail ||
+      user.app_metadata?.role !== "admin"
+    ) {
+      await db.auth.signOut();
+
+      showLogin("Access denied. Only the authorized admin can log in.");
+      return;
+    }
+
+    $("login").hidden = true;
+    $("app").hidden = false;
+    $("logout").hidden = false;
+
+    await loadAll();
+
+  } catch (error) {
+    console.error("Admin verification error:", error);
+    showLogin("Verification failed. Please try logging in again.");
   }
+}
 
   $("login").hidden=true;
   $("app").hidden=false;
