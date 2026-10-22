@@ -440,9 +440,19 @@ $('loginForm').addEventListener('submit',async e=>{
   if(error)throw error;await enter(data.user);
  }catch(e){$('loginError').textContent=err(e);}
 });
-async function enter(user){
- $('loginModal').classList.add('hidden');$('userBadge').textContent=user?.email||'Admin';
- await Promise.allSettled([loadCategories(),loadProducts(),loadOrders(),loadAnalytics()]);
+async function enter(user) {
+  $('loginModal').classList.add('hidden');
+  $('userBadge').textContent = user?.email || 'Admin';
+
+  try {
+    await loadCategories();
+    await loadProducts();
+    await loadOrders();
+    await loadAnalytics();
+    note('Dashboard data refreshed successfully.');
+  } catch (e) {
+    note('Dashboard refresh failed: ' + err(e), true);
+  }
 }
 (async()=>{
  if(!db){$('loginError').textContent='Supabase could not load. Refresh and try again.';return;}
