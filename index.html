@@ -132,13 +132,7 @@ nav a:hover,nav button:hover{color:var(--gold-light)}
   color:#e9dfc9;padding:11px 18px;font-size:10px;letter-spacing:1px;text-transform:uppercase
 }
 .category-button.active,.category-button:hover{border-color:var(--gold);background:var(--gold);color:#17130b}
-
 .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px}
-
-@media(max-width:600px){
-  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-}
-
 .product-card{background:#0d0d0b;min-width:0;border:1px solid #51432a;overflow:hidden;transition:.2s}
 .product-card:hover{transform:translateY(-3px);border-color:var(--gold)}
 .image-wrap{position:relative;overflow:hidden;background:#17150f}
@@ -588,15 +582,6 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 
 </div>
     <div class="product-grid" id="productGrid">
-      
-<div style="text-align:right;margin:8px 0 12px">
-  <button type="button"
-    onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth'})"
-    style="background:transparent;border:0;color:#c9a45c;font-size:12px;cursor:pointer">
-    See More ↓
-  </button>
-</div>
-
       <div class="empty-state">Loading VEYORA collection...</div>
     </div>
   </section>
@@ -797,7 +782,6 @@ const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({
 const money = value => "Rs " + Number(value || 0).toLocaleString("en-PK");
 
 let products = [];
-  let visibleProductCount = 0;
 let categories = [];
 let productImages = [];
 let variants = [];
@@ -1084,9 +1068,9 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
   $("categoryList").innerHTML =
-    `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
+    <button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button> +
     visible.map(category =>
-      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
+      <button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>
     ).join("");
 
   $("categoryList").querySelectorAll("[data-category]").forEach(button => {
@@ -1099,72 +1083,57 @@ function renderCategories() {
   });
 }
 
+function renderProducts() {
+  
+const query = $("searchInput").value.trim().toLowerCase();
 
-function renderProducts(resetVisible = true) {
-  const query = $("searchInput").value.trim().toLowerCase();
-  const initialCount = window.innerWidth <= 600 ? 9 : 8;
+let filtered = products.filter(product => {
+  if (!productIsActive(product)) return false;
 
-  if (resetVisible || !visibleProductCount) {
-    visibleProductCount = initialCount;
-  }
+  const categoryMatches = activeCategory === "all" ||
+    String(product.category_id) === String(activeCategory);
 
-  let filtered = products.filter(product => {
-    if (!productIsActive(product)) return false;
+  const saleMatches = !saleCategory || isOnSale(product);
 
-    const categoryMatches = activeCategory === "all" ||
-      String(product.category_id) === String(activeCategory);
+  const searchMatches = !query ||
+    String(product.name || "").toLowerCase().includes(query) ||
+    String(product.description || "").toLowerCase().includes(query) ||
+    getProductCategory(product).toLowerCase().includes(query);
 
-    const saleMatches = !saleCategory || isOnSale(product);
+  return categoryMatches && saleMatches && searchMatches;
+});
 
-    const searchMatches = !query ||
-      String(product.name || "").toLowerCase().includes(query) ||
-      String(product.description || "").toLowerCase().includes(query) ||
-      getProductCategory(product).toLowerCase().includes(query);
+if (activeSort === "low") {
+  filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
+} else if (activeSort === "high") {
+  filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
+}
 
-    return categoryMatches && saleMatches && searchMatches;
-  });
-
-  if (activeSort === "low") {
-    filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
-  } else if (activeSort === "high") {
-    filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
-  }
-
-  const wrap = $("seeMoreWrap");
-  const countText = $("productsCountText");
 
   if (!filtered.length) {
     $("productGrid").innerHTML =
       `<div class="empty-state">${products.length
         ? "No products found. Try another search or category."
         : "Your products will appear here after you add them in the admin panel."}</div>`;
-
-    if (wrap) wrap.hidden = true;
     return;
   }
 
-  const visibleProducts = filtered.slice(0, visibleProductCount);
-
-  $("productGrid").innerHTML = visibleProducts.map(product => {
+  $("productGrid").innerHTML = filtered.map(product => {
     const image = getProductImage(product);
     const sale = isOnSale(product);
     const name = escapeHTML(product.name || "VEYORA product");
-
     const imageHTML = image
-      ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`
-      : `<div class="image-placeholder">VEYORA</div>`;
+      ? <img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>
+      : <div class="image-placeholder">VEYORA</div>;
 
     return `<article class="product-card">
-      <div class="image-wrap">
-        ${imageHTML}
-        ${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}
-      </div>
+      <div class="image-wrap">${imageHTML}${sale ? <span class="sale-badge">${discountPercent(product)}% OFF</span> : ""}</div>
       <div class="product-info">
         <div class="product-category">${escapeHTML(getProductCategory(product))}</div>
         <div class="product-name">${name}</div>
         <div class="prices">
           <span class="sale-price">${money(currentPrice(product))}</span>
-          ${sale ? `<span class="old-price">${money(product.retail_price)}</span>` : ""}
+          ${sale ? <span class="old-price">${money(product.retail_price)}</span> : ""}
         </div>
         <div class="product-actions">
           <button class="small-button" data-details="${escapeHTML(product.id)}" type="button">QUICK VIEW</button>
@@ -1174,19 +1143,9 @@ function renderProducts(resetVisible = true) {
     </article>`;
   }).join("");
 
-  if (wrap) {
-    wrap.hidden = filtered.length <= visibleProducts.length;
-  }
-
-  if (countText) {
-    countText.textContent =
-      `Showing ${visibleProducts.length} of ${filtered.length} products`;
-  }
-
   $("productGrid").querySelectorAll("[data-add]").forEach(button => {
     button.addEventListener("click", () => quickAdd(button.dataset.add));
   });
-
   $("productGrid").querySelectorAll("[data-details]").forEach(button => {
     button.addEventListener("click", () => showProductDetails(button.dataset.details));
   });
@@ -1240,10 +1199,10 @@ function renderCart() {
   $("checkoutButton").disabled = false;
   $("cartItems").innerHTML = cart.map(item => `
     <div class="cart-item">
-      ${item.image ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'">` : ""}
+      ${item.image ? <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'"> : ""}
       <span style="flex:1">
         <strong>${escapeHTML(item.name)}</strong>
-        ${item.variant_name ? `<br><small>${escapeHTML(item.variant_name)}</small>` : ""}
+        ${item.variant_name ? <br><small>${escapeHTML(item.variant_name)}</small> : ""}
         <br>Qty: ${Number(item.quantity)}
         <br>${money(item.price)} each
       </span>
@@ -1279,14 +1238,14 @@ function showProductDetails(id) {
   const firstImage = firstVariant?.image_url || mainImage;
 
   const imageHTML = firstImage
-    ? `<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`
-    : `<div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>`;
+    ? <img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">
+    : <div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>;
 
   const variantsHTML = productVariantList.length
     ? `<label class="variant-label">Choose design / variant</label>
        <div class="design-options" id="designOptions">
        ${productVariantList.map((variant, index) =>
-         `<button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>`
+         <button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>
        ).join("")}
        </div>
        <div class="design-image-label" id="selectedDesignName"></div>
@@ -1315,7 +1274,7 @@ function showProductDetails(id) {
     } else if (imageURL) {
       const placeholder = $("detailImagePlaceholder");
       if (placeholder) placeholder.outerHTML =
-        `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
+        <img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">;
     }
 
     $("detailPrice").innerHTML = "<strong>" + money(variantPrice(variant, product)) + "</strong>";
@@ -1776,14 +1735,6 @@ loadStore();
     console.error("Analytics setup error:", error);
   }
 })();
-  const seeMoreButton = $("seeMoreButton");
-
-if (seeMoreButton) {
-  seeMoreButton.addEventListener("click", () => {
-    visibleProductCount += 8;
-    renderProducts(false);
-  });
-}
 </script>
 </body>
 </html>
