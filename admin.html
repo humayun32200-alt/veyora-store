@@ -87,7 +87,22 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
    <div class="stat"><small>Conversion Rate</small><strong id="sConversion">0%</strong></div>
   </div>
   <p style="color:#999;font-size:11px;margin:12px 0">*Visitor figures depend on analytics events recorded by your storefront.</p>
-  <div class="panel" style="margin-top:18px"><h3>Session Analytics</h3><canvas id="chart" height="100"></canvas></div>
+  
+<div class="panel" style="margin-top:18px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+    <h3>Session Analytics</h3>
+    <select id="overviewPeriod" class="field" style="width:auto;min-width:140px;margin-top:0">
+      <option value="7">Last 7 Days</option>
+      <option value="30">Last 1 Month</option>
+      <option value="90">Last 3 Months</option>
+      <option value="180">Last 6 Months</option>
+      <option value="365">Last 1 Year</option>
+      <option value="all">All Time</option>
+    </select>
+  </div>
+  <canvas id="chart" height="100"></canvas>
+</div>
+
   <div class="panel" style="margin-top:18px"><h3>Recent Orders</h3><div style="overflow:auto"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Tracking Number</th></tr></thead><tbody id="recentOrders"></tbody></table></div></div>
  </section>
 
@@ -482,7 +497,15 @@ if (resetAt) {
  if(chart)chart.destroy();
  if(window.Chart&&$('chart'))chart=new Chart($('chart'),{type:'line',data:{labels,datasets:[{label:'Events',data:labels.map(k=>daily[k]),borderColor:'#C9A45C',backgroundColor:'rgba(201,164,92,.12)',fill:true}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#aaa'}},y:{beginAtZero:true,ticks:{color:'#aaa',precision:0}}}}});
 }
-$('period').addEventListener('change',loadAnalytics);
+$('period').addEventListener('change',()=>{
+  $('overviewPeriod').value=$('period').value;
+  loadAnalytics();
+});
+
+$('overviewPeriod').addEventListener('change',()=>{
+  $('period').value=$('overviewPeriod').value;
+  loadAnalytics();
+});
 $('logoutBtn').onclick=async()=>{await db.auth.signOut();$('loginModal').classList.remove('hidden');};
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();$('loginError').textContent='';
