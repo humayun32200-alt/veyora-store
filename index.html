@@ -729,18 +729,51 @@ function productIsActive(product) {
 }
 
 document.querySelectorAll("[data-showcase-category]").forEach(tile => {
-  tile.addEventListener("click", () => {
+  tile.addEventListener("click", event => {
+    event.preventDefault();
+
     const key = tile.dataset.showcaseCategory.toLowerCase();
+
     const match = categories.find(category => {
-      const name = String(category.name || "").toLowerCase();
-      if (key === "bedding") return name.includes("bed");
-      if (key === "home") return name.includes("home") || name.includes("accessor");
-      return name.includes(key);
+      const name = String(category.name || "").trim().toLowerCase();
+
+      if (key === "men") {
+        return name.includes("men") && !name.includes("women");
+      }
+
+      if (key === "women") {
+        return name.includes("women");
+      }
+
+      if (key === "bedding") {
+        return name.includes("bedsheet") ||
+               name.includes("bedding") ||
+               name.includes("bed");
+      }
+
+      if (key === "home") {
+        return name.includes("home") ||
+               name.includes("accessor");
+      }
+
+      return false;
     });
-    if (match) activeCategory = String(match.id);
-    else activeCategory = "all";
+
+    if (!match) {
+      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
+      return;
+    }
+
+    activeCategory = String(match.id);
+    $("searchInput").value = "";
+
     renderCategories();
     renderProducts();
+
+    document.getElementById("products").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
   });
 });
 
