@@ -787,6 +787,8 @@ let productImages = [];
 let variants = [];
 let cart = [];
 let activeCategory = "all";
+  let activeSort = "";
+let saleCategory = "";
 
 $("year").textContent = new Date().getFullYear();
 
@@ -833,11 +835,121 @@ $("cartButton").addEventListener("click", () => {
 });
 $("searchButton").addEventListener("click", renderProducts);
 $("searchInput").addEventListener("input", renderProducts);
+
 $("shopAllLink").addEventListener("click", () => {
   activeCategory = "all";
+  saleCategory = "";
+  activeSort = "";
+
+  $("searchInput").value = "";
+
+  $("priceOptions").querySelectorAll("[data-sort]").forEach(button => {
+    button.classList.remove("selected");
+  });
+
+  $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
+    button.classList.remove("selected");
+  });
+
+  closeCollectionMenus();
   renderCategories();
   renderProducts();
 });
+
+  
+function closeCollectionMenus() {
+  $("priceOptions").hidden = true;
+  $("saleOptions").hidden = true;
+
+  $("priceToggle").setAttribute("aria-expanded", "false");
+  $("saleToggle").setAttribute("aria-expanded", "false");
+
+  document.querySelectorAll(".control-chevron").forEach(el => {
+    el.textContent = "⌄";
+  });
+}
+
+$("priceToggle").addEventListener("click", () => {
+  const shouldOpen = $("priceOptions").hidden;
+  closeCollectionMenus();
+
+  if (shouldOpen) {
+    $("priceOptions").hidden = false;
+    $("priceToggle").setAttribute("aria-expanded", "true");
+    $("priceToggle").querySelector(".control-chevron").textContent = "⌃";
+  }
+});
+
+$("saleToggle").addEventListener("click", () => {
+  const shouldOpen = $("saleOptions").hidden;
+  closeCollectionMenus();
+
+  if (shouldOpen) {
+    $("saleOptions").hidden = false;
+    $("saleToggle").setAttribute("aria-expanded", "true");
+    $("saleToggle").querySelector(".control-chevron").textContent = "⌃";
+  }
+});
+
+$("priceOptions").querySelectorAll("[data-sort]").forEach(button => {
+  button.addEventListener("click", () => {
+    activeSort = button.dataset.sort;
+
+    $("priceOptions").querySelectorAll("[data-sort]").forEach(option => {
+      option.classList.toggle("selected", option === button);
+    });
+
+    closeCollectionMenus();
+    renderProducts();
+  });
+});
+
+$("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
+  button.addEventListener("click", () => {
+    const key = button.dataset.saleCategory;
+
+    const match = categories.find(category => {
+      const name = String(category.name || "").trim().toLowerCase();
+
+      if (key === "men") return name.includes("men") && !name.includes("women");
+      if (key === "women") return name.includes("women");
+      if (key === "bedding") {
+        return name.includes("bedsheet") ||
+          name.includes("bedding") ||
+          name.includes("bed");
+      }
+      if (key === "home") {
+        return name.includes("home") || name.includes("accessor");
+      }
+
+      return false;
+    });
+
+    if (!match) {
+      alert("Is category ko Admin Panel mein check karo.");
+      return;
+    }
+
+    activeCategory = String(match.id);
+    saleCategory = key;
+
+    $("searchInput").value = "";
+
+    $("saleOptions").querySelectorAll("[data-sale-category]").forEach(option => {
+      option.classList.toggle("selected", option === button);
+    });
+
+    closeCollectionMenus();
+    renderCategories();
+    renderProducts();
+
+    $("products").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+});
+
 
 function getProductImage(product) {
   const found = productImages.find(image => String(image.product_id) === String(product.id));
@@ -964,6 +1076,7 @@ function renderCategories() {
   $("categoryList").querySelectorAll("[data-category]").forEach(button => {
     button.addEventListener("click", () => {
       activeCategory = button.dataset.category;
+      saleCategory = "";
       renderCategories();
       renderProducts();
     });
@@ -971,17 +1084,31 @@ function renderCategories() {
 }
 
 function renderProducts() {
-  const query = $("searchInput").value.trim().toLowerCase();
-  const filtered = products.filter(product => {
-    if (!productIsActive(product)) return false;
-    const categoryMatches = activeCategory === "all" ||
-      String(product.category_id) === String(activeCategory);
-    const searchMatches = !query ||
-      String(product.name || "").toLowerCase().includes(query) ||
-      String(product.description || "").toLowerCase().includes(query) ||
-      getProductCategory(product).toLowerCase().includes(query);
-    return categoryMatches && searchMatches;
-  });
+  
+const query = $("searchInput").value.trim().toLowerCase();
+
+let filtered = products.filter(product => {
+  if (!productIsActive(product)) return false;
+
+  const categoryMatches = activeCategory === "all" ||
+    String(product.category_id) === String(activeCategory);
+
+  const saleMatches = !saleCategory || isOnSale(product);
+
+  const searchMatches = !query ||
+    String(product.name || "").toLowerCase().includes(query) ||
+    String(product.description || "").toLowerCase().includes(query) ||
+    getProductCategory(product).toLowerCase().includes(query);
+
+  return categoryMatches && saleMatches && searchMatches;
+});
+
+if (activeSort === "low") {
+  filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
+} else if (activeSort === "high") {
+  filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
+}
+
 
   if (!filtered.length) {
     $("productGrid").innerHTML =
