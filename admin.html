@@ -156,7 +156,19 @@ input,select,textarea{color-scheme:dark}
 <div><label class="field-label">Retail Price (Rs) *</label><input id="prodRetailPrice" type="number" min="0" step=".01" required class="field"></div>
 <div><label class="field-label">Sale Price (Rs)</label><input id="prodSalePrice" type="number" min="0" step=".01" class="field"></div>
 <div><label class="field-label">Stock Quantity *</label><input id="prodStock" type="number" min="0" value="0" required class="field"></div>
-<div><label class="field-label">Primary Image URL</label><input id="prodImageUrl" type="url" placeholder="https://…" class="field"></div>
+<div>
+  <label class="field-label">Product Image URL</label>
+  <input id="prodImageUrl" type="url" placeholder="Image URL (optional)" class="field">
+
+  <label class="field-label mt-3">Upload Product Image</label>
+  <input id="prodImageFile" type="file" accept="image/*" class="field">
+
+  <img id="prodImagePreview" class="hidden mt-3 w-24 h-24 object-cover rounded-lg border border-veyora-border">
+
+  <p class="text-veyora-textMuted mt-2">
+    Image select karo. Save Product par upload ho jayegi.
+  </p>
+</div>
 </div>
 <div><label class="field-label">Description</label><textarea id="prodDescription" rows="3" class="field"></textarea></div>
 <div class="flex gap-5"><label class="flex items-center gap-2"><input id="prodIsActive" type="checkbox" checked> Active</label><label class="flex items-center gap-2"><input id="prodIsFeatured" type="checkbox"> Featured</label></div>
@@ -366,9 +378,74 @@ $('cancelProductBtn').addEventListener('click',closeProductModal);
 
 $('addVariantBtn').addEventListener('click',()=>{
  const row=document.createElement('div');
- row.className='grid grid-cols-1 sm:grid-cols-4 gap-2 bg-veyora-bg border border-veyora-border rounded-lg p-2';
- row.innerHTML='<input class="field variant-name" placeholder="Option name e.g. Design"><input class="field variant-value" placeholder="Value e.g. Blue"><input class="field variant-stock" type="number" min="0" placeholder="Stock"><button type="button" class="text-red-400">Remove</button>';
- row.querySelector('button').addEventListener('click',()=>row.remove());
+
+ row.className='grid grid-cols-1 sm:grid-cols-2 gap-3 bg-veyora-bg border border-veyora-border rounded-lg p-3';
+
+ row.innerHTML=`
+   <div>
+     <label class="field-label">Option Name</label>
+     <input class="field variant-name"
+       placeholder="Design / Colour / Size">
+   </div>
+
+   <div>
+     <label class="field-label">Option Value</label>
+     <input class="field variant-value"
+       placeholder="Blue / Design 1 / Large">
+   </div>
+
+   <div>
+     <label class="field-label">Variant Stock</label>
+     <input class="field variant-stock"
+       type="number" min="0" value="0">
+   </div>
+
+   <div>
+     <label class="field-label">Variant Image</label>
+     <input class="field variant-image"
+       type="file" accept="image/*">
+     <img class="variant-preview hidden mt-2 w-20 h-20 rounded-lg object-cover">
+   </div>
+
+   <button type="button"
+     class="text-red-400 text-left">
+     Remove Variant
+   </button>
+ `;
+
+ const fileInput=row.querySelector('.variant-image');
+ const preview=row.querySelector('.variant-preview');
+
+ fileInput.addEventListener('change',()=>{
+   const file=fileInput.files[0];
+
+   if(!file){
+     preview.classList.add('hidden');
+     return;
+   }
+
+   if(!file.type.startsWith('image/')){
+     alert('Please select an image file.');
+     fileInput.value='';
+     preview.classList.add('hidden');
+     return;
+   }
+
+   if(file.size>5*1024*1024){
+     alert('Image must be smaller than 5 MB.');
+     fileInput.value='';
+     preview.classList.add('hidden');
+     return;
+   }
+
+   preview.src=URL.createObjectURL(file);
+   preview.classList.remove('hidden');
+ });
+
+ row.querySelector('button').addEventListener('click',()=>{
+   row.remove();
+ });
+
  $('variantsContainer').appendChild(row);
 });
 
