@@ -290,7 +290,17 @@ td button { margin: 3px; padding: 8px 10px; }
 </section>
 
 <div id="app" hidden><main>
-<h1>Admin Dashboard</h1><p class="muted">Manage your Veyora store.</p><div id="notice" class="notice">Connecting...</div>
+
+<div class="welcome-header">
+  <div>
+    <p class="muted">VEYORA / STORE MANAGEMENT</p>
+    <h1>Welcome Back, Admin</h1>
+    <p class="muted">Here's what's happening with your store today.</p>
+  </div>
+  <button id="refresh" class="secondary">↻ Refresh Data</button>
+</div>
+<div id="notice" class="notice">Connecting...</div>
+
 <div class="grid">
 <div class="card">Products<div id="productCount" class="metric">—</div></div>
 <div class="card">Categories<div id="categoryCount" class="metric">—</div></div>
@@ -312,7 +322,7 @@ td button { margin: 3px; padding: 8px 10px; }
 </nav>
 
 <section id="overview" class="panel">
-<div class="row" style="justify-content:space-between"><h2>Recent Orders</h2><button id="refresh" class="secondary">Refresh</button></div>
+<div class="row" style="justify-content:space-between"><h2>Recent Orders</h2></div>
 <div id="recentOrders"></div>
 </section>
 
