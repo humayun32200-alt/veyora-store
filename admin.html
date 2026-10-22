@@ -449,32 +449,129 @@ $('addVariantBtn').addEventListener('click',()=>{
  $('variantsContainer').appendChild(row);
 });
 
-async function handleSaveProduct(e){
- e.preventDefault();if(!db){notice('Supabase is not available.',true);return}
- const id=$('prodId').value,retail=parseFloat($('prodRetailPrice').value),saleRaw=$('prodSalePrice').value;
- const payload={
-  name:$('prodName').value.trim(),
-  category_id:$('prodCategory').value,
-  sku:$('prodSku').value.trim()||null,
-  barcode:$('prodBarcode').value.trim()||null,
-  retail_price:retail,
-  sale_price:saleRaw===''?null:parseFloat(saleRaw),
-  stock_quantity:parseInt($('prodStock').value,10)||0,
-  image_url:$('prodImageUrl').value.trim()||null,
-  description:$('prodDescription').value.trim()||null,
-  is_active:$('prodIsActive').checked,
-  is_featured:$('prodIsFeatured').checked
- };
- if(!payload.category_id){notice('Please select a category.',true);return}
- setBusy($('saveProductBtn'),true);
- try{
-  const result=id?await db.from('products').update(payload).eq('id',id):await db.from('products').insert(payload);
-  if(result.error)throw result.error;
-  closeProductModal();await loadProducts();notice('Product saved successfully.');
- }catch(err){notice('Product save failed: '+friendlyError(err),true)}
- finally{setBusy($('saveProductBtn'),false)}
+
+async function uploadStoreImage(file) {
+  if (!file) return null;
+
+  if (!file.type.startsWith('image/')) {
+    throw new Error('Please select a valid image.');
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error('Image must be smaller than 5 MB.');
+  }
+
+  const ext = (file.name.split('.').pop() || 'jpg')
+    .toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+
+  const path = `variants/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+  const { data, error } = await db.storage
+    .from('veyora-products')
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (error) throw error;
+
+  const { data: urlData } = db.storage
+    .from('veyora-products')
+    .getPublicUrl(data.path);
+
+  return urlData.publicUrl;
 }
-$('productForm').addEventListener('submit',handleSaveProduct);
+
+async function handleSaveProduct(e) {
+  e.preventDefault();
+
+  if (!db) {
+    notice('Supabase is not available.', true);
+    return;
+  }
+
+  const id = $('prodId').value;
+  const retail = parseFloat($('prodRetailPrice').value);
+  const saleRaw = $('prodSalePrice').value;
+
+  const payload = {
+    name: $('prodName').value.trim(),
+    category_id: $('prodCategory').value,
+    sku: $('prodSku').value.trim() || null,
+    barcode: $('prodBarcode').value.trim() || null,
+    retail_price: retail,
+    sale_price: saleRaw === '' ? null : parseFloat(saleRaw),
+    stock_quantity: parseInt($('prodStock').value, 10) || 0,
+    image_url: $('prodImageUrl').value.trim() || null,
+    description: $('prodDescription').value.trim() || null,
+    is_active: $('prodIsActive').checked,
+    is_featured: $('prodIsFeatured').checked
+  };
+
+  if (!payload.category_id) {
+    notice('Please select a category.', true);
+    return;
+  }
+
+  setBusy($('saveProductBtn'), true);
+
+  try {
+    let productId = id;
+
+    if (id) {
+      const { error } = await db.from('products')
+        .update(payload).eq('id', id);
+
+      if (error) throw error;
+    } else {
+      const { data, error } = await db.from('products')
+        .insert(payload).select('id').single();
+
+      if (error) throw error;
+      productId = data.id;
+    }
+
+    const rows = [...document.querySelectorAll('#variantsContainer > div')];
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const optionName = row.querySelector('.variant-name')?.value.trim();
+      const optionValue = row.querySelector('.variant-value')?.value.trim();
+      const stock = parseInt(row.querySelector('.variant-stock')?.value, 10) || 0;
+      const file = row.querySelector('.variant-image')?.files?.[0];
+
+      if (!optionName || !optionValue) continue;
+
+      let imageUrl = null;
+
+      if (file) {
+        imageUrl = await uploadStoreImage(file);
+      }
+
+      const { error } = await db.from('product_variants').insert({
+        product_id: productId,
+        option_name: optionName,
+        option_value: optionValue,
+        stock_quantity: stock,
+        image_url: imageUrl,
+        retail_price: retail,
+        sale_price: saleRaw === '' ? null : parseFloat(saleRaw),
+        sort_order: i
+      });
+
+      if (error) throw error;
+    }
+
+    closeProductModal();
+    await loadProducts();
+    notice('Product and variants saved successfully.');
+
+  } catch (err) {
+    notice('Save failed: ' + friendlyError(err), true);
+  } finally {
+    setBusy($('saveProductBtn'), false);
+  }
+}
+
+$('productForm').addEventListener('submit', handleSaveProduct);
+
 
 function editProduct(id){
  const p=productsList.find(x=>String(x.id)===String(id));if(!p)return;
