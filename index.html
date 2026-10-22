@@ -123,15 +123,7 @@ nav a:hover,nav button:hover{color:var(--gold-light)}
 .category-tile.men{background-image:url('./WhatsApp%20Image%202026-10-21%20at%206.21.58%20PM.jpeg')}
 .category-tile.bedding{background-image:url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=85')}
 .category-tile.home{background-image:url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85')}
-.category-list{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:23px 0 4px}
-  #categoryList {
-  display: none !important;
-}
-.category-button{
-  min-width:105px;border:1px solid #55452b;background:#11110e;
-  color:#e9dfc9;padding:11px 18px;font-size:10px;letter-spacing:1px;text-transform:uppercase
-}
-.category-button.active,.category-button:hover{border-color:var(--gold);background:var(--gold);color:#17130b}
+.category-list{display:none !important}
 .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px}
 .product-card{background:#0d0d0b;min-width:0;border:1px solid #51432a;overflow:hidden;transition:.2s}
 .product-card:hover{transform:translateY(-3px);border-color:var(--gold)}
@@ -261,85 +253,18 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 .tracking-meta{border-top:1px solid #514a37;margin-top:12px;padding-top:12px;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
 .tracking-refresh{width:100%;margin-top:12px}
 .delivery-breakdown{margin-top:10px;padding:11px;background:#17150f;border:1px solid #57472b;font-size:12px;line-height:1.9;color:#f0e5ce}
-@media(max-width:900px){
- .header-main{grid-template-columns:200px minmax(130px,1fr) 110px;gap:12px}
- .brand-name{font-size:23px}
- nav{gap:22px}
- .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
- .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- .footer-col:nth-child(2){border-right:0}
-}
-@media(max-width:600px){
- .announcement{font-size:8px;letter-spacing:1px;padding:8px 3px}
- .header-main{padding:9px 3%;grid-template-columns:1fr auto;gap:9px}
- .brand{gap:6px}
- .logo-placeholder{width:40px;height:40px}
- .brand-name{font-size:19px;letter-spacing:2px}
- .brand-sub{font-size:7px;letter-spacing:2px}
- .search{grid-column:1/-1;grid-row:2;max-width:none}
- .search input{padding:9px 40px 9px 11px;font-size:12px}
- .header-actions{gap:6px}
- .icon-button{min-width:39px;font-size:22px}
- .icon-label{font-size:8px}
- nav{gap:15px;padding:10px 5px}
- nav a,nav button{font-size:8px;letter-spacing:.3px}
- .hero{min-height:290px;padding:32px 6%;background-position:58% center}
- .hero h1{font-size:43px}
- .hero p{font-size:12px;max-width:270px}
- .eyebrow{font-size:9px;letter-spacing:2.5px}
- .section{padding:22px 3%}
- .section-heading h2{font-size:25px}
- .category-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .category-tile{height:130px;padding:10px;background-position:center}
- .category-tile small{font-size:12px}
- .category-tile strong{font-size:20px}
- .category-tile span{font-size:8px;margin-top:9px}
- .category-list{gap:6px}
- .category-button{min-width:0;padding:9px 12px;font-size:9px}
- .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
- .product-image,.image-placeholder{aspect-ratio:4/4.5}
- .product-info{padding:9px}
- .product-name{font-size:12px;min-height:36px}
- .sale-price{font-size:12px}
- .old-price{font-size:10px}
- .small-button{font-size:8px;padding:9px 2px}
- .social-showcase{padding:4px 3% 18px}
- .social-showcase-inner{grid-template-columns:1fr;gap:10px;padding:24px 12px}
- .social-showcase-brand{border-right:0;border-bottom:1px solid var(--gold);padding:10px}
- .social-showcase-brand strong{font-size:27px}
- .social-showcase-content h2{font-size:20px}
- .social-showcase-content p{font-size:11px}
- .socials{gap:12px}
- .socials a{min-width:48px;font-size:9px}
- .socials a span{width:38px;height:38px}
- .footer-grid{padding:25px 4%;grid-template-columns:1fr 1fr;gap:23px 13px}
- .footer-col{padding-right:9px}
- .footer-col:nth-child(2){border-right:0}
- .footer-col:nth-child(3){border-right:0}
- .footer-col:last-child{grid-column:1/-1}
- .footer-brand{font-size:21px;letter-spacing:2px}
- .footer-description,.footer-links a,.footer-policy summary{font-size:10px}
- .thank-you{font-size:13px}
- .copyright{font-size:9px;padding:14px 4%}
- .modal{padding:21px 17px}
- .tracking-card{padding:14px 8px}
- .tracking-step{font-size:7px}
- .tracking-arrow{font-size:12px}
-}
-  
-/* VEYORA — Premium Collection Controls */
+
+/* COLLECTION CONTROLS */
 .collection-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin: 24px 0;
 }
-
 .collection-control {
   position: relative;
   min-width: 0;
 }
-
 .collection-control-btn {
   width: 100%;
   min-height: 76px;
@@ -355,42 +280,35 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   cursor: pointer;
   transition: border-color .2s, background .2s;
 }
-
 .collection-control-btn:hover {
   border-color: #c5a15b;
   background: #1b1912;
 }
-
 .control-icon {
   color: #c5a15b;
   font-size: 25px;
   min-width: 25px;
   text-align: center;
 }
-
 .control-copy {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 5px;
 }
-
 .control-copy strong {
   font-size: 12px;
   letter-spacing: 2px;
   font-weight: 600;
 }
-
 .control-copy small {
   color: #b6ad9a;
   font-size: 11px;
 }
-
 .control-chevron {
   color: #c5a15b;
   font-size: 19px;
 }
-
 .control-dropdown {
   position: absolute;
   z-index: 20;
@@ -403,11 +321,9 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   border-radius: 10px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
 }
-
 .control-dropdown[hidden] {
   display: none !important;
 }
-
 .control-dropdown button {
   width: 100%;
   display: flex;
@@ -422,49 +338,82 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   font-size: 13px;
   cursor: pointer;
 }
-
 .control-dropdown button:hover,
 .control-dropdown button.selected {
   color: #f0dba5;
   background: #292317;
 }
 
-@media (max-width: 480px) {
-  .collection-controls {
-    gap: 9px;
-    margin: 18px 0;
-  }
-
-  .collection-control-btn {
-    min-height: 68px;
-    padding: 11px 9px;
-    gap: 7px;
-  }
-
-  .control-icon {
-    font-size: 20px;
-    min-width: 20px;
-  }
-
-  .control-copy strong {
-    font-size: 11px;
-  }
-
-  .control-copy small {
-    font-size: 10px;
-  }
-
-  .control-dropdown button {
-    padding: 11px 7px;
-    font-size: 12px;
-  }
+@media(max-width:900px){
+  .header-main{grid-template-columns:200px minmax(130px,1fr) 110px;gap:12px}
+  .brand-name{font-size:23px}
+  nav{gap:22px}
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .footer-col:nth-child(2){border-right:0}
 }
-
+@media(max-width:600px){
+  .announcement{font-size:8px;letter-spacing:1px;padding:8px 3px}
+  .header-main{padding:9px 3%;grid-template-columns:1fr auto;gap:9px}
+  .brand{gap:6px}
+  .logo-placeholder{width:40px;height:40px}
+  .brand-name{font-size:19px;letter-spacing:2px}
+  .brand-sub{font-size:7px;letter-spacing:2px}
+  .search{grid-column:1/-1;grid-row:2;max-width:none}
+  .search input{padding:9px 40px 9px 11px;font-size:12px}
+  .header-actions{gap:6px}
+  .icon-button{min-width:39px;font-size:22px}
+  .icon-label{font-size:8px}
+  nav{gap:15px;padding:10px 5px}
+  nav a,nav button{font-size:8px;letter-spacing:.3px}
+  .hero{min-height:290px;padding:32px 6%;background-position:58% center}
+  .hero h1{font-size:43px}
+  .hero p{font-size:12px;max-width:270px}
+  .eyebrow{font-size:9px;letter-spacing:2.5px}
+  .section{padding:22px 3%}
+  .section-heading h2{font-size:25px}
+  .category-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .category-tile{height:130px;padding:10px;background-position:center}
+  .category-tile small{font-size:12px}
+  .category-tile strong{font-size:20px}
+  .category-tile span{font-size:8px;margin-top:9px}
+  .category-list{gap:6px}
+  .category-button{min-width:0;padding:9px 12px;font-size:9px}
+  .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .product-image,.image-placeholder{aspect-ratio:4/4.5}
+  .product-info{padding:9px}
+  .product-name{font-size:12px;min-height:36px}
+  .sale-price{font-size:12px}
+  .old-price{font-size:10px}
+  .small-button{font-size:8px;padding:9px 2px}
+  .social-showcase{padding:4px 3% 18px}
+  .social-showcase-inner{grid-template-columns:1fr;gap:10px;padding:24px 12px}
+  .social-showcase-brand{border-right:0;border-bottom:1px solid var(--gold);padding:10px}
+  .social-showcase-brand strong{font-size:27px}
+  .social-showcase-content h2{font-size:20px}
+  .social-showcase-content p{font-size:11px}
+  .socials{gap:12px}
+  .socials a{min-width:48px;font-size:9px}
+  .socials a span{width:38px;height:38px}
+  .footer-grid{padding:25px 4%;grid-template-columns:1fr 1fr;gap:23px 13px}
+  .footer-col{padding-right:9px}
+  .footer-col:nth-child(2){border-right:0}
+  .footer-col:nth-child(3){border-right:0}
+  .footer-col:last-child{grid-column:1/-1}
+  .footer-brand{font-size:21px;letter-spacing:2px}
+  .footer-description,.footer-links a,.footer-policy summary{font-size:10px}
+  .thank-you{font-size:13px}
+  .copyright{font-size:9px;padding:14px 4%}
+  .modal{padding:21px 17px}
+  .tracking-card{padding:14px 8px}
+  .tracking-step{font-size:7px}
+  .tracking-arrow{font-size:12px}
+}
 </style>
 </head>
 
 <body>
-<div class="announcement">✦　 WELCOME TO VEYORA　 ·　 CASH ON DELIVERY IN PAKISTAN　 ✦</div>
+<div class="announcement">✦  WELCOME TO VEYORA  ·  CASH ON DELIVERY IN PAKISTAN  ✦</div>
 
 <header>
   <div class="header-main">
@@ -507,7 +456,7 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
       <div class="eyebrow">STYLE FOR EVERY SPACE</div>
       <h1>Elevate Your<br><em>Everyday</em></h1>
       <p>Timeless clothing, cozy home essentials, and elegant bedding — all in one place.</p>
-      <a href="#products" class="gold-button">EXPLORE COLLECTION　 →</a>
+      <a href="#products" class="gold-button">EXPLORE COLLECTION  →</a>
     </div>
   </section>
 
@@ -519,16 +468,16 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 
     <div class="category-showcase">
       <a href="#products" class="category-tile women" data-showcase-category="women">
-        <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW　→</span></div>
+        <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
       </a>
       <a href="#products" class="category-tile men" data-showcase-category="men">
-        <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW　→</span></div>
+        <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
       </a>
       <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
-        <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW　→</span></div>
+        <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
       </a>
       <a href="#products" class="category-tile home" data-showcase-category="home">
-        <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW　→</span></div>
+        <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
       </a>
     </div>
 
@@ -542,45 +491,44 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
       <h2>Our Collection</h2>
       <p>Premium quality products for your everyday needs.</p>
     </div>
+    
     <div class="collection-controls">
+      <div class="collection-control">
+        <button type="button" class="collection-control-btn" id="priceToggle" aria-expanded="false">
+          <span class="control-icon">↕</span>
+          <span class="control-copy">
+            <strong>PRICE</strong>
+            <small>Sort collection</small>
+          </span>
+          <span class="control-chevron" id="priceChevron">⌄</span>
+        </button>
+        <div class="control-dropdown" id="priceOptions" hidden>
+          <button type="button" data-sort="low">↑ Low to High</button>
+          <button type="button" data-sort="high">↓ High to Low</button>
+        </div>
+      </div>
 
-  <div class="collection-control">
-    <button type="button" class="collection-control-btn"
-            id="priceToggle" aria-expanded="false">
-      <span class="control-icon">↕</span>
-      <span class="control-copy">
-        <strong>PRICE</strong>
-        <small>Sort collection</small>
-      </span>
-      <span class="control-chevron" id="priceChevron">⌄</span>
-    </button>
-
-    <div class="control-dropdown" id="priceOptions" hidden>
-      <button type="button" data-sort="low">↑ Low to High</button>
-      <button type="button" data-sort="high">↓ High to Low</button>
+      <div class="collection-control">
+        <button type="button" class="collection-control-btn" id="saleToggle" aria-expanded="false">
+          <span class="control-icon">✧</span>
+          <span class="control-copy">
+            <strong>SALE</strong>
+            <small>Explore offers</small>
+          </span>
+          <span class="control-chevron" id="saleChevron">⌄</span>
+        </button>
+        <div class="control-dropdown" id="saleOptions" hidden>
+          <button type="button" data-sale-category="men">Men <span>→</span></button>
+          <button type="button" data-sale-category="women">Women <span>→</span></button>
+          <button type="button" data-sale-category="bedding">Bedsheets <span>→</span></button>
+          <button type="button" data-sale-category="home">Home Accessories <span>→</span></button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="collection-control">
-    <button type="button" class="collection-control-btn"
-            id="saleToggle" aria-expanded="false">
-      <span class="control-icon">✧</span>
-      <span class="control-copy">
-        <strong>SALE</strong>
-        <small>Explore offers</small>
-      </span>
-      <span class="control-chevron" id="saleChevron">⌄</span>
-    </button>
+    <!-- SEE MORE / SHOW LESS WRAPPER -->
+    <div id="seeMoreWrapper" style="text-align: center; margin-bottom: 20px;"></div>
 
-    <div class="control-dropdown" id="saleOptions" hidden>
-      <button type="button" data-sale-category="men">Men <span>→</span></button>
-      <button type="button" data-sale-category="women">Women <span>→</span></button>
-      <button type="button" data-sale-category="bedding">Bedsheets <span>→</span></button>
-      <button type="button" data-sale-category="home">Home Accessories <span>→</span></button>
-    </div>
-  </div>
-
-</div>
     <div class="product-grid" id="productGrid">
       <div class="empty-state">Loading VEYORA collection...</div>
     </div>
@@ -619,11 +567,11 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     <div class="footer-col">
       <h3>QUICK LINKS</h3>
       <div class="footer-links">
-        <a href="#">⌂　Home</a>
-        <a href="#products">♙　Shop All</a>
-        <a href="#categories">▦　Categories</a>
-        <a href="#" id="footerTrack">▣　Track Order</a>
-        <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">✉　Contact Us</a>
+        <a href="#">⌂ Home</a>
+        <a href="#products">♙ Shop All</a>
+        <a href="#categories">▦ Categories</a>
+        <a href="#" id="footerTrack">▣ Track Order</a>
+        <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">✉ Contact Us</a>
       </div>
     </div>
 
@@ -656,8 +604,8 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     </div>
 
     <div class="footer-col">
-      <a class="admin-footer-button" href="./admin.html">♙　 ADMIN LOGIN　→</a>
-      <div class="admin-tagline">Shop Smart　✦　Live Better</div>
+      <a class="admin-footer-button" href="./admin.html">♙  ADMIN LOGIN →</a>
+      <div class="admin-tagline">Shop Smart ✦ Live Better</div>
     </div>
   </div>
 
@@ -787,8 +735,9 @@ let productImages = [];
 let variants = [];
 let cart = [];
 let activeCategory = "all";
-  let activeSort = "";
+let activeSort = "";
 let saleCategory = "";
+let showAllProducts = false;
 
 $("year").textContent = new Date().getFullYear();
 
@@ -833,13 +782,14 @@ $("cartButton").addEventListener("click", () => {
   renderCart();
   openModal("cartModal");
 });
-$("searchButton").addEventListener("click", renderProducts);
-$("searchInput").addEventListener("input", renderProducts);
+$("searchButton").addEventListener("click", () => { showAllProducts = false; renderProducts(); });
+$("searchInput").addEventListener("input", () => { showAllProducts = false; renderProducts(); });
 
 $("shopAllLink").addEventListener("click", () => {
   activeCategory = "all";
   saleCategory = "";
   activeSort = "";
+  showAllProducts = false;
 
   $("searchInput").value = "";
 
@@ -856,7 +806,6 @@ $("shopAllLink").addEventListener("click", () => {
   renderProducts();
 });
 
-  
 function closeCollectionMenus() {
   $("priceOptions").hidden = true;
   $("saleOptions").hidden = true;
@@ -894,6 +843,7 @@ $("saleToggle").addEventListener("click", () => {
 $("priceOptions").querySelectorAll("[data-sort]").forEach(button => {
   button.addEventListener("click", () => {
     activeSort = button.dataset.sort;
+    showAllProducts = false;
 
     $("priceOptions").querySelectorAll("[data-sort]").forEach(option => {
       option.classList.toggle("selected", option === button);
@@ -932,6 +882,7 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
 
     activeCategory = String(match.id);
     saleCategory = key;
+    showAllProducts = false;
 
     $("searchInput").value = "";
 
@@ -950,6 +901,75 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
   });
 });
 
+document.querySelectorAll("[data-showcase-category]").forEach(tile => {
+  tile.addEventListener("click", event => {
+    event.preventDefault();
+
+    const key = tile.dataset.showcaseCategory.toLowerCase();
+
+    const match = categories.find(category => {
+      const name = String(category.name || "").trim().toLowerCase();
+
+      if (key === "men") {
+        return name.includes("men") && !name.includes("women");
+      }
+
+      if (key === "women") {
+        return name.includes("women");
+      }
+
+      if (key === "bedding") {
+        return name.includes("bedsheet") ||
+               name.includes("bedding") ||
+               name.includes("bed");
+      }
+
+      if (key === "home") {
+        return name.includes("home") ||
+               name.includes("accessor");
+      }
+
+      return false;
+    });
+
+    if (!match) {
+      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
+      return;
+    }
+
+    activeCategory = String(match.id);
+    saleCategory = "";
+    showAllProducts = false;
+    $("searchInput").value = "";
+
+    renderCategories();
+    renderProducts();
+
+    document.getElementById("products").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+});
+
+function renderCategories() {
+  const visible = categories.filter(category => category.is_active !== false);
+  $("categoryList").innerHTML =
+    `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
+    visible.map(category =>
+      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
+    ).join("");
+
+  $("categoryList").querySelectorAll("[data-category]").forEach(button => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.category;
+      saleCategory = "";
+      showAllProducts = false;
+      renderCategories();
+      renderProducts();
+    });
+  });
+}
 
 function getProductImage(product) {
   const found = productImages.find(image => String(image.product_id) === String(product.id));
@@ -1016,101 +1036,65 @@ function productIsActive(product) {
   return product.is_active === true || product.is_active === undefined;
 }
 
-document.querySelectorAll("[data-showcase-category]").forEach(tile => {
-  tile.addEventListener("click", event => {
-    event.preventDefault();
-
-    const key = tile.dataset.showcaseCategory.toLowerCase();
-
-    const match = categories.find(category => {
-      const name = String(category.name || "").trim().toLowerCase();
-
-      if (key === "men") {
-        return name.includes("men") && !name.includes("women");
-      }
-
-      if (key === "women") {
-        return name.includes("women");
-      }
-
-      if (key === "bedding") {
-        return name.includes("bedsheet") ||
-               name.includes("bedding") ||
-               name.includes("bed");
-      }
-
-      if (key === "home") {
-        return name.includes("home") ||
-               name.includes("accessor");
-      }
-
-      return false;
-    });
-
-    if (!match) {
-      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
-      return;
-    }
-
-    activeCategory = String(match.id);
-    $("searchInput").value = "";
-
-    renderCategories();
-    renderProducts();
-
-    document.getElementById("products").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  });
-});
-
-function renderCategories() {
-  const visible = categories.filter(category => category.is_active !== false);
-  $("categoryList").innerHTML =
-    <button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button> +
-    visible.map(category =>
-      <button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>
-    ).join("");
-
-  $("categoryList").querySelectorAll("[data-category]").forEach(button => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.category;
-      saleCategory = "";
-      renderCategories();
-      renderProducts();
-    });
-  });
-}
-
 function renderProducts() {
-  
-const query = $("searchInput").value.trim().toLowerCase();
+  const query = $("searchInput").value.trim().toLowerCase();
 
-let filtered = products.filter(product => {
-  if (!productIsActive(product)) return false;
+  let filtered = products.filter(product => {
+    if (!productIsActive(product)) return false;
 
-  const categoryMatches = activeCategory === "all" ||
-    String(product.category_id) === String(activeCategory);
+    const categoryMatches = activeCategory === "all" ||
+      String(product.category_id) === String(activeCategory);
 
-  const saleMatches = !saleCategory || isOnSale(product);
+    const saleMatches = !saleCategory || isOnSale(product);
 
-  const searchMatches = !query ||
-    String(product.name || "").toLowerCase().includes(query) ||
-    String(product.description || "").toLowerCase().includes(query) ||
-    getProductCategory(product).toLowerCase().includes(query);
+    const searchMatches = !query ||
+      String(product.name || "").toLowerCase().includes(query) ||
+      String(product.description || "").toLowerCase().includes(query) ||
+      getProductCategory(product).toLowerCase().includes(query);
 
-  return categoryMatches && saleMatches && searchMatches;
-});
+    return categoryMatches && saleMatches && searchMatches;
+  });
 
-if (activeSort === "low") {
-  filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
-} else if (activeSort === "high") {
-  filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
-}
+  if (activeSort === "low") {
+    filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
+  } else if (activeSort === "high") {
+    filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
+  }
 
+  const INITIAL_LIMIT = 8;
+  const hasMore = filtered.length > INITIAL_LIMIT;
+  const productsToDisplay = showAllProducts ? filtered : filtered.slice(0, INITIAL_LIMIT);
+
+  const seeMoreWrapper = $("seeMoreWrapper");
+  if (seeMoreWrapper) {
+    if (hasMore && !showAllProducts) {
+      seeMoreWrapper.innerHTML = `
+        <button type="button" id="seeMoreBtn" style="background:none; border:1px solid var(--gold); color:var(--gold-light); padding:10px 24px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; border-radius:2px; transition:.2s;">
+          SEE MORE (${filtered.length - INITIAL_LIMIT} MORE PRODUCTS) ↓
+        </button>
+      `;
+      $("seeMoreBtn").addEventListener("click", () => {
+        showAllProducts = true;
+        renderProducts();
+      });
+    } else if (showAllProducts && filtered.length > INITIAL_LIMIT) {
+      seeMoreWrapper.innerHTML = `
+        <button type="button" id="seeLessBtn" style="background:none; border:1px solid #59482b; color:var(--muted); padding:8px 18px; font-size:9px; letter-spacing:1.2px; text-transform:uppercase; cursor:pointer; border-radius:2px;">
+          SHOW LESS ↑
+        </button>
+      `;
+      $("seeLessBtn").addEventListener("click", () => {
+        showAllProducts = false;
+        renderProducts();
+        $("products").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    } else {
+      seeMoreWrapper.innerHTML = "";
+    }
+  }
 
   if (!filtered.length) {
+    if (seeMoreWrapper) seeMoreWrapper.innerHTML = "";
     $("productGrid").innerHTML =
       `<div class="empty-state">${products.length
         ? "No products found. Try another search or category."
@@ -1118,22 +1102,22 @@ if (activeSort === "low") {
     return;
   }
 
-  $("productGrid").innerHTML = filtered.map(product => {
+  $("productGrid").innerHTML = productsToDisplay.map(product => {
     const image = getProductImage(product);
     const sale = isOnSale(product);
     const name = escapeHTML(product.name || "VEYORA product");
     const imageHTML = image
-      ? <img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>
-      : <div class="image-placeholder">VEYORA</div>;
+      ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`
+      : `<div class="image-placeholder">VEYORA</div>`;
 
     return `<article class="product-card">
-      <div class="image-wrap">${imageHTML}${sale ? <span class="sale-badge">${discountPercent(product)}% OFF</span> : ""}</div>
+      <div class="image-wrap">${imageHTML}${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}</div>
       <div class="product-info">
         <div class="product-category">${escapeHTML(getProductCategory(product))}</div>
         <div class="product-name">${name}</div>
         <div class="prices">
           <span class="sale-price">${money(currentPrice(product))}</span>
-          ${sale ? <span class="old-price">${money(product.retail_price)}</span> : ""}
+          ${sale ? `<span class="old-price">${money(product.retail_price)}</span>` : ""}
         </div>
         <div class="product-actions">
           <button class="small-button" data-details="${escapeHTML(product.id)}" type="button">QUICK VIEW</button>
@@ -1199,10 +1183,10 @@ function renderCart() {
   $("checkoutButton").disabled = false;
   $("cartItems").innerHTML = cart.map(item => `
     <div class="cart-item">
-      ${item.image ? <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'"> : ""}
+      ${item.image ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'">` : ""}
       <span style="flex:1">
         <strong>${escapeHTML(item.name)}</strong>
-        ${item.variant_name ? <br><small>${escapeHTML(item.variant_name)}</small> : ""}
+        ${item.variant_name ? `<br><small>${escapeHTML(item.variant_name)}</small>` : ""}
         <br>Qty: ${Number(item.quantity)}
         <br>${money(item.price)} each
       </span>
@@ -1238,14 +1222,14 @@ function showProductDetails(id) {
   const firstImage = firstVariant?.image_url || mainImage;
 
   const imageHTML = firstImage
-    ? <img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">
-    : <div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>;
+    ? `<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`
+    : `<div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>`;
 
   const variantsHTML = productVariantList.length
     ? `<label class="variant-label">Choose design / variant</label>
        <div class="design-options" id="designOptions">
        ${productVariantList.map((variant, index) =>
-         <button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>
+         `<button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>`
        ).join("")}
        </div>
        <div class="design-image-label" id="selectedDesignName"></div>
@@ -1274,7 +1258,7 @@ function showProductDetails(id) {
     } else if (imageURL) {
       const placeholder = $("detailImagePlaceholder");
       if (placeholder) placeholder.outerHTML =
-        <img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">;
+        `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
     }
 
     $("detailPrice").innerHTML = "<strong>" + money(variantPrice(variant, product)) + "</strong>";
@@ -1323,7 +1307,7 @@ function showProductDetails(id) {
   openModal("productModal");
 }
 
-/* ACCOUNT SIGN IN / SIGN UP / PASSWORD RESET */
+/* ACCOUNT */
 let accountBusy = false;
 
 function showAccountMessage(message) {
@@ -1674,7 +1658,7 @@ $("checkoutForm").addEventListener("submit", async event => {
   }
 });
 
-/* LOAD PRODUCTS, CATEGORIES, IMAGES AND VARIANTS */
+/* LOAD STORE */
 async function loadStore() {
   if (!db) {
     $("productGrid").innerHTML = '<div class="empty-state">Store connection unavailable. Check Supabase configuration.</div>';
