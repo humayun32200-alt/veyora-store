@@ -326,6 +326,140 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
  .tracking-step{font-size:7px}
  .tracking-arrow{font-size:12px}
 }
+  
+/* VEYORA — Premium Collection Controls */
+.collection-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.collection-control {
+  position: relative;
+  min-width: 0;
+}
+
+.collection-control-btn {
+  width: 100%;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 17px;
+  text-align: left;
+  color: var(--ink, #f7f0df);
+  background: linear-gradient(135deg, #15140f, #090908);
+  border: 1px solid #59482b;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+
+.collection-control-btn:hover {
+  border-color: #c5a15b;
+  background: #1b1912;
+}
+
+.control-icon {
+  color: #c5a15b;
+  font-size: 25px;
+  min-width: 25px;
+  text-align: center;
+}
+
+.control-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.control-copy strong {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.control-copy small {
+  color: #b6ad9a;
+  font-size: 11px;
+}
+
+.control-chevron {
+  color: #c5a15b;
+  font-size: 19px;
+}
+
+.control-dropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 7px);
+  left: 0;
+  right: 0;
+  padding: 7px;
+  background: #11110e;
+  border: 1px solid #59482b;
+  border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+}
+
+.control-dropdown[hidden] {
+  display: none !important;
+}
+
+.control-dropdown button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+  color: #f7f0df;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.control-dropdown button:hover,
+.control-dropdown button.selected {
+  color: #f0dba5;
+  background: #292317;
+}
+
+@media (max-width: 480px) {
+  .collection-controls {
+    gap: 9px;
+    margin: 18px 0;
+  }
+
+  .collection-control-btn {
+    min-height: 68px;
+    padding: 11px 9px;
+    gap: 7px;
+  }
+
+  .control-icon {
+    font-size: 20px;
+    min-width: 20px;
+  }
+
+  .control-copy strong {
+    font-size: 11px;
+  }
+
+  .control-copy small {
+    font-size: 10px;
+  }
+
+  .control-dropdown button {
+    padding: 11px 7px;
+    font-size: 12px;
+  }
+}
+
 </style>
 </head>
 
