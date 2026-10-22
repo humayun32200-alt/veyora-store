@@ -499,7 +499,6 @@ async function handleSaveProduct(e) {
     retail_price: retail,
     sale_price: saleRaw === '' ? null : parseFloat(saleRaw),
     stock_quantity: parseInt($('prodStock').value, 10) || 0,
-    image_url: $('prodImageUrl').value.trim() || null,
     description: $('prodDescription').value.trim() || null,
     is_active: $('prodIsActive').checked,
     is_featured: $('prodIsFeatured').checked
