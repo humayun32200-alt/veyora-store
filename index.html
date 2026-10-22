@@ -588,6 +588,12 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 
 </div>
     <div class="product-grid" id="productGrid">
+      <div id="seeMoreWrap" style="text-align:center;margin:25px 0 5px" hidden>
+  <button id="seeMoreButton" type="button"
+    style="background:#c9a45c;color:#111;border:0;padding:13px 24px;font-weight:700;cursor:pointer">
+    SEE MORE PRODUCTS ↓
+  </button>
+</div>
       <div class="empty-state">Loading VEYORA collection...</div>
     </div>
   </section>
@@ -788,6 +794,7 @@ const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({
 const money = value => "Rs " + Number(value || 0).toLocaleString("en-PK");
 
 let products = [];
+  let visibleProductCount = 0;
 let categories = [];
 let productImages = [];
 let variants = [];
@@ -1089,51 +1096,66 @@ function renderCategories() {
   });
 }
 
-function renderProducts() {
-  
-const query = $("searchInput").value.trim().toLowerCase();
 
-let filtered = products.filter(product => {
-  if (!productIsActive(product)) return false;
+function renderProducts(resetVisible = true) {
+  const query = $("searchInput").value.trim().toLowerCase();
+  const initialCount = window.innerWidth <= 600 ? 9 : 8;
 
-  const categoryMatches = activeCategory === "all" ||
-    String(product.category_id) === String(activeCategory);
+  if (resetVisible || !visibleProductCount) {
+    visibleProductCount = initialCount;
+  }
 
-  const saleMatches = !saleCategory || isOnSale(product);
+  let filtered = products.filter(product => {
+    if (!productIsActive(product)) return false;
 
-  const searchMatches = !query ||
-    String(product.name || "").toLowerCase().includes(query) ||
-    String(product.description || "").toLowerCase().includes(query) ||
-    getProductCategory(product).toLowerCase().includes(query);
+    const categoryMatches = activeCategory === "all" ||
+      String(product.category_id) === String(activeCategory);
 
-  return categoryMatches && saleMatches && searchMatches;
-});
+    const saleMatches = !saleCategory || isOnSale(product);
 
-if (activeSort === "low") {
-  filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
-} else if (activeSort === "high") {
-  filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
-}
+    const searchMatches = !query ||
+      String(product.name || "").toLowerCase().includes(query) ||
+      String(product.description || "").toLowerCase().includes(query) ||
+      getProductCategory(product).toLowerCase().includes(query);
 
+    return categoryMatches && saleMatches && searchMatches;
+  });
+
+  if (activeSort === "low") {
+    filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
+  } else if (activeSort === "high") {
+    filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
+  }
+
+  const wrap = $("seeMoreWrap");
+  const countText = $("productsCountText");
 
   if (!filtered.length) {
     $("productGrid").innerHTML =
       `<div class="empty-state">${products.length
         ? "No products found. Try another search or category."
         : "Your products will appear here after you add them in the admin panel."}</div>`;
+
+    if (wrap) wrap.hidden = true;
     return;
   }
 
-  $("productGrid").innerHTML = filtered.map(product => {
+  const visibleProducts = filtered.slice(0, visibleProductCount);
+
+  $("productGrid").innerHTML = visibleProducts.map(product => {
     const image = getProductImage(product);
     const sale = isOnSale(product);
     const name = escapeHTML(product.name || "VEYORA product");
+
     const imageHTML = image
       ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`
       : `<div class="image-placeholder">VEYORA</div>`;
 
     return `<article class="product-card">
-      <div class="image-wrap">${imageHTML}${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}</div>
+      <div class="image-wrap">
+        ${imageHTML}
+        ${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}
+      </div>
       <div class="product-info">
         <div class="product-category">${escapeHTML(getProductCategory(product))}</div>
         <div class="product-name">${name}</div>
@@ -1149,9 +1171,19 @@ if (activeSort === "low") {
     </article>`;
   }).join("");
 
+  if (wrap) {
+    wrap.hidden = filtered.length <= visibleProducts.length;
+  }
+
+  if (countText) {
+    countText.textContent =
+      `Showing ${visibleProducts.length} of ${filtered.length} products`;
+  }
+
   $("productGrid").querySelectorAll("[data-add]").forEach(button => {
     button.addEventListener("click", () => quickAdd(button.dataset.add));
   });
+
   $("productGrid").querySelectorAll("[data-details]").forEach(button => {
     button.addEventListener("click", () => showProductDetails(button.dataset.details));
   });
