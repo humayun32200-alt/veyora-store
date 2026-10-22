@@ -1773,6 +1773,14 @@ loadStore();
     console.error("Analytics setup error:", error);
   }
 })();
+  const seeMoreButton = $("seeMoreButton");
+
+if (seeMoreButton) {
+  seeMoreButton.addEventListener("click", () => {
+    visibleProductCount += 8;
+    renderProducts(false);
+  });
+}
 </script>
 </body>
 </html>
