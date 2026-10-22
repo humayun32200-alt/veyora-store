@@ -1,1223 +1,758 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VEYORA STORE ADMIN - Luxury Dashboard</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        veyora: {
-                            bg: '#0B0C10',
-                            card: '#111216',
-                            cardLight: '#1B1B17',
-                            gold: '#C9A45C',
-                            goldLight: '#E5C178',
-                            goldDark: '#8A6E34',
-                            border: '#383327',
-                            textMuted: '#A0A0A0'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEYORA | Store Admin</title>
+<!-- Google Fonts & Chart.js -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0B0C10;
-            color: #E2E8F0;
-        }
+<style>
+:root {
+  --bg-dark: #070707;
+  --panel-bg: #0d0d0d;
+  --card-bg: #111111;
+  --gold-primary: #d4af37;
+  --gold-light: #f3e5ab;
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --border-gold: rgba(212, 175, 55, 0.25);
+  --border-subtle: #1e1e1e;
+  --text-main: #f0f0f0;
+  --text-muted: #888888;
+  --danger: #e74c3c;
+  --success: #2ecc71;
+}
 
-        .font-cinzel {
-            font-family: 'Cinzel', serif;
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0B0C10;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #383327;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #C9A45C;
-        }
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
 
-        /* Gold Glow Effects */
-        .gold-glow {
-            box-shadow: 0 0 15px rgba(201, 164, 92, 0.15);
-        }
-        .gold-glow-lg {
-            box-shadow: 0 0 25px rgba(201, 164, 92, 0.25);
-        }
-        .gold-border-glow {
-            border-color: #C9A45C;
-            box-shadow: 0 0 10px rgba(201, 164, 92, 0.3);
-        }
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
 
-        /* Gradient Text */
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #FFF0CA 0%, #C9A45C 50%, #8A6E34 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+/* SVG Icons Helper */
+.icon {
+  width: 20px;
+  height: 20px;
+  stroke: var(--gold-primary);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
-        /* Custom Tab Styling */
-        .tab-btn.active {
-            color: #C9A45C;
-            border-bottom: 2px solid #C9A45C;
-            background: rgba(201, 164, 92, 0.05);
-        }
+/* LOGIN OVERLAY */
+#loginSection {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-dark);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
 
-        /* Pulse Animation for Live Visitors */
-        @keyframes pulse-gold {
-            0% { box-shadow: 0 0 0 0 rgba(201, 164, 92, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(201, 164, 92, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(201, 164, 92, 0); }
-        }
-        .live-dot {
-            animation: pulse-gold 2s infinite;
-        }
-    </style>
+.login-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-gold);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px var(--gold-glow);
+  text-align: center;
+}
+
+.login-brand {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  letter-spacing: 4px;
+  margin-bottom: 4px;
+}
+
+.login-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  background: #000;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--gold-primary);
+}
+
+.btn-gold {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 1px;
+}
+
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px var(--gold-glow);
+}
+
+/* MAIN LAYOUT */
+#appContainer {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 250px;
+  background: var(--panel-bg);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.sidebar-nav {
+  padding: 20px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 24px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: var(--gold-primary);
+  background: rgba(212, 175, 55, 0.05);
+  border-left-color: var(--gold-primary);
+}
+
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
+  color: #fff;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.sidebar-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: var(--gold-primary);
+}
+
+.sidebar-version {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* MAIN CONTENT AREA */
+.main-wrapper {
+  margin-left: 250px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* TOP HEADER */
+.top-header {
+  height: 70px;
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.header-brand {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  letter-spacing: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #000;
+}
+
+/* CONTENT CONTAINER */
+.content-body {
+  padding: 30px;
+  flex: 1;
+}
+
+.page-title-section {
+  margin-bottom: 25px;
+}
+
+.welcome-text {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--gold-primary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.page-title {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.page-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* DASHBOARD PANEL CARDS */
+.dash-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-gold);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* PERIOD SELECTOR ROW */
+.period-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.select-gold {
+  background: #000;
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* TOTAL SESSIONS GRAPH BLOCK */
+.chart-container-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chart-header-info {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.chart-metric-num {
+  font-size: 38px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.chart-metric-badge {
+  color: var(--success);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.canvas-holder {
+  height: 160px;
+  width: 100%;
+}
+
+/* STAT CARDS GRID */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-title {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+}
+
+.stat-icon-wrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+}
+
+.arrow-link {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  color: var(--gold-primary);
+  font-size: 16px;
+}
+
+/* LIVE VISITOR CARD */
+.live-visitor-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: #000;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--success);
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* RESET BANNER */
+.reset-banner {
+  background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0.9) 100%);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.08);
+}
+
+.reset-banner-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.reset-banner-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 600px;
+}
+
+.btn-reset {
+  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  color: #000;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* TABS & TABLE */
+.tabs-nav {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.tab-btn.active {
+  color: var(--gold-primary);
+  border-bottom-color: var(--gold-primary);
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+th {
+  padding: 14px 16px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 500;
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: #fff;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-primary);
+  border: 1px solid var(--border-gold);
+}
+
+.btn-action {
+  background: transparent;
+  border: 1px solid var(--border-gold);
+  color: var(--gold-primary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Responsive adjust */
+@media(max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 768px) {
+  .sidebar { width: 70px; }
+  .sidebar-nav span { display: none; }
+  .main-wrapper { margin-left: 70px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .reset-banner { flex-direction: column; gap: 15px; text-align: center; }
+}
+</style>
 </head>
-<body class="min-h-screen antialiased flex flex-col md:flex-row">
+<body>
 
-    <!-- LOGIN MODAL / OVERLAY (Showed if not logged in) -->
-    <div id="loginModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-veyora-card border border-veyora-border p-8 rounded-2xl w-full max-w-md gold-glow">
-            <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-veyora-cardLight border border-veyora-gold/30 text-veyora-gold mb-3 text-2xl">
-                    <i class="fa-solid font-cinzel">V</i>
-                </div>
-                <h2 class="text-2xl font-bold font-cinzel gold-gradient-text">VEYORA STORE</h2>
-                <p class="text-xs text-veyora-textMuted uppercase tracking-widest mt-1">Admin Access</p>
-            </div>
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-veyora-gold uppercase tracking-wider mb-2">Email Address</label>
-                    <input type="email" id="loginEmail" required placeholder="admin@veyora.com" class="w-full bg-veyora-bg border border-veyora-border focus:border-veyora-gold rounded-lg px-4 py-3 text-sm text-white focus:outline-none transition">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-veyora-gold uppercase tracking-wider mb-2">Password</label>
-                    <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full bg-veyora-bg border border-veyora-border focus:border-veyora-gold rounded-lg px-4 py-3 text-sm text-white focus:outline-none transition">
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-veyora-goldDark via-veyora-gold to-veyora-goldLight hover:opacity-90 text-black font-semibold py-3 rounded-lg text-sm tracking-wider uppercase transition shadow-lg mt-2">
-                    Enter Dashboard
-                </button>
-            </form>
-            <div id="loginError" class="mt-4 text-xs text-red-400 text-center hidden"></div>
-        </div>
+<!-- LOGIN OVERLAY -->
+<div id="loginSection">
+  <div class="login-card">
+    <div class="login-brand">VEYORA</div>
+    <div class="login-subtitle">STORE ADMIN LOGIN</div>
+    <form id="loginForm">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" class="form-control" value="humayun32200@gmail.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-gold" id="loginBtn">SIGN IN TO DASHBOARD</button>
+    </form>
+    <div id="loginError" style="color: var(--danger); font-size: 12px; margin-top: 15px;"></div>
+  </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div id="appContainer">
+  
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-nav">
+      <div class="nav-item active">
+        <svg class="icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span>Home</span>
+      </div>
+      <div class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+        <span>Products</span>
+      </div>
+      <div class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+        <span>Categories</span>
+      </div>
+      <div class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span>Orders</span>
+      </div>
+      <div class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Analytics</span>
+      </div>
+      <div class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+        <span>Banners</span>
+      </div>
+      <div class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span>Settings</span>
+      </div>
     </div>
-
-    <!-- MOBILE NAVIGATION BAR -->
-    <div class="md:hidden bg-veyora-card border-b border-veyora-border p-4 flex items-center justify-between sticky top-0 z-40">
-        <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full border border-veyora-gold flex items-center justify-center text-veyora-gold font-cinzel font-bold text-sm">V</div>
-            <span class="font-cinzel text-lg font-bold text-white tracking-widest">VEYORA</span>
-        </div>
-        <button id="mobileMenuBtn" class="text-veyora-gold text-2xl focus:outline-none">
-            <i class="fa-solid fa-bars"></i>
-        </button>
+    
+    <div class="sidebar-footer">
+      <div class="sidebar-logo">VEYORA</div>
+      <div class="sidebar-version">v1.0</div>
     </div>
+  </aside>
 
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out w-64 bg-veyora-card border-r border-veyora-border flex flex-col z-40">
-        <!-- Sidebar Header -->
-        <div class="p-6 border-b border-veyora-border flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full border-2 border-veyora-gold flex items-center justify-center text-veyora-gold font-cinzel font-bold text-lg gold-glow">
-                <i class="fa-solid fa-crown"></i>
-            </div>
-            <div>
-                <h1 class="font-cinzel text-lg font-bold text-white tracking-wider">VEYORA</h1>
-                <p class="text-[10px] text-veyora-gold uppercase tracking-widest font-semibold">Store Admin</p>
-            </div>
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-brand">
+        <span>VEYORA</span> <span style="font-size: 12px; color: var(--text-muted); font-family:'Plus Jakarta Sans'">STORE ADMIN</span>
+      </div>
+      <div class="header-user">
+        <div class="user-avatar" id="logoutBtn" title="Click to Sign Out">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="content-body">
+      
+      <!-- PAGE TITLE -->
+      <div class="page-title-section">
+        <div class="welcome-text">WELCOME BACK</div>
+        <h1 class="page-title">Admin Dashboard</h1>
+        <p class="page-desc">Here's what's happening with your store today.</p>
+      </div>
+
+      <!-- ANALYTICS PERIOD HEADER -->
+      <div class="dash-panel period-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <span style="font-size: 14px; font-weight:600">Analytics Period</span>
+        </div>
+        <select class="select-gold" id="periodSelect">
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+          <option value="90">All Time</option>
+        </select>
+      </div>
+
+      <!-- TOTAL SESSIONS GRAPH -->
+      <div class="dash-panel chart-container-box">
+        <div style="font-size: 14px; color: var(--text-muted)">Total Sessions</div>
+        <div class="chart-header-info">
+          <div class="chart-metric-num" id="totalSessionsNum">4</div>
+          <div class="chart-metric-badge">
+            <svg class="icon" style="width:14px; height:14px; stroke:var(--success)" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            +33% <span style="color:var(--text-muted); font-weight:400">vs previous 7 days</span>
+          </div>
+        </div>
+        <div class="canvas-holder">
+          <canvas id="sessionsChart"></canvas>
+        </div>
+      </div>
+
+      <!-- STAT CARDS GRID -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Products</div>
+            <div class="stat-value" id="valProducts">2</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
         </div>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            <a href="#" onclick="switchTab('overview')" class="nav-item active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-veyora-gold bg-veyora-cardLight border border-veyora-border/50 transition">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-                <span>Home / Overview</span>
-            </a>
-            <a href="#" onclick="switchTab('products')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-veyora-gold hover:bg-veyora-cardLight transition">
-                <i class="fa-solid fa-boxes-stacked w-5 text-center"></i>
-                <span>Products</span>
-            </a>
-            <a href="#" onclick="switchTab('categories')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-veyora-gold hover:bg-veyora-cardLight transition">
-                <i class="fa-solid fa-layer-group w-5 text-center"></i>
-                <span>Categories</span>
-            </a>
-            <a href="#" onclick="switchTab('orders')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-veyora-gold hover:bg-veyora-cardLight transition">
-                <i class="fa-solid fa-cart-shopping w-5 text-center"></i>
-                <span>Orders</span>
-            </a>
-            <a href="#" onclick="switchTab('banners')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-veyora-gold hover:bg-veyora-cardLight transition">
-                <i class="fa-solid fa-images w-5 text-center"></i>
-                <span>Banners</span>
-            </a>
-            <a href="#" onclick="switchTab('analytics')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-veyora-gold hover:bg-veyora-cardLight transition">
-                <i class="fa-solid fa-chart-line w-5 text-center"></i>
-                <span>Analytics</span>
-            </a>
-            <a href="#" onclick="switchTab('settings')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-veyora-gold hover:bg-veyora-cardLight transition">
-                <i class="fa-solid fa-gear w-5 text-center"></i>
-                <span>Settings</span>
-            </a>
-        </nav>
-
-        <!-- Sidebar Footer -->
-        <div class="p-4 border-t border-veyora-border">
-            <div class="flex items-center justify-between text-xs text-veyora-textMuted px-2 mb-3">
-                <span>VEYORA Admin</span>
-                <span class="text-veyora-gold font-semibold">v1.0</span>
-            </div>
-            <button id="logoutBtn" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-veyora-cardLight border border-veyora-border hover:border-red-500/50 hover:text-red-400 text-xs font-semibold rounded-lg text-gray-300 transition">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                <span>Sign Out</span>
-            </button>
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Categories</div>
+            <div class="stat-value" id="valCategories">2</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
         </div>
-    </aside>
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-        <!-- TOP HEADER -->
-        <header class="bg-veyora-card border-b border-veyora-border px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-30">
-            <div>
-                <h2 class="text-xl font-bold text-white tracking-wide font-cinzel">WELCOME BACK</h2>
-                <p class="text-xs text-veyora-textMuted mt-0.5">Here's what's happening with your store today.</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 bg-veyora-cardLight px-3 py-1.5 rounded-full border border-veyora-border">
-                    <div class="w-7 h-7 rounded-full bg-veyora-gold/20 text-veyora-gold flex items-center justify-center text-xs font-bold border border-veyora-gold/30">
-                        A
-                    </div>
-                    <span id="userEmailBadge" class="text-xs font-medium text-gray-200">admin@veyora.com</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- CONTENT BODY -->
-        <div class="p-6 space-y-6 max-w-7xl w-full mx-auto">
-
-            <!-- MAIN NAVIGATION TABS BAR -->
-            <div class="flex items-center border-b border-veyora-border overflow-x-auto gap-2">
-                <button onclick="switchTab('overview')" class="tab-btn active px-5 py-3 text-sm font-semibold whitespace-nowrap text-gray-400 hover:text-veyora-gold transition flex items-center gap-2">
-                    <i class="fa-solid fa-grip font-xs"></i> Overview
-                </button>
-                <button onclick="switchTab('products')" class="tab-btn px-5 py-3 text-sm font-semibold whitespace-nowrap text-gray-400 hover:text-veyora-gold transition flex items-center gap-2">
-                    <i class="fa-solid fa-box font-xs"></i> Products
-                </button>
-                <button onclick="switchTab('categories')" class="tab-btn px-5 py-3 text-sm font-semibold whitespace-nowrap text-gray-400 hover:text-veyora-gold transition flex items-center gap-2">
-                    <i class="fa-solid fa-list-check font-xs"></i> Categories
-                </button>
-                <button onclick="switchTab('orders')" class="tab-btn px-5 py-3 text-sm font-semibold whitespace-nowrap text-gray-400 hover:text-veyora-gold transition flex items-center gap-2">
-                    <i class="fa-solid fa-bag-shopping font-xs"></i> Orders
-                </button>
-                <button onclick="switchTab('banners')" class="tab-btn px-5 py-3 text-sm font-semibold whitespace-nowrap text-gray-400 hover:text-veyora-gold transition flex items-center gap-2">
-                    <i class="fa-solid fa-sliders font-xs"></i> Banners
-                </button>
-            </div>
-
-            <!-- SECTION: OVERVIEW / DASHBOARD HOME -->
-            <div id="tab-overview" class="tab-content space-y-6">
-                <!-- Analytics Period Control & Total Sessions Chart -->
-                <div class="bg-veyora-card border border-veyora-border rounded-2xl p-6 gold-glow">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <div class="flex items-center gap-3">
-                                <h3 class="text-lg font-bold text-white font-cinzel">Analytics Overview</h3>
-                                <span class="bg-veyora-gold/10 text-veyora-gold border border-veyora-gold/30 text-[10px] font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider" id="dateRangeTag">
-                                    Last 7 Days
-                                </span>
-                            </div>
-                            <p class="text-xs text-veyora-textMuted mt-1">Detailed visitor session performance analysis</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label class="text-xs text-veyora-textMuted">Period:</label>
-                            <select id="analyticsPeriod" onchange="updateAnalyticsPeriod(this.value)" class="bg-veyora-bg border border-veyora-border focus:border-veyora-gold rounded-lg px-3 py-1.5 text-xs text-veyora-gold focus:outline-none">
-                                <option value="7d">Last 7 Days</option>
-                                <option value="1m">1 Month</option>
-                                <option value="3m">3 Months</option>
-                                <option value="6m">6 Months</option>
-                                <option value="1y">1 Year</option>
-                                <option value="all">All Time</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Chart Card Header Stats -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-veyora-cardLight rounded-xl border border-veyora-border/50">
-                        <div>
-                            <span class="text-xs text-veyora-textMuted font-medium">Total Sessions</span>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <span class="text-2xl font-bold text-white font-cinzel" id="chartTotalSessions">4</span>
-                                <span class="text-xs font-semibold text-emerald-400"><i class="fa-solid fa-arrow-trend-up"></i> +33%</span>
-                            </div>
-                        </div>
-                        <div>
-                            <span class="text-xs text-veyora-textMuted font-medium">Average Daily Visitors</span>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <span class="text-2xl font-bold text-white font-cinzel" id="chartAvgVisitors">1.2</span>
-                            </div>
-                        </div>
-                        <div>
-                            <span class="text-xs text-veyora-textMuted font-medium">Peak Hour Sessions</span>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <span class="text-2xl font-bold text-veyora-gold font-cinzel" id="chartPeakSessions">2</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SVG / Canvas Area Line Chart -->
-                    <div class="relative h-64 w-full">
-                        <canvas id="sessionsChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- STAT CARDS GRID (9 Cards Grid) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    <!-- Products Count Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Products</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center group-hover:border-veyora-gold transition">
-                                <i class="fa-solid fa-boxes-stacked text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-white font-cinzel" id="statProductsCount">0</span>
-                            <button onclick="switchTab('products')" class="text-xs text-veyora-gold hover:underline flex items-center gap-1">Manage <i class="fa-solid fa-arrow-right text-[10px]"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Categories Count Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Categories</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center group-hover:border-veyora-gold transition">
-                                <i class="fa-solid fa-layer-group text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-white font-cinzel" id="statCategoriesCount">0</span>
-                            <button onclick="switchTab('categories')" class="text-xs text-veyora-gold hover:underline flex items-center gap-1">Manage <i class="fa-solid fa-arrow-right text-[10px]"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Orders Count Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Total Orders</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center group-hover:border-veyora-gold transition">
-                                <i class="fa-solid fa-cart-shopping text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-white font-cinzel" id="statOrdersCount">0</span>
-                            <button onclick="switchTab('orders')" class="text-xs text-veyora-gold hover:underline flex items-center gap-1">View <i class="fa-solid fa-arrow-right text-[10px]"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Pending Orders Count Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Pending Orders</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-amber-400 flex items-center justify-center group-hover:border-amber-400 transition">
-                                <i class="fa-solid fa-clock text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-amber-400 font-cinzel" id="statPendingOrdersCount">0</span>
-                            <button onclick="switchTab('orders')" class="text-xs text-veyora-gold hover:underline flex items-center gap-1">Review <i class="fa-solid fa-arrow-right text-[10px]"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Live Visitors Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Live Visitors</span>
-                            <div class="w-3 h-3 rounded-full bg-emerald-500 live-dot"></div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-emerald-400 font-cinzel" id="statLiveVisitors">1</span>
-                            <span class="text-[10px] text-veyora-textMuted">Last 5 min</span>
-                        </div>
-                    </div>
-
-                    <!-- Total Sessions Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Total Sessions</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center">
-                                <i class="fa-solid fa-user-group text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-white font-cinzel" id="statTotalSessions">4</span>
-                            <span class="text-xs text-emerald-400">+33%</span>
-                        </div>
-                    </div>
-
-                    <!-- Page Views Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Page Views</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center">
-                                <i class="fa-solid fa-eye text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-white font-cinzel" id="statPageViews">12</span>
-                            <span class="text-xs text-veyora-gold">Live</span>
-                        </div>
-                    </div>
-
-                    <!-- Total Sales Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Total Sales</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center">
-                                <i class="fa-solid fa-money-bill-wave text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-veyora-gold font-cinzel" id="statTotalSales">Rs 0</span>
-                            <span class="text-[10px] text-veyora-textMuted">PKR</span>
-                        </div>
-                    </div>
-
-                    <!-- Conversion Rate Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-5 rounded-xl flex flex-col justify-between hover:border-veyora-gold/50 transition group">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-veyora-textMuted uppercase tracking-wider">Conversion Rate</span>
-                            <div class="w-8 h-8 rounded-lg bg-veyora-cardLight border border-veyora-border text-veyora-gold flex items-center justify-center">
-                                <i class="fa-solid fa-percent text-xs"></i>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between mt-2">
-                            <span class="text-2xl font-bold text-white font-cinzel" id="statConversionRate">0.00%</span>
-                            <span class="text-[10px] text-veyora-textMuted">Avg</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LIVE VISITOR ACTIVITY CARD & RESET BANNER GRID -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Live Visitor Activity List Card -->
-                    <div class="bg-veyora-card border border-veyora-border p-6 rounded-2xl lg:col-span-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 live-dot"></div>
-                                <h3 class="font-bold text-white font-cinzel text-sm">Live Visitor Activity</h3>
-                            </div>
-                            <span class="text-[10px] text-veyora-gold uppercase tracking-wider">Realtime</span>
-                        </div>
-                        <div class="space-y-3" id="liveActivityList">
-                            <div class="flex items-center gap-3 p-3 bg-veyora-cardLight rounded-xl border border-veyora-border/50">
-                                <div class="w-8 h-8 rounded-full bg-veyora-gold/10 border border-veyora-gold/30 text-veyora-gold flex items-center justify-center text-xs">
-                                    <i class="fa-solid fa-user"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold text-white truncate">Store Visitor #8492</p>
-                                    <p class="text-[10px] text-veyora-textMuted truncate">Viewing Products / Home</p>
-                                </div>
-                                <span class="text-[10px] text-veyora-gold">Just now</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-3 bg-veyora-cardLight rounded-xl border border-veyora-border/50">
-                                <div class="w-8 h-8 rounded-full bg-veyora-gold/10 border border-veyora-gold/30 text-veyora-gold flex items-center justify-center text-xs">
-                                    <i class="fa-solid fa-user"></i>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold text-white truncate">Store Visitor #8490</p>
-                                    <p class="text-[10px] text-veyora-textMuted truncate">Checkout Page</p>
-                                </div>
-                                <span class="text-[10px] text-veyora-textMuted">2m ago</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RESET DASHBOARD COUNTS BANNER -->
-                    <div class="bg-gradient-to-r from-veyora-card via-veyora-cardLight to-veyora-card border border-veyora-gold/40 p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between gold-glow relative overflow-hidden">
-                        <div class="absolute -right-10 -bottom-10 text-veyora-gold/5 text-9xl pointer-events-none font-cinzel">
-                            <i class="fa-solid fa-arrows-rotate"></i>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fa-solid fa-rotate-left text-veyora-gold"></i>
-                                <h3 class="text-base font-bold text-veyora-gold font-cinzel tracking-wider">RESET DASHBOARD COUNTS</h3>
-                            </div>
-                            <p class="text-xs text-gray-300 max-w-xl leading-relaxed mt-1">
-                                Reset your analytics and dashboard counts. This will clear current visitor, session and page view data, but your products, categories and past orders will remain safe.
-                            </p>
-                        </div>
-                        <div class="mt-6 flex items-center gap-4">
-                            <button onclick="resetDashboardCounts()" class="bg-gradient-to-r from-veyora-goldDark via-veyora-gold to-veyora-goldLight hover:opacity-90 text-black font-semibold text-xs px-6 py-3 rounded-xl uppercase tracking-wider transition shadow-lg flex items-center gap-2">
-                                <i class="fa-solid fa-power-off"></i> Start Fresh From Now
-                            </button>
-                            <span class="text-[10px] text-veyora-textMuted" id="lastResetText">Last reset: Never</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RECENT ORDERS SNAPSHOT TABLE -->
-                <div class="bg-veyora-card border border-veyora-border rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-white font-cinzel text-base">Recent Orders</h3>
-                        <button onclick="switchTab('orders')" class="text-xs text-veyora-gold hover:underline">View All Orders →</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-veyora-cardLight text-veyora-gold uppercase tracking-wider text-[10px] border-b border-veyora-border">
-                                <tr>
-                                    <th class="p-3">Order ID</th>
-                                    <th class="p-3">Customer</th>
-                                    <th class="p-3">Total</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Date</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="overviewOrdersTableBody" class="divide-y divide-veyora-border/50">
-                                <tr>
-                                    <td colspan="6" class="p-4 text-center text-veyora-textMuted">Loading orders...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION: PRODUCTS MANAGEMENT -->
-            <div id="tab-products" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-white font-cinzel">Products Management</h3>
-                        <p class="text-xs text-veyora-textMuted">Add, edit, manage product catalog and multi-variants</p>
-                    </div>
-                    <button onclick="openProductModal()" class="bg-veyora-gold text-black font-semibold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-veyora-goldLight transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Add New Product
-                    </button>
-                </div>
-
-                <!-- Products Table Card -->
-                <div class="bg-veyora-card border border-veyora-border rounded-2xl p-6">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-veyora-cardLight text-veyora-gold uppercase tracking-wider text-[10px] border-b border-veyora-border">
-                                <tr>
-                                    <th class="p-3">Image</th>
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Price</th>
-                                    <th class="p-3">Stock</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="productsTableBody" class="divide-y divide-veyora-border/50">
-                                <tr>
-                                    <td colspan="8" class="p-4 text-center text-veyora-textMuted">Loading products...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION: CATEGORIES MANAGEMENT -->
-            <div id="tab-categories" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-xl font-bold text-white font-cinzel">Category Management</h3>
-                        <p class="text-xs text-veyora-textMuted">Organize your store collections and product tags</p>
-                    </div>
-                    <button onclick="openCategoryModal()" class="bg-veyora-gold text-black font-semibold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-veyora-goldLight transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Add Category
-                    </button>
-                </div>
-
-                <div class="bg-veyora-card border border-veyora-border rounded-2xl p-6">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-veyora-cardLight text-veyora-gold uppercase tracking-wider text-[10px] border-b border-veyora-border">
-                                <tr>
-                                    <th class="p-3">Image</th>
-                                    <th class="p-3">Category Name</th>
-                                    <th class="p-3">Slug</th>
-                                    <th class="p-3">Sort Order</th>
-                                    <th class="p-3">Active</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="categoriesTableBody" class="divide-y divide-veyora-border/50">
-                                <tr>
-                                    <td colspan="6" class="p-4 text-center text-veyora-textMuted">Loading categories...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION: ORDERS MANAGEMENT -->
-            <div id="tab-orders" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xl font-bold text-white font-cinzel">Orders Management</h3>
-                        <p class="text-xs text-veyora-textMuted">View and process customer orders</p>
-                    </div>
-                    <button onclick="loadOrders()" class="bg-veyora-cardLight border border-veyora-border text-veyora-gold hover:border-veyora-gold px-3 py-2 rounded-xl text-xs flex items-center gap-2 transition">
-                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Orders
-                    </button>
-                </div>
-
-                <div class="bg-veyora-card border border-veyora-border rounded-2xl p-6">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-veyora-cardLight text-veyora-gold uppercase tracking-wider text-[10px] border-b border-veyora-border">
-                                <tr>
-                                    <th class="p-3">Order ID</th>
-                                    <th class="p-3">Customer</th>
-                                    <th class="p-3">Items</th>
-                                    <th class="p-3">Total Amount</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Date</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ordersTableBody" class="divide-y divide-veyora-border/50">
-                                <tr>
-                                    <td colspan="7" class="p-4 text-center text-veyora-textMuted">Loading orders...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION: BANNERS -->
-            <div id="tab-banners" class="tab-content hidden space-y-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xl font-bold text-white font-cinzel">Store Banners & Hero Images</h3>
-                        <p class="text-xs text-veyora-textMuted">Manage promotional homepage slider banners</p>
-                    </div>
-                    <button onclick="alert('Banner uploader ready')" class="bg-veyora-gold text-black font-semibold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider hover:bg-veyora-goldLight transition flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Upload New Banner
-                    </button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-veyora-card border border-veyora-border rounded-xl p-4">
-                        <div class="h-40 bg-veyora-cardLight rounded-lg border border-veyora-border flex items-center justify-center overflow-hidden relative">
-                            <span class="text-xs text-veyora-gold font-cinzel font-bold">Homepage Main Hero - Luxury Collection</span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between text-xs">
-                            <span class="text-emerald-400 font-semibold">Active Banner</span>
-                            <button class="text-red-400 hover:underline">Remove</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION: ANALYTICS -->
-            <div id="tab-analytics" class="tab-content hidden space-y-6">
-                <div class="bg-veyora-card border border-veyora-border p-6 rounded-2xl">
-                    <h3 class="text-xl font-bold text-white font-cinzel mb-2">Extended Store Analytics</h3>
-                    <p class="text-xs text-veyora-textMuted">Detailed view of traffic sources, conversion pipelines, and sales trends.</p>
-                </div>
-            </div>
-
-            <!-- SECTION: SETTINGS -->
-            <div id="tab-settings" class="tab-content hidden space-y-6">
-                <div class="bg-veyora-card border border-veyora-border p-6 rounded-2xl">
-                    <h3 class="text-xl font-bold text-white font-cinzel mb-4">Store Settings</h3>
-                    <p class="text-xs text-veyora-textMuted mb-6">Manage global store configurations, currency settings, and API keys.</p>
-                    <div class="space-y-4 max-w-xl">
-                        <div>
-                            <label class="block text-xs font-semibold text-veyora-gold mb-1">Store Name</label>
-                            <input type="text" value="VEYORA STORE" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-veyora-gold mb-1">Currency Code</label>
-                            <input type="text" value="PKR (Rs)" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-xs text-white">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Orders</div>
+            <div class="stat-value" id="valOrders">0</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
         </div>
-    </main>
 
-    <!-- PRODUCT ADD / EDIT MODAL -->
-    <div id="productModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-veyora-card border border-veyora-border rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col gold-glow">
-            <div class="p-6 border-b border-veyora-border flex items-center justify-between">
-                <h3 class="text-lg font-bold text-white font-cinzel" id="productModalTitle">Add New Product</h3>
-                <button onclick="closeProductModal()" class="text-veyora-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="productForm" class="p-6 overflow-y-auto space-y-4 text-xs">
-                <input type="hidden" id="prodId">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Product Title *</label>
-                        <input type="text" id="prodTitle" required class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Category *</label>
-                        <select id="prodCategory" required class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                            <option value="">Select Category</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">SKU Code</label>
-                        <input type="text" id="prodSku" placeholder="VY-1001" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Barcode</label>
-                        <input type="text" id="prodBarcode" placeholder="123456789" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Retail Price (Rs) *</label>
-                        <input type="number" id="prodPrice" required step="0.01" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Sale Price (Rs)</label>
-                        <input type="number" id="prodSalePrice" step="0.01" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Stock Quantity *</label>
-                        <input type="number" id="prodStock" required value="10" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-veyora-gold font-semibold mb-1">Primary Image URL</label>
-                        <input type="url" id="prodImageUrl" placeholder="https://..." class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-veyora-gold font-semibold mb-1">Description</label>
-                    <textarea id="prodDescription" rows="3" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none"></textarea>
-                </div>
-
-                <div class="flex items-center gap-6 py-2">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="prodIsActive" checked class="accent-veyora-gold">
-                        <span class="text-white font-medium">Active Status</span>
-                    </label>
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" id="prodIsFeatured" class="accent-veyora-gold">
-                        <span class="text-white font-medium">Featured Product</span>
-                    </label>
-                </div>
-
-                <!-- VARIANT GENERATOR BUILDER -->
-                <div class="border-t border-veyora-border pt-4 mt-4">
-                    <div class="flex items-center justify-between mb-3">
-                        <h4 class="font-bold text-veyora-gold font-cinzel text-sm">Product Variants (Optional)</h4>
-                        <button type="button" onclick="addVariantRow()" class="text-[10px] bg-veyora-cardLight border border-veyora-border hover:border-veyora-gold text-veyora-gold px-3 py-1 rounded-md">
-                            + Add Variant Row
-                        </button>
-                    </div>
-                    <div id="variantsContainer" class="space-y-2">
-                        <!-- Variant Rows Appended Here -->
-                    </div>
-                </div>
-
-                <div class="border-t border-veyora-border pt-4 flex items-center justify-end gap-3">
-                    <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-lg bg-veyora-cardLight border border-veyora-border text-gray-300 hover:text-white">Cancel</button>
-                    <button type="submit" class="px-6 py-2 rounded-lg bg-veyora-gold text-black font-semibold hover:bg-veyora-goldLight">Save Product</button>
-                </div>
-            </form>
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Pending Orders</div>
+            <div class="stat-value" id="valPending">0</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
         </div>
-    </div>
 
-    <!-- CATEGORY MODAL -->
-    <div id="categoryModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-veyora-card border border-veyora-border rounded-2xl w-full max-w-md gold-glow">
-            <div class="p-6 border-b border-veyora-border flex items-center justify-between">
-                <h3 class="text-lg font-bold text-white font-cinzel" id="categoryModalTitle">Add Category</h3>
-                <button onclick="closeCategoryModal()" class="text-veyora-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="categoryForm" class="p-6 space-y-4 text-xs">
-                <input type="hidden" id="catId">
-                <div>
-                    <label class="block text-veyora-gold font-semibold mb-1">Category Name *</label>
-                    <input type="text" id="catName" required class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                </div>
-                <div>
-                    <label class="block text-veyora-gold font-semibold mb-1">Slug</label>
-                    <input type="text" id="catSlug" placeholder="luxury-watch" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                </div>
-                <div>
-                    <label class="block text-veyora-gold font-semibold mb-1">Image URL</label>
-                    <input type="url" id="catImageUrl" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                </div>
-                <div>
-                    <label class="block text-veyora-gold font-semibold mb-1">Sort Order</label>
-                    <input type="number" id="catSortOrder" value="0" class="w-full bg-veyora-bg border border-veyora-border rounded-lg p-2.5 text-white focus:border-veyora-gold outline-none">
-                </div>
-                <div class="border-t border-veyora-border pt-4 flex items-center justify-end gap-3">
-                    <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 rounded-lg bg-veyora-cardLight text-gray-300">Cancel</button>
-                    <button type="submit" class="px-6 py-2 rounded-lg bg-veyora-gold text-black font-semibold">Save Category</button>
-                </div>
-            </form>
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Live Visitors</div>
+            <div class="stat-value" id="valVisitors">1</div>
+            <div style="font-size:11px; color:var(--text-muted)">Activity in last 5 minutes</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
         </div>
-    </div>
 
-    <!-- JAVASCRIPT APP LOGIC & SUPABASE INTEGRATION -->
-    <script>
-        // Supabase Initialization Config
-        const SUPABASE_URL = "https://fudkfvwwbqmflmtkbtkk.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
-        const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Total Sessions</div>
+            <div class="stat-value">4</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
+        </div>
 
-        // Dashboard State Variables
-        let chartInstance = null;
-        let categoriesList = [];
-        let productsList = [];
-        let ordersList = [];
-
-        // DOM Ready Load
-        window.addEventListener('DOMContentLoaded', () => {
-            initMobileMenu();
-            initChart();
-            checkSession();
-            bindEvents();
-            loadLastReset();
-        });
-
-        // Mobile Menu Toggle
-        function initMobileMenu() {
-            const btn = document.getElementById('mobileMenuBtn');
-            const sidebar = document.getElementById('sidebar');
-            btn.addEventListener('click', () => {
-                sidebar.classList.toggle('-translate-x-full');
-            });
-        }
-
-        // Tab Navigation Switcher
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            const target = document.getElementById(`tab-${tabName}`);
-            if (target) target.classList.remove('hidden');
-
-            const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.innerText.toLowerCase().includes(tabName));
-            if (activeBtn) activeBtn.classList.add('active');
-
-            if (tabName === 'products') loadProducts();
-            if (tabName === 'categories') loadCategories();
-            if (tabName === 'orders') loadOrders();
-        }
-
-        // Chart.js Setup
-        function initChart() {
-            const ctx = document.getElementById('sessionsChart').getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-            gradient.addColorStop(0, 'rgba(201, 164, 92, 0.4)');
-            gradient.addColorStop(1, 'rgba(201, 164, 92, 0.0)');
-
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['16 Oct', '17 Oct', '18 Oct', '19 Oct', '20 Oct', '21 Oct', '22 Oct'],
-                    datasets: [{
-                        label: 'Sessions',
-                        data: [1, 2, 1, 3, 2, 4, 4],
-                        borderColor: '#C9A45C',
-                        borderWidth: 3,
-                        backgroundColor: gradient,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#FFF0CA',
-                        pointBorderColor: '#C9A45C',
-                        pointRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { color: 'rgba(56, 51, 39, 0.3)' }, ticks: { color: '#A0A0A0' } },
-                        y: { grid: { color: 'rgba(56, 51, 39, 0.3)' }, ticks: { color: '#A0A0A0' }, beginAtZero: true }
-                    }
-                }
-            });
-        }
-
-        function updateAnalyticsPeriod(period) {
-            const tag = document.getElementById('dateRangeTag');
-            const labels = {
-                '7d': 'Last 7 Days',
-                '1m': 'Last 1 Month',
-                '3m': 'Last 3 Months',
-                '6m': 'Last 6 Months',
-                '1y': 'Last 1 Year',
-                'all': 'All Time'
-            };
-            tag.innerText = labels[period] || 'Custom';
-        }
-
-        // Supabase Auth Handling
-        async function checkSession() {
-            if (!supabase) return;
-            const { data: { session } } = await supabase.auth.getSession();
-            const loginModal = document.getElementById('loginModal');
-            if (session) {
-                loginModal.classList.add('hidden');
-                document.getElementById('userEmailBadge').innerText = session.user.email;
-                loadDashboardData();
-            } else {
-                loginModal.classList.remove('hidden');
-            }
-        }
-
-        function bindEvents() {
-            // Login Form Submit
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                const errDiv = document.getElementById('loginError');
-
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    document.getElementById('loginModal').classList.add('hidden');
-                    loadDashboardData();
-                } catch (err) {
-                    errDiv.innerText = err.message;
-                    errDiv.classList.remove('hidden');
-                }
-            });
-
-            // Logout
-            document.getElementById('logoutBtn').addEventListener('click', async () => {
-                if (supabase) await supabase.auth.signOut();
-                document.getElementById('loginModal').classList.remove('hidden');
-            });
-
-            // Product & Category Forms
-            document.getElementById('productForm').addEventListener('submit', handleSaveProduct);
-            document.getElementById('categoryForm').addEventListener('submit', handleSaveCategory);
-        }
-
-        // Load Global Dashboard Data
-        async function loadDashboardData() {
-            await loadCategories();
-            await loadProducts();
-            await loadOrders();
-            calculateAnalytics();
-        }
-
-        // Load Categories
-        async function loadCategories() {
-            if (!supabase) return;
-            const { data, error } = await supabase.from('categories').select('*').order('sort_order', { ascending: true });
-            if (!error && data) {
-                categoriesList = data;
-                document.getElementById('statCategoriesCount').innerText = data.length;
-                renderCategoriesTable(data);
-                populateCategoryDropdown(data);
-            }
-        }
-
-        function renderCategoriesTable(data) {
-            const tbody = document.getElementById('categoriesTableBody');
-            if (!data.length) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-veyora-textMuted">No categories found.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = data.map(c => `
-                <tr class="hover:bg-veyora-cardLight/50">
-                    <td class="p-3"><img src="${c.image_url || 'https://placehold.co/40x40/1B1B17/C9A45C?text=Cat'}" class="w-8 h-8 rounded border border-veyora-border object-cover"></td>
-                    <td class="p-3 font-semibold text-white">${c.name}</td>
-                    <td class="p-3 text-veyora-textMuted">${c.slug || '-'}</td>
-                    <td class="p-3 text-veyora-gold">${c.sort_order || 0}</td>
-                    <td class="p-3">${c.is_active ? '<span class="text-emerald-400">Yes</span>' : '<span class="text-red-400">No</span>'}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="editCategory('${c.id}')" class="text-veyora-gold hover:underline mr-2">Edit</button>
-                        <button onclick="deleteCategory('${c.id}')" class="text-red-400 hover:underline">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function populateCategoryDropdown(cats) {
-            const select = document.getElementById('prodCategory');
-            select.innerHTML = '<option value="">Select Category</option>' + 
-                cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-        }
-
-        // Load Products
-        async function loadProducts() {
-            if (!supabase) return;
-            const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-            if (!error && data) {
-                productsList = data;
-                document.getElementById('statProductsCount').innerText = data.length;
-                renderProductsTable(data);
-            }
-        }
-
-        function renderProductsTable(data) {
-            const tbody = document.getElementById('productsTableBody');
-            if (!data.length) {
-                tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-veyora-textMuted">No products found.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = data.map(p => `
-                <tr class="hover:bg-veyora-cardLight/50">
-                    <td class="p-3"><img src="${p.image_url || 'https://placehold.co/40x40/1B1B17/C9A45C?text=Prod'}" class="w-8 h-8 rounded border border-veyora-border object-cover"></td>
-                    <td class="p-3 font-semibold text-white">${p.title}</td>
-                    <td class="p-3 text-veyora-textMuted">${p.sku || '-'}</td>
-                    <td class="p-3 text-veyora-gold">${getCategoryName(p.category_id)}</td>
-                    <td class="p-3 text-white">Rs ${p.price}</td>
-                    <td class="p-3">${p.stock_quantity || 0}</td>
-                    <td class="p-3">${p.is_active ? '<span class="text-emerald-400">Active</span>' : '<span class="text-red-400">Inactive</span>'}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="editProduct('${p.id}')" class="text-veyora-gold hover:underline mr-2">Edit</button>
-                        <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:underline">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function getCategoryName(catId) {
-            const cat = categoriesList.find(c => c.id === catId);
-            return cat ? cat.name : 'General';
-        }
-
-        // Load Orders
-        async function loadOrders() {
-            if (!supabase) return;
-            const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-            if (!error && data) {
-                ordersList = data;
-                document.getElementById('statOrdersCount').innerText = data.length;
-                const pending = data.filter(o => o.status === 'Pending').length;
-                document.getElementById('statPendingOrdersCount').innerText = pending;
-
-                const salesTotal = data.reduce((acc, curr) => acc + (parseFloat(curr.total_amount) || 0), 0);
-                document.getElementById('statTotalSales').innerText = `Rs ${salesTotal.toLocaleString()}`;
-
-                renderOrdersTable('ordersTableBody', data);
-                renderOrdersTable('overviewOrdersTableBody', data.slice(0, 5));
-            }
-        }
-
-        function renderOrdersTable(elementId, data) {
-            const tbody = document.getElementById(elementId);
-            if (!data || !data.length) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-veyora-textMuted">No recent orders found.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = data.map(o => `
-                <tr class="hover:bg-veyora-cardLight/50">
-                    <td class="p-3 font-semibold text-veyora-gold">#${o.id.substring(0, 8)}</td>
-                    <td class="p-3 text-white">${o.customer_name || 'Guest Customer'}</td>
-                    <td class="p-3 text-veyora-textMuted">${o.item_count || 1} items</td>
-                    <td class="p-3 font-bold text-white">Rs ${o.total_amount || 0}</td>
-                    <td class="p-3">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                            o.status === 'Delivered' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
-                            o.status === 'Pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' :
-                            'bg-blue-500/10 text-blue-400 border border-blue-500/30'
-                        }">${o.status || 'Pending'}</span>
-                    </td>
-                    <td class="p-3 text-veyora-textMuted">${new Date(o.created_at).toLocaleDateString()}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="updateOrderStatus('${o.id}')" class="text-veyora-gold hover:underline">Update</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Product Modal Functions
-        function openProductModal() {
-            document.getElementById('productForm').reset();
-            document.getElementById('prodId').value = '';
-            document.getElementById('variantsContainer').innerHTML = '';
-            document.getElementById('productModalTitle').innerText = 'Add New Product';
-            document.getElementById('productModal').classList.remove('hidden');
-        }
-
-        function closeProductModal() {
-            document.getElementById('productModal').classList.add('hidden');
-        }
-
-        function addVariantRow(data = {}) {
-            const container = document.getElementById('variantsContainer');
-            const rowId = Date.now();
-            const div = document.createElement('div');
-            div.className = 'grid grid-cols-4 gap-2 items-center bg-veyora-bg p-2 rounded-lg border border-veyora-border';
-            div.innerHTML = `
-                <input type="text" placeholder="Design/Size (e.g. XL)" value="${data.title || ''}" class="variant-title bg-veyora-card border border-veyora-border rounded p-1.5 text-white">
-                <input type="number" placeholder="Price" value="${data.price || ''}" class="variant-price bg-veyora-card border border-veyora-border rounded p-1.5 text-white">
-                <input type="number" placeholder="Stock" value="${data.stock || ''}" class="variant-stock bg-veyora-card border border-veyora-border rounded p-1.5 text-white">
-                <button type="button" onclick="this.parentElement.remove()" class="text-red-400 text-xs hover:underline">Remove</button>
-            `;
-            container.appendChild(div);
-        }
-
-        async function handleSaveProduct(e) {
-            e.preventDefault();
-            const id = document.getElementById('prodId').value;
-            const payload = {
-                title: document.getElementById('prodTitle').value,
-                category_id: document.getElementById('prodCategory').value,
-                sku: document.getElementById('prodSku').value,
-                barcode: document.getElementById('prodBarcode').value,
-                price: parseFloat(document.getElementById('prodPrice').value),
-                sale_price: parseFloat(document.getElementById('prodSalePrice').value) || null,
-                stock_quantity: parseInt(document.getElementById('prodStock').value),
-                image_url: document.getElementById('prodImageUrl').value,
-                description: document.getElementById('prodDescription').value,
-                is_active: document.getElementById('prodIsActive').checked,
-                is_featured: document.getElementById('prodIsFeatured').checked
-            };
-
-            if (id) {
-                await supabase.from('products').update(payload).eq('id', id);
-            } else {
-                await supabase.from('products').insert([payload]);
-            }
-
-            closeProductModal();
-            loadProducts();
-        }
-
-        async function editProduct(id) {
-            const p = productsList.find(item => item.id === id);
-            if (!p) return;
-            openProductModal();
-            document.getElementById('productModalTitle').innerText = 'Edit Product';
-            document.getElementById('prodId').value = p.id;
-            document.getElementById('prodTitle').value = p.title;
-            document.getElementById('prodCategory').value = p.category_id || '';
-            document.getElementById('prodSku').value = p.sku || '';
-            document.getElementById('prodBarcode').value = p.barcode || '';
-            document.getElementById('prodPrice').value = p.price;
-            document.getElementById('prodSalePrice').value = p.sale_price || '';
-            document.getElementById('prodStock').value = p.stock_quantity;
-            document.getElementById('prodImageUrl').value = p.image_url || '';
-            document.getElementById('prodDescription').value = p.description || '';
-            document.getElementById('prodIsActive').checked = p.is_active;
-            document.getElementById('prodIsFeatured').checked = p.is_featured;
-        }
-
-        async function deleteProduct(id) {
-            if (confirm('Are you sure you want to delete this product?')) {
-                await supabase.from('products').delete().eq('id', id);
-                loadProducts();
-            }
-        }
-
-        // Category Modal Functions
-        function openCategoryModal() {
-            document.getElementById('categoryForm').reset();
-            document.getElementById('catId').value = '';
-            document.getElementById('categoryModalTitle').innerText = 'Add Category';
-            document.getElementById('categoryModal').classList.remove('hidden');
-        }
-
-        function closeCategoryModal() {
-            document.getElementById('categoryModal').classList.add('hidden');
-        }
-
-        async function handleSaveCategory(e) {
-            e.preventDefault();
-            const id = document.getElementById('catId').value;
-            const payload = {
-                name: document.getElementById('catName').value,
-                slug: document.getElementById('catSlug').value,
-                image_url: document.getElementById('catImageUrl').value,
-                sort_order: parseInt(document.getElementById('catSortOrder').value) || 0
-            };
-
-            if (id) {
-                await supabase.from('categories').update(payload).eq('id', id);
-            } else {
-                await supabase.from('categories').insert([payload]);
-            }
-
-            closeCategoryModal();
-            loadCategories();
-        }
-
-        async function editCategory(id) {
-            const c = categoriesList.find(item => item.id === id);
-            if (!c) return;
-            openCategoryModal();
-            document.getElementById('categoryModalTitle').innerText = 'Edit Category';
-            document.getElementById('catId').value = c.id;
-            document.getElementById('catName').value = c.name;
-            document.getElementById('catSlug').value = c.slug || '';
-            document.getElementById('catImageUrl').value = c.image_url || '';
-            document.getElementById('catSortOrder').value = c.sort_order || 0;
-        }
-
-        async function deleteCategory(id) {
-            if (confirm('Delete this category?')) {
-                await supabase.from('categories').delete().eq('id', id);
-                loadCategories();
-            }
-        }
-
-        async function updateOrderStatus(id) {
-            const newStatus = prompt('Enter new status (Pending, Processing, Shipped, Delivered, Cancelled):', 'Processing');
-            if (newStatus) {
-                await supabase.from('orders').update({ status: newStatus }).eq('id', id);
-                loadOrders();
-            }
-        }
-
-        // Analytics Calculation & Dashboard Reset Logic
-        function calculateAnalytics() {
-            document.getElementById('statLiveVisitors').innerText = '1';
-            document.getElementById('statTotalSessions').innerText = '4';
-            document.getElementById('statPageViews').innerText = '12';
-            document.getElementById('statConversionRate').innerText = '0.00%';
-        }
-
-        function resetDashboardCounts() {
-            const now = new Date().toLocaleString();
-            localStorage.setItem('veyora_last_reset', now);
-            document.getElementById('lastResetText').innerText = `Last reset: ${now}`;
-            document.getElementById('statLiveVisitors').innerText = '0';
-            document.getElementById('statTotalSessions').innerText = '0';
-            document.getElementById('statPageViews').innerText = '0';
-            alert('Dashboard analytics and visitor counts have been reset safely.');
-        }
-
-        function loadLastReset() {
-            const last = localStorage.getItem('veyora_last_reset');
-            if (last) {
-                document.getElementById('lastResetText').innerText = `Last reset: ${last}`;
-            }
-        }
-    </script>
-</body>
-</html>
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Page Views</div>
+            <div class="stat-value" id="valViews">10</div>
+          </div>
+          <div class="
