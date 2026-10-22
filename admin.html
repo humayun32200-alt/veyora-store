@@ -70,6 +70,11 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;p
  </header>
 
  <section id="tab-overview" class="tab active">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+  <button id="resetStats" class="btn2" type="button">
+    Reset Sessions, Views & Sales
+  </button>
+</div>
   <div class="grid3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
    <div class="stat"><small>Products</small><strong id="sProducts">0</strong></div>
    <div class="stat"><small>Categories</small><strong id="sCategories">0</strong></div>
@@ -169,6 +174,35 @@ const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
+ const RESET_KEY = 'veyora_stats_reset_at';
+
+function getResetTime() {
+  return Number(localStorage.getItem(RESET_KEY)) || 0;
+}
+
+$('resetStats').addEventListener('click', async () => {
+  const ok = confirm(
+    'Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.'
+  );
+
+  if (!ok) return;
+
+  localStorage.setItem(RESET_KEY, String(Date.now()));
+
+  $('sSessions').textContent = '0';
+  $('sViews').textContent = '0';
+  $('sSales').textContent = 'Rs 0';
+  $('sLive').textContent = '0';
+  $('sConversion').textContent = '0.00%';
+
+  try {
+    await loadOrders();
+    await loadAnalytics();
+    note('Stats reset successfully. Products and orders are safe.');
+  } catch (e) {
+    note('Reset ke baad stats reload nahi huay: ' + err(e), true);
+  }
+});
 function note(s,bad=false){const n=$('notice');n.textContent=s;n.style.borderColor=bad?'#ef4444':'var(--gold)';n.classList.remove('hidden');}
 function err(e){return e?.message||String(e||'Unknown error')}
 function busy(b,v){b.disabled=v;b.textContent=v?'Please wait…':(b.dataset.label||b.textContent)}
@@ -394,7 +428,17 @@ async function loadOrders(){
  if(error){note('Orders: '+err(error),true);return;}
  orders=data||[];$('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
- $('sSales').textContent='Rs '+orders.filter(o=>!['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())).reduce((s,o)=>s+orderTotal(o),0).toLocaleString();
+const resetAt = getResetTime();
+
+const salesOrders = orders.filter(o =>
+  !['cancelled','canceled'].includes(
+    String(orderStatus(o)).toLowerCase()
+  ) &&
+  (!resetAt || (o.created_at && new Date(o.created_at).getTime() >= resetAt))
+);
+
+$('sSales').textContent = 'Rs ' +
+  salesOrders.reduce((sum, o) => sum + orderTotal(o), 0).toLocaleString();
  renderOrders();
 }
 function renderOrders(){
@@ -417,7 +461,14 @@ async function updateOrder(id){
 $('refreshOrders').onclick=loadOrders;
 async function loadAnalytics(){
  if(!db)return;
- const period=$('period').value;let q=db.from('analytics_events').select('session_id,event_type,created_at');
+ const period=$('period').value;
+let q=db.from('analytics_events').select('session_id,event_type,created_at');
+
+const resetAt = getResetTime();
+
+if (resetAt) {
+  q = q.gte('created_at', new Date(resetAt).toISOString());
+}
  if(period!=='all')q=q.gte('created_at',new Date(Date.now()-Number(period)*86400000).toISOString());
  const {data,error}=await q;if(error){note('Analytics: '+err(error),true);return;}
  const ev=data||[],sessions=new Set(ev.map(x=>x.session_id).filter(Boolean));
