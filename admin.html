@@ -672,12 +672,37 @@ async function loadAnalytics(){
  $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
 
  const daily={};
- ev.forEach(x=>{
-  if(x.created_at){
-   const d=new Date(x.created_at).toLocaleDateString();
-   daily[d]=(daily[d]||0)+(x.session_id?1:0);
-  }
- });
+
+ev.forEach(x=>{
+  if(!x.created_at) return;
+
+  const date=new Date(x.created_at);
+  const day=date.getFullYear()+'-'+
+    String(date.getMonth()+1).padStart(2,'0')+'-'+
+    String(date.getDate()).padStart(2,'0');
+
+  if(!daily[day]) daily[day]=new Set();
+  if(x.session_id) daily[day].add(x.session_id);
+});
+
+const labels=[];
+const values=[];
+const days=period==='all'
+  ? Math.max(7,Math.ceil((Date.now()-(resetAt||Date.now()))/86400000))
+  : Number(period);
+
+for(let i=days-1;i>=0;i--){
+  const d=new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()-i);
+
+  const key=d.getFullYear()+'-'+
+    String(d.getMonth()+1).padStart(2,'0')+'-'+
+    String(d.getDate()).padStart(2,'0');
+
+  labels.push(d.toLocaleDateString());
+  values.push(daily[key]?.size||0);
+}
  const labels=Object.keys(daily).sort((a,b)=>new Date(a)-new Date(b));
  if(chart)chart.destroy();
 
