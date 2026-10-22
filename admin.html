@@ -1,1006 +1,526 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VEYORA | Store Admin</title>
-<!-- Google Fonts & Chart.js & Supabase -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VEYORA STORE ADMIN</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{veyora:{bg:'#0B0C10',card:'#111216',cardLight:'#1B1B17',gold:'#C9A45C',goldLight:'#E5C178',goldDark:'#8A6E34',border:'#383327',textMuted:'#A0A0A0'}}}}};
+</script>
 <style>
-:root {
-  --bg-dark: #070707;
-  --panel-bg: #0d0d0d;
-  --card-bg: #111111;
-  --gold-primary: #d4af37;
-  --gold-light: #f3e5ab;
-  --gold-glow: rgba(212, 175, 55, 0.25);
-  --border-gold: rgba(212, 175, 55, 0.25);
-  --border-subtle: #1e1e1e;
-  --text-main: #f0f0f0;
-  --text-muted: #888888;
-  --danger: #e74c3c;
-  --success: #2ecc71;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-
-body {
-  background-color: var(--bg-dark);
-  color: var(--text-main);
-  min-height: 100vh;
-  display: flex;
-  overflow-x: hidden;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
-
-/* SVG Icons */
-.icon {
-  width: 20px;
-  height: 20px;
-  stroke: var(--gold-primary);
-  fill: none;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* LOGIN OVERLAY */
-#loginSection {
-  position: fixed;
-  inset: 0;
-  background: var(--bg-dark);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
-.login-card {
-  background: var(--panel-bg);
-  border: 1px solid var(--border-gold);
-  border-radius: 16px;
-  padding: 40px;
-  width: 100%;
-  max-width: 420px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px var(--gold-glow);
-  text-align: center;
-}
-
-.login-brand {
-  font-family: 'Cinzel', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--gold-primary);
-  letter-spacing: 4px;
-  margin-bottom: 4px;
-}
-
-.login-subtitle {
-  font-size: 12px;
-  color: var(--text-muted);
-  letter-spacing: 2px;
-  margin-bottom: 30px;
-}
-
-.form-group {
-  text-align: left;
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 12px;
-  color: var(--gold-light);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.form-control {
-  width: 100%;
-  padding: 12px 14px;
-  background: #000;
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-.form-control:focus {
-  border-color: var(--gold-primary);
-}
-
-.btn-gold {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-  border: none;
-  border-radius: 8px;
-  color: #000;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  letter-spacing: 1px;
-}
-
-.btn-gold:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px var(--gold-glow);
-}
-
-/* MAIN LAYOUT */
-#appContainer {
-  display: flex;
-  width: 100vw;
-  min-height: 100vh;
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 250px;
-  background: var(--panel-bg);
-  border-right: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-shrink: 0;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-}
-
-.sidebar-nav {
-  padding: 20px 0;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 24px;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-  border-left: 3px solid transparent;
-}
-
-.nav-item:hover, .nav-item.active {
-  color: var(--gold-primary);
-  background: rgba(212, 175, 55, 0.05);
-  border-left-color: var(--gold-primary);
-}
-
-.nav-item.active {
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
-  color: #fff;
-}
-
-.sidebar-footer {
-  padding: 20px;
-  text-align: center;
-  border-top: 1px solid var(--border-subtle);
-}
-
-.sidebar-logo {
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  letter-spacing: 3px;
-  color: var(--gold-primary);
-}
-
-.sidebar-version {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* MAIN CONTENT AREA */
-.main-wrapper {
-  margin-left: 250px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-/* TOP HEADER */
-.top-header {
-  height: 70px;
-  background: var(--panel-bg);
-  border-bottom: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-  position: sticky;
-  top: 0;
-  z-index: 90;
-}
-
-.header-brand {
-  font-family: 'Cinzel', serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--gold-primary);
-  letter-spacing: 4px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header-user {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--border-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: #000;
-}
-
-/* CONTENT CONTAINER */
-.content-body {
-  padding: 30px;
-  flex: 1;
-}
-
-.page-title-section {
-  margin-bottom: 25px;
-}
-
-.welcome-text {
-  font-size: 12px;
-  letter-spacing: 2px;
-  color: var(--gold-primary);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.page-title {
-  font-family: 'Cinzel', serif;
-  font-size: 32px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.page-desc {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* DASHBOARD PANEL CARDS */
-.dash-panel {
-  background: var(--panel-bg);
-  border: 1px solid var(--border-gold);
-  border-radius: 14px;
-  padding: 20px 24px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* PERIOD SELECTOR ROW */
-.period-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.select-gold {
-  background: #000;
-  border: 1px solid var(--border-gold);
-  border-radius: 8px;
-  color: #fff;
-  padding: 8px 16px;
-  font-size: 13px;
-  outline: none;
-  cursor: pointer;
-}
-
-/* CHART BLOCK */
-.chart-container-box {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.chart-header-info {
-  display: flex;
-  align-items: flex-end;
-  gap: 15px;
-}
-
-.chart-metric-num {
-  font-size: 38px;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1;
-}
-
-.chart-metric-badge {
-  color: var(--success);
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.canvas-holder {
-  height: 160px;
-  width: 100%;
-}
-
-/* STAT CARDS GRID */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 25px;
-}
-
-.stat-card {
-  background: var(--panel-bg);
-  border: 1px solid var(--border-gold);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.stat-title {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.stat-value {
-  font-size: 28px;
-  font-weight: 700;
-  color: #fff;
-  font-family: 'Cinzel', serif;
-}
-
-.stat-icon-wrapper {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--border-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.5);
-}
-
-.arrow-link {
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
-  color: var(--gold-primary);
-  font-size: 16px;
-}
-
-/* LIVE VISITOR CARD */
-.live-visitor-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 10px;
-  background: #000;
-}
-
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  background: var(--success);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--success);
-  display: inline-block;
-  margin-right: 8px;
-}
-
-/* RESET BANNER */
-.reset-banner {
-  background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0.9) 100%);
-  border: 1px solid var(--border-gold);
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.08);
-}
-
-.reset-banner-title {
-  font-family: 'Cinzel', serif;
-  font-size: 22px;
-  color: #fff;
-  margin-bottom: 6px;
-}
-
-.reset-banner-desc {
-  font-size: 12px;
-  color: var(--text-muted);
-  max-width: 600px;
-}
-
-.btn-reset {
-  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  color: #000;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* TABS & TABLE */
-.tabs-nav {
-  display: flex;
-  gap: 20px;
-  border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 20px;
-}
-
-.tab-btn {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  padding: 12px 0;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s;
-}
-
-.tab-btn.active {
-  color: var(--gold-primary);
-  border-bottom-color: var(--gold-primary);
-}
-
-.table-container {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 13px;
-}
-
-th {
-  padding: 14px 16px;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-subtle);
-  font-weight: 500;
-}
-
-td {
-  padding: 16px;
-  border-bottom: 1px solid var(--border-subtle);
-  color: #fff;
-}
-
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  background: rgba(212, 175, 55, 0.15);
-  color: var(--gold-primary);
-  border: 1px solid var(--border-gold);
-}
-
-.btn-action {
-  background: transparent;
-  border: 1px solid var(--border-gold);
-  color: var(--gold-primary);
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-@media(max-width: 1024px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media(max-width: 768px) {
-  .sidebar { width: 70px; }
-  .sidebar-nav span { display: none; }
-  .main-wrapper { margin-left: 70px; }
-  .stats-grid { grid-template-columns: 1fr; }
-  .reset-banner { flex-direction: column; gap: 15px; text-align: center; }
-}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0B0C10;color:#E2E8F0}.font-cinzel{font-family:'Cinzel',serif}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#0B0C10}::-webkit-scrollbar-thumb{background:#383327;border-radius:4px}
+.gold-glow{box-shadow:0 0 15px rgba(201,164,92,.15)}.gold-gradient-text{background:linear-gradient(135deg,#FFF0CA,#C9A45C 50%,#8A6E34);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tab-btn.active{color:#C9A45C;border-bottom:2px solid #C9A45C;background:rgba(201,164,92,.05)}
+@keyframes pulse-gold{0%{box-shadow:0 0 0 0 rgba(201,164,92,.7)}70%{box-shadow:0 0 0 10px rgba(201,164,92,0)}100%{box-shadow:0 0 0 0 rgba(201,164,92,0)}}.live-dot{animation:pulse-gold 2s infinite}
+input,select,textarea{color-scheme:dark}
+.stat-card{background:#111216;border:1px solid #383327;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:9px;min-height:130px}
+.stat-card span{font-size:11px;color:#A0A0A0;text-transform:uppercase;letter-spacing:.08em}.stat-card strong{font-family:Cinzel,serif;font-size:25px;color:#C9A45C}.stat-card button,.stat-card small{font-size:11px;color:#A0A0A0;text-align:left}.stat-card button{color:#C9A45C}
+.field{width:100%;background:#0B0C10;border:1px solid #383327;border-radius:8px;padding:10px;color:#fff;outline:none;margin-top:5px}.field:focus{border-color:#C9A45C}.field-label{display:block;color:#C9A45C;font-weight:600}
 </style>
 </head>
-<body>
+<body class="min-h-screen antialiased flex flex-col md:flex-row">
 
-<!-- LOGIN OVERLAY -->
-<div id="loginSection">
-  <div class="login-card">
-    <div class="login-brand">VEYORA</div>
-    <div class="login-subtitle">STORE ADMIN LOGIN</div>
-    <form id="loginForm">
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="loginEmail" class="form-control" value="humayun32200@gmail.com" required>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="Enter Supabase Password" required>
-      </div>
-      <button type="submit" class="btn-gold" id="loginBtn">SIGN IN TO DASHBOARD</button>
-    </form>
-    <div id="loginError" style="color: var(--danger); font-size: 12px; margin-top: 15px; min-height: 18px;"></div>
-  </div>
+<div id="loginModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+<div class="bg-veyora-card border border-veyora-border p-8 rounded-2xl w-full max-w-md gold-glow">
+<div class="text-center mb-6">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-veyora-cardLight border border-veyora-gold/30 text-veyora-gold mb-3 text-2xl font-cinzel">V</div>
+<h2 class="text-2xl font-bold font-cinzel gold-gradient-text">VEYORA STORE</h2>
+<p class="text-xs text-veyora-textMuted uppercase tracking-widest mt-1">Admin Access</p>
+</div>
+<form id="loginForm" class="space-y-4">
+<div><label class="block text-xs font-semibold text-veyora-gold mb-2">Email Address</label><input type="email" id="loginEmail" required placeholder="Your admin email" class="field"></div>
+<div><label class="block text-xs font-semibold text-veyora-gold mb-2">Password</label><input type="password" id="loginPassword" required placeholder="Your password" class="field"></div>
+<button id="loginSubmit" type="submit" class="w-full bg-gradient-to-r from-veyora-goldDark via-veyora-gold to-veyora-goldLight text-black font-semibold py-3 rounded-lg text-sm uppercase">Enter Dashboard</button>
+</form>
+<div id="loginError" class="mt-4 text-xs text-red-400 text-center hidden"></div>
+</div>
 </div>
 
-<!-- MAIN DASHBOARD -->
-<div id="appContainer">
-  
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-nav">
-      <div class="nav-item active">
-        <svg class="icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-        <span>Home</span>
-      </div>
-      <div class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
-        <span>Products</span>
-      </div>
-      <div class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-        <span>Categories</span>
-      </div>
-      <div class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <span>Orders</span>
-      </div>
-      <div class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-        <span>Analytics</span>
-      </div>
-      <div class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-        <span>Banners</span>
-      </div>
-      <div class="nav-item">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-        <span>Settings</span>
-      </div>
-    </div>
-    
-    <div class="sidebar-footer">
-      <div class="sidebar-logo">VEYORA</div>
-      <div class="sidebar-version">v1.0</div>
-    </div>
-  </aside>
-
-  <!-- MAIN WRAPPER -->
-  <div class="main-wrapper">
-    
-    <!-- TOP HEADER -->
-    <header class="top-header">
-      <div class="header-brand">
-        <span>VEYORA</span> <span style="font-size: 12px; color: var(--text-muted); font-family:'Plus Jakarta Sans'">STORE ADMIN</span>
-      </div>
-      <div class="header-user">
-        <div class="user-avatar" id="logoutBtn" title="Sign Out">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-      </div>
-    </header>
-
-    <!-- CONTENT BODY -->
-    <main class="content-body">
-      
-      <!-- PAGE TITLE -->
-      <div class="page-title-section">
-        <div class="welcome-text">WELCOME BACK</div>
-        <h1 class="page-title">Admin Dashboard</h1>
-        <p class="page-desc">Here's what's happening with your store today.</p>
-      </div>
-
-      <!-- ANALYTICS PERIOD HEADER -->
-      <div class="dash-panel period-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-          <span style="font-size: 14px; font-weight:600">Analytics Period</span>
-        </div>
-        <select class="select-gold" id="periodSelect">
-          <option value="7">Last 7 Days</option>
-          <option value="30">Last 30 Days</option>
-          <option value="90">All Time</option>
-        </select>
-      </div>
-
-      <!-- TOTAL SESSIONS GRAPH -->
-      <div class="dash-panel chart-container-box">
-        <div style="font-size: 14px; color: var(--text-muted)">Total Sessions</div>
-        <div class="chart-header-info">
-          <div class="chart-metric-num" id="totalSessionsNum">4</div>
-          <div class="chart-metric-badge">
-            <svg class="icon" style="width:14px; height:14px; stroke:var(--success)" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-            +33% <span style="color:var(--text-muted); font-weight:400">vs previous 7 days</span>
-          </div>
-        </div>
-        <div class="canvas-holder">
-          <canvas id="sessionsChart"></canvas>
-        </div>
-      </div>
-
-      <!-- STAT CARDS GRID -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Products</div>
-            <div class="stat-value" id="valProducts">—</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Categories</div>
-            <div class="stat-value" id="valCategories">—</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Orders</div>
-            <div class="stat-value" id="valOrders">—</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Pending Orders</div>
-            <div class="stat-value" id="valPending">—</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Live Visitors</div>
-            <div class="stat-value" id="valVisitors">1</div>
-            <div style="font-size:11px; color:var(--text-muted)">Activity in last 5 minutes</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Total Sessions</div>
-            <div class="stat-value">4</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Page Views</div>
-            <div class="stat-value" id="valViews">10</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Total Sales</div>
-            <div class="stat-value" id="valSales">Rs 0</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M17 9B4 4 0 1 0 7 9c0 5 10 2 10 7a4 4 0 1 1-9 0"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-info">
-            <div class="stat-title">Conversion Rate</div>
-            <div class="stat-value">0.00%</div>
-          </div>
-          <div class="stat-icon-wrapper">
-            <svg class="icon" viewBox="0 0 24 24"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
-          </div>
-          <span class="arrow-link">&rarr;</span>
-        </div>
-      </div>
-
-      <!-- LIVE VISITOR ACTIVITY -->
-      <div class="dash-panel">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-          <div style="display:flex; align-items:center;">
-            <span class="pulse-dot"></span>
-            <span style="font-weight:600; font-size:14px">Live Visitor Activity</span>
-          </div>
-          <a href="#" style="color:var(--gold-primary); font-size:12px; text-decoration:none;">View All &rarr;</a>
-        </div>
-        <div class="live-visitor-box">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div class="user-avatar"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            <div>
-              <div style="font-weight:600; font-size:13px">Visitor #1</div>
-              <div style="font-size:11px; color:var(--text-muted)">Browsing your store</div>
-            </div>
-          </div>
-          <div style="font-size:11px; color:var(--text-muted)">2m ago</div>
-        </div>
-      </div>
-
-      <!-- RESET COUNTS BANNER -->
-      <div class="reset-banner">
-        <div style="display:flex; gap:16px; align-items:center;">
-          <div class="stat-icon-wrapper" style="width:50px; height:50px">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-          </div>
-          <div>
-            <div style="font-size:11px; color:var(--gold-primary); letter-spacing:1px; text-transform:uppercase">RESET DASHBOARD COUNTS</div>
-            <div class="reset-banner-title">Start Fresh From Now</div>
-            <div class="reset-banner-desc">Reset your analytics and dashboard counts. This will clear current visitor, session and page view data, but your products, categories and past orders will remain safe.</div>
-          </div>
-        </div>
-        <button class="btn-reset" id="resetBtn">
-          <svg class="icon" style="stroke:#000; width:16px; height:16px" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-          Start Fresh From Now &rarr;
-        </button>
-      </div>
-
-      <!-- RECENT ORDERS TABLE -->
-      <div class="dash-panel">
-        <div class="tabs-nav">
-          <button class="tab-btn active">Overview</button>
-          <button class="tab-btn">Products</button>
-          <button class="tab-btn">Categories</button>
-          <button class="tab-btn">Orders</button>
-          <button class="tab-btn">Banners</button>
-        </div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-          <h3 style="font-family:'Cinzel',serif; font-size:18px">Recent Orders</h3>
-          <a href="#" style="color:var(--gold-primary); font-size:12px; text-decoration:none">View All Orders &rarr;</a>
-        </div>
-
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="ordersTableBody">
-              <tr>
-                <td>#VY001</td>
-                <td>John Doe</td>
-                <td>Rs 2,300</td>
-                <td><span class="status-badge">Pending</span></td>
-                <td>May 9, 2025</td>
-                <td><button class="btn-action">Update</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </main>
-  </div>
+<div class="md:hidden bg-veyora-card border-b border-veyora-border p-4 flex items-center justify-between sticky top-0 z-40">
+<div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full border border-veyora-gold flex items-center justify-center text-veyora-gold font-cinzel">V</div><span class="font-cinzel text-lg font-bold tracking-widest">VEYORA</span></div>
+<button id="mobileMenuBtn" class="text-veyora-gold text-2xl"><i class="fa-solid fa-bars"></i></button>
 </div>
+
+<aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 w-64 bg-veyora-card border-r border-veyora-border flex flex-col z-40">
+<div class="p-6 border-b border-veyora-border flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-veyora-gold flex items-center justify-center text-veyora-gold text-lg"><i class="fa-solid fa-crown"></i></div>
+<div><h1 class="font-cinzel text-lg font-bold tracking-wider">VEYORA</h1><p class="text-[10px] text-veyora-gold uppercase tracking-widest">Store Admin</p></div>
+</div>
+<nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+<a href="#" data-tab="overview" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-veyora-gold bg-veyora-cardLight"><i class="fa-solid fa-chart-pie w-5"></i>Overview</a>
+<a href="#" data-tab="products" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-400"><i class="fa-solid fa-boxes-stacked w-5"></i>Products</a>
+<a href="#" data-tab="categories" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-400"><i class="fa-solid fa-layer-group w-5"></i>Categories</a>
+<a href="#" data-tab="orders" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-400"><i class="fa-solid fa-cart-shopping w-5"></i>Orders</a>
+<a href="#" data-tab="banners" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-400"><i class="fa-solid fa-images w-5"></i>Banners</a>
+<a href="#" data-tab="analytics" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-400"><i class="fa-solid fa-chart-line w-5"></i>Analytics</a>
+<a href="#" data-tab="settings" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-gray-400"><i class="fa-solid fa-gear w-5"></i>Settings</a>
+</nav>
+<div class="p-4 border-t border-veyora-border">
+<div class="flex justify-between text-xs text-veyora-textMuted px-2 mb-3"><span>VEYORA Admin</span><span class="text-veyora-gold">v1.1</span></div>
+<button id="logoutBtn" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-veyora-cardLight border border-veyora-border text-xs rounded-lg"><i class="fa-solid fa-arrow-right-from-bracket"></i>Sign Out</button>
+</div>
+</aside>
+
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<header class="bg-veyora-card border-b border-veyora-border px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 sticky top-0 z-30">
+<div><h2 class="text-xl font-bold tracking-wide font-cinzel">WELCOME BACK</h2><p class="text-xs text-veyora-textMuted mt-1">Manage your Veyora store.</p></div>
+<div class="bg-veyora-cardLight px-3 py-2 rounded-full border border-veyora-border text-xs"><i class="fa-solid fa-user text-veyora-gold mr-2"></i><span id="userEmailBadge">Admin</span></div>
+</header>
+
+<div class="p-4 md:p-6 space-y-6 max-w-7xl w-full mx-auto">
+<div class="flex items-center border-b border-veyora-border overflow-x-auto gap-2">
+<button data-tab="overview" class="tab-btn active px-4 py-3 text-sm whitespace-nowrap">Overview</button>
+<button data-tab="products" class="tab-btn px-4 py-3 text-sm whitespace-nowrap">Products</button>
+<button data-tab="categories" class="tab-btn px-4 py-3 text-sm whitespace-nowrap">Categories</button>
+<button data-tab="orders" class="tab-btn px-4 py-3 text-sm whitespace-nowrap">Orders</button>
+<button data-tab="banners" class="tab-btn px-4 py-3 text-sm whitespace-nowrap">Banners</button>
+</div>
+
+<section id="tab-overview" class="tab-content space-y-6">
+<div class="bg-veyora-card border border-veyora-border rounded-2xl p-5 md:p-6 gold-glow">
+<div class="flex flex-col sm:flex-row sm:justify-between gap-3 mb-5">
+<div><h3 class="text-lg font-bold font-cinzel">Analytics Overview</h3><p class="text-xs text-veyora-textMuted mt-1">Store activity recorded in your database</p></div>
+<select id="analyticsPeriod" class="bg-veyora-bg border border-veyora-border rounded-lg px-3 py-2 text-xs text-veyora-gold"><option value="7">Last 7 Days</option><option value="30">1 Month</option><option value="90">3 Months</option><option value="180">6 Months</option><option value="365">1 Year</option><option value="all">All Time</option></select>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+<div class="p-4 bg-veyora-cardLight rounded-xl"><span class="text-xs text-veyora-textMuted">Total Sessions</span><div id="chartTotalSessions" class="text-2xl font-cinzel mt-1">0</div></div>
+<div class="p-4 bg-veyora-cardLight rounded-xl"><span class="text-xs text-veyora-textMuted">Page Views</span><div id="chartPageViews" class="text-2xl font-cinzel mt-1">0</div></div>
+<div class="p-4 bg-veyora-cardLight rounded-xl"><span class="text-xs text-veyora-textMuted">Period</span><div id="dateRangeTag" class="text-sm text-veyora-gold mt-2">Last 7 Days</div></div>
+</div>
+<div class="relative h-64"><canvas id="sessionsChart"></canvas></div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+<div class="stat-card"><span>Products</span><strong id="statProductsCount">0</strong><button data-goto="products">Manage →</button></div>
+<div class="stat-card"><span>Categories</span><strong id="statCategoriesCount">0</strong><button data-goto="categories">Manage →</button></div>
+<div class="stat-card"><span>Total Orders</span><strong id="statOrdersCount">0</strong><button data-goto="orders">View →</button></div>
+<div class="stat-card"><span>Pending Orders</span><strong id="statPendingOrdersCount">0</strong><button data-goto="orders">Review →</button></div>
+<div class="stat-card"><span>Live Visitors</span><strong id="statLiveVisitors">—</strong><small>Based on analytics events</small></div>
+<div class="stat-card"><span>Total Sessions</span><strong id="statTotalSessions">0</strong></div>
+<div class="stat-card"><span>Page Views</span><strong id="statPageViews">0</strong></div>
+<div class="stat-card"><span>Total Sales</span><strong id="statTotalSales">Rs 0</strong></div>
+<div class="stat-card"><span>Conversion Rate</span><strong id="statConversionRate">0.00%</strong></div>
+</div>
+
+<div class="bg-veyora-card border border-veyora-border p-5 rounded-2xl">
+<div class="flex flex-col sm:flex-row sm:justify-between gap-3">
+<div><h3 class="font-bold font-cinzel text-veyora-gold">Reset Dashboard Analytics</h3><p class="text-xs text-veyora-textMuted mt-2">This saves a reset marker only. It does not delete database records.</p></div>
+<button id="resetCountsBtn" class="self-start bg-veyora-gold text-black px-4 py-2 rounded-lg text-xs font-semibold">Set Reset Marker</button>
+</div>
+<p id="lastResetText" class="text-xs text-veyora-textMuted mt-3">Last reset: Never</p>
+</div>
+
+<div class="bg-veyora-card border border-veyora-border rounded-2xl p-5">
+<h3 class="font-bold font-cinzel mb-4">Recent Orders</h3>
+<div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead class="text-veyora-gold border-b border-veyora-border"><tr><th class="p-3">Order</th><th class="p-3">Customer</th><th class="p-3">Total</th><th class="p-3">Status</th><th class="p-3">Date</th></tr></thead><tbody id="overviewOrdersTableBody"><tr><td colspan="5" class="p-4 text-center text-veyora-textMuted">Loading…</td></tr></tbody></table></div>
+</div>
+</section>
+
+<section id="tab-products" class="tab-content hidden space-y-5">
+<div class="flex justify-between items-center gap-3"><div><h3 class="text-xl font-bold font-cinzel">Products Management</h3><p class="text-xs text-veyora-textMuted mt-1">Add, edit and manage products</p></div><button id="addProductBtn" class="bg-veyora-gold text-black font-semibold px-4 py-3 rounded-xl text-xs"><i class="fa-solid fa-plus mr-1"></i>Add Product</button></div>
+<div class="bg-veyora-card border border-veyora-border rounded-2xl p-4 overflow-x-auto"><table class="w-full text-left text-xs min-w-[760px]"><thead class="text-veyora-gold border-b border-veyora-border"><tr><th class="p-3">Image</th><th class="p-3">Product</th><th class="p-3">SKU</th><th class="p-3">Category</th><th class="p-3">Retail / Sale</th><th class="p-3">Stock</th><th class="p-3">Status</th><th class="p-3">Actions</th></tr></thead><tbody id="productsTableBody"><tr><td colspan="8" class="p-4 text-center">Loading products…</td></tr></tbody></table></div>
+</section>
+
+<section id="tab-categories" class="tab-content hidden space-y-5">
+<div class="flex justify-between items-center gap-3"><div><h3 class="text-xl font-bold font-cinzel">Category Management</h3><p class="text-xs text-veyora-textMuted mt-1">Manage store categories</p></div><button id="addCategoryBtn" class="bg-veyora-gold text-black px-4 py-3 rounded-xl text-xs font-semibold">+ Add Category</button></div>
+<div class="bg-veyora-card border border-veyora-border rounded-2xl p-4 overflow-x-auto"><table class="w-full text-left text-xs min-w-[600px]"><thead class="text-veyora-gold border-b border-veyora-border"><tr><th class="p-3">Image</th><th class="p-3">Name</th><th class="p-3">Slug</th><th class="p-3">Sort</th><th class="p-3">Active</th><th class="p-3">Actions</th></tr></thead><tbody id="categoriesTableBody"></tbody></table></div>
+</section>
+
+<section id="tab-orders" class="tab-content hidden space-y-5">
+<div class="flex justify-between items-center"><div><h3 class="text-xl font-bold font-cinzel">Orders Management</h3><p class="text-xs text-veyora-textMuted mt-1">Update customer order status</p></div><button id="refreshOrdersBtn" class="border border-veyora-border text-veyora-gold px-3 py-2 rounded-lg text-xs">Refresh</button></div>
+<div class="bg-veyora-card border border-veyora-border rounded-2xl p-4 overflow-x-auto"><table class="w-full text-left text-xs min-w-[720px]"><thead class="text-veyora-gold border-b border-veyora-border"><tr><th class="p-3">Order ID</th><th class="p-3">Customer</th><th class="p-3">Items</th><th class="p-3">Total</th><th class="p-3">Status</th><th class="p-3">Date</th><th class="p-3">Action</th></tr></thead><tbody id="ordersTableBody"></tbody></table></div>
+</section>
+
+<section id="tab-banners" class="tab-content hidden"><div class="bg-veyora-card border border-veyora-border rounded-2xl p-6"><h3 class="text-xl font-bold font-cinzel">Store Banners</h3><p class="text-sm text-veyora-textMuted mt-2">Banner upload and slider management need a banner table/storage setup and matching storefront code. This section is not connected yet.</p></div></section>
+<section id="tab-analytics" class="tab-content hidden"><div class="bg-veyora-card border border-veyora-border rounded-2xl p-6"><h3 class="text-xl font-bold font-cinzel">Extended Analytics</h3><p class="text-sm text-veyora-textMuted mt-2">Analytics totals are read from analytics_events when the expected columns are available.</p></div></section>
+<section id="tab-settings" class="tab-content hidden"><div class="bg-veyora-card border border-veyora-border rounded-2xl p-6 max-w-xl"><h3 class="text-xl font-bold font-cinzel mb-4">Store Settings</h3><label class="block text-xs text-veyora-gold mb-1">Store Name</label><input value="VEYORA STORE" class="field mb-4"><label class="block text-xs text-veyora-gold mb-1">Currency</label><input value="PKR (Rs)" class="field"></div></section>
+<div id="notice" class="hidden fixed bottom-4 right-4 z-[80] max-w-md bg-veyora-card border border-veyora-gold rounded-xl p-4 text-sm shadow-xl"></div>
+</div>
+</main>
+
+<div id="productModal" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-3"><div class="bg-veyora-card border border-veyora-border rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col">
+<div class="p-5 border-b border-veyora-border flex justify-between"><h3 id="productModalTitle" class="font-cinzel font-bold text-lg">Add Product</h3><button type="button" id="closeProductBtn" class="text-xl">×</button></div>
+<form id="productForm" class="p-5 overflow-y-auto space-y-4 text-xs"><input type="hidden" id="prodId">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="field-label">Product Name *</label><input id="prodName" required class="field"></div>
+<div><label class="field-label">Category *</label><select id="prodCategory" required class="field"><option value="">Select category</option></select></div>
+<div><label class="field-label">SKU</label><input id="prodSku" class="field"></div>
+<div><label class="field-label">Barcode</label><input id="prodBarcode" class="field"></div>
+<div><label class="field-label">Retail Price (Rs) *</label><input id="prodRetailPrice" type="number" min="0" step=".01" required class="field"></div>
+<div><label class="field-label">Sale Price (Rs)</label><input id="prodSalePrice" type="number" min="0" step=".01" class="field"></div>
+<div><label class="field-label">Stock Quantity *</label><input id="prodStock" type="number" min="0" value="0" required class="field"></div>
+<div><label class="field-label">Primary Image URL</label><input id="prodImageUrl" type="url" placeholder="https://…" class="field"></div>
+</div>
+<div><label class="field-label">Description</label><textarea id="prodDescription" rows="3" class="field"></textarea></div>
+<div class="flex gap-5"><label class="flex items-center gap-2"><input id="prodIsActive" type="checkbox" checked> Active</label><label class="flex items-center gap-2"><input id="prodIsFeatured" type="checkbox"> Featured</label></div>
+<div class="border-t border-veyora-border pt-4"><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-veyora-gold">Simple Variants (optional)</h4><button id="addVariantBtn" type="button" class="border border-veyora-border px-3 py-2 rounded-lg text-veyora-gold">+ Add Variant</button></div><div id="variantsContainer" class="space-y-2"></div><p class="text-veyora-textMuted mt-2">Custom variant saving is not connected in this version.</p></div>
+<div class="flex justify-end gap-3 border-t border-veyora-border pt-4"><button id="cancelProductBtn" type="button" class="px-4 py-2 border border-veyora-border rounded-lg">Cancel</button><button id="saveProductBtn" type="submit" class="px-5 py-2 bg-veyora-gold text-black font-bold rounded-lg">Save Product</button></div>
+</form></div></div>
+
+<div id="categoryModal" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-3"><div class="bg-veyora-card border border-veyora-border rounded-2xl w-full max-w-md">
+<div class="p-5 border-b border-veyora-border flex justify-between"><h3 id="categoryModalTitle" class="font-cinzel font-bold">Add Category</h3><button id="closeCategoryBtn" type="button">×</button></div>
+<form id="categoryForm" class="p-5 space-y-4 text-xs"><input id="catId" type="hidden">
+<div><label class="field-label">Category Name *</label><input id="catName" required class="field"></div>
+<div><label class="field-label">Slug</label><input id="catSlug" class="field"></div>
+<div><label class="field-label">Image URL</label><input id="catImageUrl" type="url" class="field"></div>
+<div><label class="field-label">Sort Order</label><input id="catSortOrder" type="number" value="0" class="field"></div>
+<label class="flex items-center gap-2"><input id="catIsActive" type="checkbox" checked> Active category</label>
+<div class="flex justify-end gap-3 border-t border-veyora-border pt-4"><button id="cancelCategoryBtn" type="button" class="px-4 py-2 border border-veyora-border rounded-lg">Cancel</button><button id="saveCategoryBtn" class="px-5 py-2 bg-veyora-gold text-black font-bold rounded-lg">Save Category</button></div>
+</form></div></div>
 
 <script>
-// Supabase Configuration
-const SUPABASE_URL = "https://fudkfvwwbqmflmtkbtkk.supabase.co";
-const SUPABASE_KEY = "sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+(function(){
+'use strict';
 
-const loginSection = document.getElementById('loginSection');
-const loginForm = document.getElementById('loginForm');
-const loginError = document.getElementById('loginError');
-const loginBtn = document.getElementById('loginBtn');
+/* Supabase is initialized only once in this file. */
+const SUPABASE_URL='https://fudkfvwwbqmflmtkbtkk.supabase.co';
+const SUPABASE_KEY='sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b';
+const db=(window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
 
-// Auto-check Supabase Auth Session
-async function checkAuthSession() {
-  const { data: { session } } = await db.auth.getSession();
-  if (session) {
-    loginSection.style.display = 'none';
-    loadDashboardData();
-  } else {
-    loginSection.style.display = 'flex';
-  }
+let chartInstance=null,categoriesList=[],productsList=[],ordersList=[];
+const $=id=>document.getElementById(id);
+const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+function notice(message,isError=false){
+ const el=$('notice');el.textContent=message;el.classList.remove('hidden');
+ el.style.borderColor=isError?'#ef4444':'#C9A45C';
 }
-checkAuthSession();
-
-// Login Submission via Supabase Auth
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  loginError.textContent = '';
-  loginBtn.disabled = true;
-  loginBtn.textContent = 'SIGNING IN...';
-
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-
-  try {
-    const { data, error } = await db.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
-
-    if (error) throw error;
-
-    loginSection.style.display = 'none';
-    loadDashboardData();
-  } catch (err) {
-    loginError.textContent = err.message || 'Login failed. Please check your password.';
-  } finally {
-    loginBtn.disabled = false;
-    loginBtn.textContent = 'SIGN IN TO DASHBOARD';
-  }
-});
-
-// Logout
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await db.auth.signOut();
-  loginSection.style.display = 'flex';
-});
-
-// Load Database Store Data
-async function loadDashboardData() {
-  try {
-    const [products, categories, orders] = await Promise.all([
-      db.from("products").select("id", { count: 'exact' }),
-      db.from("categories").select("id", { count: 'exact' }),
-      db.from("orders").select("*").order("created_at", { ascending: false }).limit(10)
-    ]);
-
-    if (products.count !== null) document.getElementById('valProducts').textContent = products.count;
-    if (categories.count !== null) document.getElementById('valCategories').textContent = categories.count;
-    if (orders.data) {
-      document.getElementById('valOrders').textContent = orders.data.length;
-      const pending = orders.data.filter(o => String(o.status||'').toLowerCase() === 'pending').length;
-      document.getElementById('valPending').textContent = pending;
-
-      if (orders.data.length > 0) {
-        const tbody = document.getElementById('ordersTableBody');
-        tbody.innerHTML = orders.data.map(o => `
-          <tr>
-            <td>#${o.id ? String(o.id).slice(0,6) : 'VY001'}</td>
-            <td>${o.customer_name || o.email || 'Customer'}</td>
-            <td>Rs ${Number(o.total || 0).toLocaleString()}</td>
-            <td><span class="status-badge">${o.status || 'Pending'}</span></td>
-            <td>${new Date(o.created_at || Date.now()).toLocaleDateString()}</td>
-            <td><button class="btn-action">Update</button></td>
-          </tr>
-        `).join('');
-      }
-    }
-  } catch (e) {
-    console.log("Data fetch info:", e);
-  }
+function showError(el,message){el.textContent=message;el.classList.remove('hidden')}
+function friendlyError(error){return error?.message||String(error||'Unknown error')}
+function setBusy(button,busy){
+ if(!button)return;
+ button.disabled=busy;
+ if(busy){button.dataset.oldLabel=button.textContent;button.textContent='Please wait…'}
+ else if(button.dataset.oldLabel){button.textContent=button.dataset.oldLabel;delete button.dataset.oldLabel}
 }
 
-// Chart.js Area Graph Setup
-const ctx = document.getElementById('sessionsChart').getContext('2d');
-const goldGradient = ctx.createLinearGradient(0, 0, 0, 160);
-goldGradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
-goldGradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
+function switchTab(name){
+ document.querySelectorAll('.tab-content').forEach(el=>el.classList.add('hidden'));
+ $('tab-'+name)?.classList.remove('hidden');
+ document.querySelectorAll('.tab-btn').forEach(el=>el.classList.toggle('active',el.dataset.tab===name));
+ document.querySelectorAll('.nav-item').forEach(el=>{
+  const active=el.dataset.tab===name;
+  el.classList.toggle('text-veyora-gold',active);
+  el.classList.toggle('bg-veyora-cardLight',active);
+  el.classList.toggle('text-gray-400',!active);
+ });
+ if(name==='products')loadProducts();
+ if(name==='categories')loadCategories();
+ if(name==='orders')loadOrders();
+ $('sidebar').classList.add('-translate-x-full');
+}
 
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['May 3', 'May 4', 'May 5', 'May 6', 'May 7', 'May 8', 'May 9'],
-    datasets: [{
-      data: [4, 2, 3, 4, 3.5, 4.2, 5],
-      borderColor: '#d4af37',
-      borderWidth: 2,
-      fill: true,
-      backgroundColor: goldGradient,
-      tension: 0.4,
-      pointRadius: 3,
-      pointBackgroundColor: '#d4af37'
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { display: false }, ticks: { color: '#666', font: { size: 10 } } },
-      y: { display: false }
-    }
-  }
+function initChart(){
+ if(!window.Chart)return;
+ const canvas=$('sessionsChart');if(!canvas)return;
+ try{
+  chartInstance=new Chart(canvas.getContext('2d'),{
+   type:'line',
+   data:{labels:[],datasets:[{label:'Sessions',data:[],borderColor:'#C9A45C',backgroundColor:'rgba(201,164,92,.12)',fill:true,tension:.35}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#A0A0A0'},grid:{color:'rgba(56,51,39,.3)'}},y:{beginAtZero:true,ticks:{color:'#A0A0A0',precision:0},grid:{color:'rgba(56,51,39,.3)'}}}}
+  });
+ }catch(e){console.warn('Chart could not initialize',e)}
+}
+
+async function checkSession(){
+ if(!db){showError($('loginError'),'Supabase library could not load. Check your internet connection and refresh.');return}
+ try{
+  const {data,error}=await db.auth.getSession();
+  if(error)throw error;
+  if(data.session)await enterDashboard(data.session.user);
+  else $('loginModal').classList.remove('hidden');
+ }catch(e){showError($('loginError'),'Could not check login: '+friendlyError(e))}
+}
+
+async function enterDashboard(user){
+ $('loginModal').classList.add('hidden');
+ $('userEmailBadge').textContent=user?.email||'Admin';
+ await loadDashboardData();
+}
+
+$('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const err=$('loginError');err.classList.add('hidden');
+ if(!db){showError(err,'Supabase client did not load. Refresh the page and check internet.');return}
+ setBusy($('loginSubmit'),true);
+ try{
+  const {data,error}=await db.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});
+  if(error)throw error;
+  await enterDashboard(data.user);
+ }catch(e){showError(err,friendlyError(e))}
+ finally{setBusy($('loginSubmit'),false)}
 });
 
-// Reset Dashboard Action
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if(confirm("Are you sure you want to reset current session counters?")) {
-    document.getElementById('valVisitors').textContent = '0';
-    document.getElementById('valViews').textContent = '0';
-    document.getElementById('totalSessionsNum').textContent = '0';
-    alert("Dashboard counters refreshed!");
-  }
+$('logoutBtn').addEventListener('click',async()=>{
+ if(db){const {error}=await db.auth.signOut();if(error){notice(friendlyError(error),true);return}}
+ $('loginModal').classList.remove('hidden');$('loginPassword').value='';
 });
+
+$('mobileMenuBtn').addEventListener('click',()=>$('sidebar').classList.toggle('-translate-x-full'));
+document.querySelectorAll('[data-tab]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();switchTab(el.dataset.tab)}));
+document.querySelectorAll('[data-goto]').forEach(el=>el.addEventListener('click',()=>switchTab(el.dataset.goto)));
+
+async function loadDashboardData(){
+ await Promise.allSettled([loadCategories(),loadProducts(),loadOrders(),loadAnalytics()]);
+}
+
+async function loadCategories(){
+ if(!db)return;
+ const {data,error}=await db.from('categories').select('*').order('sort_order',{ascending:true});
+ if(error){notice('Categories: '+friendlyError(error),true);return}
+ categoriesList=data||[];
+ $('statCategoriesCount').textContent=categoriesList.length;
+ renderCategories();populateCategoryDropdown();
+}
+
+function renderCategories(){
+ const body=$('categoriesTableBody');
+ if(!categoriesList.length){body.innerHTML='<tr><td colspan="6" class="p-4 text-center text-veyora-textMuted">No categories found. Add a category first.</td></tr>';return}
+ body.innerHTML=categoriesList.map(c=>`<tr class="border-b border-veyora-border/50">
+ <td class="p-3"><img src="${esc(c.image_url||'https://placehold.co/40x40/1B1B17/C9A45C?text=Cat')}" class="w-9 h-9 rounded object-cover" onerror="this.style.display='none'"></td>
+ <td class="p-3">${esc(c.name)}</td><td class="p-3 text-veyora-textMuted">${esc(c.slug||'-')}</td>
+ <td class="p-3">${Number(c.sort_order)||0}</td><td class="p-3">${c.is_active===false?'No':'Yes'}</td>
+ <td class="p-3 whitespace-nowrap"><button class="text-veyora-gold mr-3" data-edit-cat="${esc(c.id)}">Edit</button><button class="text-red-400" data-delete-cat="${esc(c.id)}">Delete</button></td></tr>`).join('');
+ body.querySelectorAll('[data-edit-cat]').forEach(b=>b.addEventListener('click',()=>editCategory(b.dataset.editCat)));
+ body.querySelectorAll('[data-delete-cat]').forEach(b=>b.addEventListener('click',()=>deleteCategory(b.dataset.deleteCat)));
+}
+
+function populateCategoryDropdown(){
+ const s=$('prodCategory'),current=s.value;
+ s.innerHTML='<option value="">Select category</option>'+categoriesList.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+ if(categoriesList.some(c=>String(c.id)===current))s.value=current;
+}
+
+async function loadProducts(){
+ if(!db)return;
+ const {data,error}=await db.from('products').select('*').order('created_at',{ascending:false});
+ if(error){$('productsTableBody').innerHTML=`<tr><td colspan="8" class="p-4 text-red-400">Could not load products: ${esc(error.message)}</td></tr>`;return}
+ productsList=data||[];$('statProductsCount').textContent=productsList.length;renderProducts();
+}
+
+function renderProducts(){
+ const body=$('productsTableBody');
+ if(!productsList.length){body.innerHTML='<tr><td colspan="8" class="p-4 text-center text-veyora-textMuted">No products found. Select Add Product to start.</td></tr>';return}
+ body.innerHTML=productsList.map(p=>{
+  const name=p.name??p.title??'Unnamed product';
+  const retail=p.retail_price??p.price??0;
+  const sale=p.sale_price;
+  return `<tr class="border-b border-veyora-border/50">
+  <td class="p-3"><img src="${esc(p.image_url||'https://placehold.co/40x40/1B1B17/C9A45C?text=V')}" class="w-10 h-10 rounded object-cover" onerror="this.style.display='none'"></td>
+  <td class="p-3 font-semibold">${esc(name)}</td><td class="p-3">${esc(p.sku||'-')}</td>
+  <td class="p-3 text-veyora-gold">${esc(categoriesList.find(c=>String(c.id)===String(p.category_id))?.name||'General')}</td>
+  <td class="p-3">Rs ${Number(retail).toLocaleString()}${sale!=null&&sale!==''?`<br><span class="text-emerald-400">Sale Rs ${Number(sale).toLocaleString()}</span>`:''}</td>
+  <td class="p-3">${Number(p.stock_quantity)||0}</td><td class="p-3">${p.is_active===false?'Inactive':'Active'}</td>
+  <td class="p-3 whitespace-nowrap"><button class="text-veyora-gold mr-3" data-edit-prod="${esc(p.id)}">Edit</button><button class="text-red-400" data-delete-prod="${esc(p.id)}">Delete</button></td></tr>`;
+ }).join('');
+ body.querySelectorAll('[data-edit-prod]').forEach(b=>b.addEventListener('click',()=>editProduct(b.dataset.editProd)));
+ body.querySelectorAll('[data-delete-prod]').forEach(b=>b.addEventListener('click',()=>deleteProduct(b.dataset.deleteProd)));
+}
+
+function money(o){return Number(o.total??o.total_amount??o.total_price??0)||0}
+function statusName(o){return String(o.status||'Pending')}
+
+async function loadOrders(){
+ if(!db)return;
+ const {data,error}=await db.from('orders').select('*').order('created_at',{ascending:false});
+ if(error){$('ordersTableBody').innerHTML=`<tr><td colspan="7" class="p-4 text-red-400">Could not load orders: ${esc(error.message)}</td></tr>`;return}
+ ordersList=data||[];
+ $('statOrdersCount').textContent=ordersList.length;
+ $('statPendingOrdersCount').textContent=ordersList.filter(o=>['pending','confirmed','processing'].includes(statusName(o).toLowerCase())).length;
+ $('statTotalSales').textContent='Rs '+ordersList.filter(o=>!['cancelled','canceled'].includes(statusName(o).toLowerCase())).reduce((s,o)=>s+money(o),0).toLocaleString();
+ renderOrders();
+}
+
+function renderOrders(){
+ const render=(rows,elId)=>{
+  const body=$(elId);
+  if(!rows.length){body.innerHTML='<tr><td colspan="7" class="p-4 text-center text-veyora-textMuted">No orders found.</td></tr>';return}
+  body.innerHTML=rows.map(o=>{
+   const oid=String(o.id??''),customer=o.customer_name??o.full_name??o.name??'Guest';
+   return `<tr class="border-b border-veyora-border/50"><td class="p-3 text-veyora-gold">#${esc(oid.slice(0,8))}</td><td class="p-3">${esc(customer)}</td><td class="p-3">${esc(o.item_count??'-')}</td><td class="p-3">Rs ${money(o).toLocaleString()}</td><td class="p-3">${esc(statusName(o))}</td><td class="p-3">${o.created_at?new Date(o.created_at).toLocaleDateString():'-'}</td><td class="p-3"><button class="text-veyora-gold" data-update-order="${esc(oid)}">Update</button></td></tr>`;
+  }).join('');
+  body.querySelectorAll('[data-update-order]').forEach(b=>b.addEventListener('click',()=>updateOrderStatus(b.dataset.updateOrder)));
+ };
+ render(ordersList,'ordersTableBody');
+ const recent=ordersList.slice(0,5),body=$('overviewOrdersTableBody');
+ if(!recent.length){body.innerHTML='<tr><td colspan="5" class="p-4 text-center text-veyora-textMuted">No recent orders.</td></tr>';return}
+ body.innerHTML=recent.map(o=>`<tr class="border-b border-veyora-border/50"><td class="p-3 text-veyora-gold">#${esc(String(o.id??'').slice(0,8))}</td><td class="p-3">${esc(o.customer_name??o.full_name??'Guest')}</td><td class="p-3">Rs ${money(o).toLocaleString()}</td><td class="p-3">${esc(statusName(o))}</td><td class="p-3">${o.created_at?new Date(o.created_at).toLocaleDateString():'-'}</td></tr>`).join('');
+}
+
+function openProductModal(){
+ $('productForm').reset();$('prodId').value='';$('prodStock').value='0';$('prodIsActive').checked=true;
+ $('variantsContainer').innerHTML='';$('productModalTitle').textContent='Add Product';
+ populateCategoryDropdown();$('productModal').classList.remove('hidden');
+}
+function closeProductModal(){$('productModal').classList.add('hidden')}
+$('addProductBtn').addEventListener('click',openProductModal);
+$('closeProductBtn').addEventListener('click',closeProductModal);
+$('cancelProductBtn').addEventListener('click',closeProductModal);
+
+$('addVariantBtn').addEventListener('click',()=>{
+ const row=document.createElement('div');
+ row.className='grid grid-cols-1 sm:grid-cols-4 gap-2 bg-veyora-bg border border-veyora-border rounded-lg p-2';
+ row.innerHTML='<input class="field variant-name" placeholder="Option name e.g. Design"><input class="field variant-value" placeholder="Value e.g. Blue"><input class="field variant-stock" type="number" min="0" placeholder="Stock"><button type="button" class="text-red-400">Remove</button>';
+ row.querySelector('button').addEventListener('click',()=>row.remove());
+ $('variantsContainer').appendChild(row);
+});
+
+async function handleSaveProduct(e){
+ e.preventDefault();if(!db){notice('Supabase is not available.',true);return}
+ const id=$('prodId').value,retail=parseFloat($('prodRetailPrice').value),saleRaw=$('prodSalePrice').value;
+ const payload={
+  name:$('prodName').value.trim(),
+  category_id:$('prodCategory').value,
+  sku:$('prodSku').value.trim()||null,
+  barcode:$('prodBarcode').value.trim()||null,
+  retail_price:retail,
+  sale_price:saleRaw===''?null:parseFloat(saleRaw),
+  stock_quantity:parseInt($('prodStock').value,10)||0,
+  image_url:$('prodImageUrl').value.trim()||null,
+  description:$('prodDescription').value.trim()||null,
+  is_active:$('prodIsActive').checked,
+  is_featured:$('prodIsFeatured').checked
+ };
+ if(!payload.category_id){notice('Please select a category.',true);return}
+ setBusy($('saveProductBtn'),true);
+ try{
+  const result=id?await db.from('products').update(payload).eq('id',id):await db.from('products').insert(payload);
+  if(result.error)throw result.error;
+  closeProductModal();await loadProducts();notice('Product saved successfully.');
+ }catch(err){notice('Product save failed: '+friendlyError(err),true)}
+ finally{setBusy($('saveProductBtn'),false)}
+}
+$('productForm').addEventListener('submit',handleSaveProduct);
+
+function editProduct(id){
+ const p=productsList.find(x=>String(x.id)===String(id));if(!p)return;
+ openProductModal();$('productModalTitle').textContent='Edit Product';$('prodId').value=p.id;
+ $('prodName').value=p.name??p.title??'';$('prodCategory').value=p.category_id??'';
+ $('prodSku').value=p.sku??'';$('prodBarcode').value=p.barcode??'';
+ $('prodRetailPrice').value=p.retail_price??p.price??'';$('prodSalePrice').value=p.sale_price??'';
+ $('prodStock').value=p.stock_quantity??0;$('prodImageUrl').value=p.image_url??'';
+ $('prodDescription').value=p.description??'';$('prodIsActive').checked=p.is_active!==false;
+ $('prodIsFeatured').checked=!!p.is_featured;
+}
+
+async function deleteProduct(id){
+ if(!confirm('Delete this product?'))return;
+ const {error}=await db.from('products').delete().eq('id',id);
+ if(error){notice('Delete failed: '+friendlyError(error),true);return}
+ await loadProducts();notice('Product deleted.');
+}
+
+function openCategoryModal(){
+ $('categoryForm').reset();$('catId').value='';$('catSortOrder').value='0';
+ $('catIsActive').checked=true;$('categoryModalTitle').textContent='Add Category';
+ $('categoryModal').classList.remove('hidden');
+}
+function closeCategoryModal(){$('categoryModal').classList.add('hidden')}
+$('addCategoryBtn').addEventListener('click',openCategoryModal);
+$('closeCategoryBtn').addEventListener('click',closeCategoryModal);
+$('cancelCategoryBtn').addEventListener('click',closeCategoryModal);
+
+$('catName').addEventListener('input',()=>{
+ if(!$('catId').value)$('catSlug').value=$('catName').value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+});
+
+$('categoryForm').addEventListener('submit',async e=>{
+ e.preventDefault();const id=$('catId').value;
+ const payload={
+  name:$('catName').value.trim(),
+  slug:$('catSlug').value.trim()||$('catName').value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+  image_url:$('catImageUrl').value.trim()||null,
+  sort_order:parseInt($('catSortOrder').value,10)||0,
+  is_active:$('catIsActive').checked
+ };
+ setBusy($('saveCategoryBtn'),true);
+ try{
+  const result=id?await db.from('categories').update(payload).eq('id',id):await db.from('categories').insert(payload);
+  if(result.error)throw result.error;
+  closeCategoryModal();await loadCategories();notice('Category saved successfully.');
+ }catch(err){notice('Category save failed: '+friendlyError(err),true)}
+ finally{setBusy($('saveCategoryBtn'),false)}
+});
+
+function editCategory(id){
+ const c=categoriesList.find(x=>String(x.id)===String(id));if(!c)return;
+ openCategoryModal();$('categoryModalTitle').textContent='Edit Category';$('catId').value=c.id;
+ $('catName').value=c.name??'';$('catSlug').value=c.slug??'';$('catImageUrl').value=c.image_url??'';
+ $('catSortOrder').value=c.sort_order??0;$('catIsActive').checked=c.is_active!==false;
+}
+async function deleteCategory(id){
+ if(!confirm('Delete this category? Products may depend on it. Continue?'))return;
+ const {error}=await db.from('categories').delete().eq('id',id);
+ if(error){notice('Category delete failed: '+friendlyError(error),true);return}
+ await loadCategories();notice('Category deleted.');
+}
+
+async function updateOrderStatus(id){
+ const order=ordersList.find(o=>String(o.id)===String(id));if(!order)return;
+ const next=prompt('Enter status: Pending, Confirmed, Processing, Packed, Shipped, Delivered, Cancelled',statusName(order));
+ if(!next)return;
+ const allowed=['pending','confirmed','processing','packed','shipped','delivered','cancelled'];
+ if(!allowed.includes(next.toLowerCase())){notice('Invalid status. Use one of the listed statuses.',true);return}
+ const {error}=await db.from('orders').update({status:next[0].toUpperCase()+next.slice(1).toLowerCase()}).eq('id',id);
+ if(error){notice('Order update failed: '+friendlyError(error),true);return}
+ await loadOrders();notice('Order status updated.');
+}
+$('refreshOrdersBtn').addEventListener('click',loadOrders);
+
+async function loadAnalytics(){
+ if(!db)return;
+ let query=db.from('analytics_events').select('session_id,event_type,created_at');
+ const period=$('analyticsPeriod').value;
+ if(period!=='all')query=query.gte('created_at',new Date(Date.now()-Number(period)*86400000).toISOString());
+ const {data,error}=await query;
+ if(error){$('statLiveVisitors').textContent='—';return}
+ const events=data||[],sessions=new Set(events.map(x=>x.session_id).filter(Boolean));
+ const views=events.filter(x=>x.event_type==='page_view').length;
+ $('statTotalSessions').textContent=sessions.size;$('statPageViews').textContent=views;
+ $('chartTotalSessions').textContent=sessions.size;$('chartPageViews').textContent=views;
+ const cutoff=Date.now()-5*60*1000;
+ const live=new Set(events.filter(x=>new Date(x.created_at).getTime()>=cutoff).map(x=>x.session_id).filter(Boolean));
+ $('statLiveVisitors').textContent=live.size;
+ const purchases=events.filter(x=>x.event_type==='purchase').length;
+ $('statConversionRate').textContent=(sessions.size?((purchases/sessions.size)*100).toFixed(2)+'%':'0.00%');
+ const byDay={};
+ events.forEach(x=>{
+  if(!x.created_at)return;
+  const day=new Date(x.created_at).toLocaleDateString();
+  if(!byDay[day])byDay[day]=new Set();
+  if(x.session_id)byDay[day].add(x.session_id);
+ });
+ if(chartInstance){
+  const keys=Object.keys(byDay).sort((a,b)=>new Date(a)-new Date(b));
+  chartInstance.data.labels=keys;chartInstance.data.datasets[0].data=keys.map(k=>byDay[k].size);chartInstance.update();
+ }
+}
+
+$('analyticsPeriod').addEventListener('change',()=>{
+ const v=$('analyticsPeriod').value;
+ $('dateRangeTag').textContent=v==='all'?'All Time':v==='7'?'Last 7 Days':v+' Days';
+ loadAnalytics();
+});
+$('resetCountsBtn').addEventListener('click',()=>{
+ const now=new Date().toLocaleString();localStorage.setItem('veyora_last_reset',now);
+ $('lastResetText').textContent='Last reset marker: '+now;
+ notice('Reset marker saved. Historical analytics records were not deleted.');
+});
+const lastReset=localStorage.getItem('veyora_last_reset');
+if(lastReset)$('lastResetText').textContent='Last reset marker: '+lastReset;
+
+window.addEventListener('DOMContentLoaded',()=>{
+ try{initChart()}catch(error){console.error(error)}
+ checkSession();
+});
+})();
 </script>
 </body>
 </html>
