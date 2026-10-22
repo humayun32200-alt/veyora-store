@@ -132,7 +132,13 @@ nav a:hover,nav button:hover{color:var(--gold-light)}
   color:#e9dfc9;padding:11px 18px;font-size:10px;letter-spacing:1px;text-transform:uppercase
 }
 .category-button.active,.category-button:hover{border-color:var(--gold);background:var(--gold);color:#17130b}
+
 .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px}
+
+@media(max-width:600px){
+  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+}
+
 .product-card{background:#0d0d0b;min-width:0;border:1px solid #51432a;overflow:hidden;transition:.2s}
 .product-card:hover{transform:translateY(-3px);border-color:var(--gold)}
 .image-wrap{position:relative;overflow:hidden;background:#17150f}
