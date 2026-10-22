@@ -278,16 +278,69 @@ $('productForm').addEventListener('submit',async e=>{
  const btn=$('saveProduct');btn.disabled=true;btn.textContent='Saving…';
  try{
   const id=$('pId').value,retail=parseFloat($('pRetail').value),saleRaw=$('pSale').value;
-  const payload={name:$('pName').value.trim(),category_id:$('pCategory').value,sku:$('pSku').value.trim()||null,barcode:$('pBarcode').value.trim()||null,retail_price:retail,sale_price:saleRaw===''?null:parseFloat(saleRaw),stock_quantity:parseInt($('pStock').value,10)||0,description:$('pDescription').value.trim()||null,is_active:$('pActive').checked,is_featured:$('pFeatured').checked};
-  if(!payload.category_id)throw Error('Please select a category.');
-  let productId=id;
-  if(id){const {error}=await db.from('products').update(payload).eq('id',id);if(error)throw error;}
-  else{const {data,error}=await db.from('products').insert(payload).select('id').single();if(error)throw error;productId=data.id;}
-  await saveMainImage(productId);
-  await saveVariants(productId,retail,saleRaw===''?null:parseFloat(saleRaw));
-  closeProduct();await loadProducts();note('Product, images and variants saved.');
- }catch(e){note('Save failed: '+err(e),true);}
- finally{btn.disabled=false;btn.textContent='Save Product';}
+  const productName = $('pName').value.trim();
+const productSlug = productName
+  .toLowerCase()
+  .normalize('NFKD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '') + '-' + Date.now().toString(36);
+
+const payload = {
+  name: productName,
+  slug: productSlug,
+  category_id: $('pCategory').value,
+  sku: $('pSku').value.trim() || null,
+  barcode: $('pBarcode').value.trim() || null,
+  retail_price: retail,
+  sale_price: saleRaw === '' ? null : parseFloat(saleRaw),
+  stock_quantity: parseInt($('pStock').value, 10) || 0,
+  description: $('pDescription').value.trim() || null,
+  is_active: $('pActive').checked,
+  is_featured: $('pFeatured').checked
+};
+
+if (!payload.category_id) {
+  throw Error('Please select a category.');
+}
+
+let productId = id;
+
+if (id) {
+  const { error } = await db
+    .from('products')
+    .update(payload)
+    .eq('id', id);
+
+  if (error) throw error;
+} else {
+  const { data, error } = await db
+    .from('products')
+    .insert(payload)
+    .select('id')
+    .single();
+
+  if (error) throw error;
+  productId = data.id;
+}
+
+await saveMainImage(productId);
+await saveVariants(
+  productId,
+  retail,
+  saleRaw === '' ? null : parseFloat(saleRaw)
+);
+
+closeProduct();
+await loadProducts();
+note('Product, images and variants saved.');
+
+} catch (e) {
+  note('Save failed: ' + err(e), true);
+} finally {
+  btn.disabled = false;
+  btn.textContent = 'Save Product';
+}
 });
 async function editProduct(id){
  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
