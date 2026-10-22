@@ -588,12 +588,15 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 
 </div>
     <div class="product-grid" id="productGrid">
-      <div id="seeMoreWrap" style="text-align:center;margin:25px 0 5px">
-  <button id="seeMoreButton" type="button"
-    style="background:#c9a45c;color:#111;border:0;padding:13px 24px;font-weight:700;cursor:pointer">
-    SEE MORE PRODUCTS ↓
+      
+<div style="text-align:right;margin:8px 0 12px">
+  <button type="button"
+    onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth'})"
+    style="background:transparent;border:0;color:#c9a45c;font-size:12px;cursor:pointer">
+    See More ↓
   </button>
 </div>
+
       <div class="empty-state">Loading VEYORA collection...</div>
     </div>
   </section>
