@@ -408,6 +408,45 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
       <h2>Our Collection</h2>
       <p>Premium quality products for your everyday needs.</p>
     </div>
+    <div class="collection-controls">
+
+  <div class="collection-control">
+    <button type="button" class="collection-control-btn"
+            id="priceToggle" aria-expanded="false">
+      <span class="control-icon">↕</span>
+      <span class="control-copy">
+        <strong>PRICE</strong>
+        <small>Sort collection</small>
+      </span>
+      <span class="control-chevron" id="priceChevron">⌄</span>
+    </button>
+
+    <div class="control-dropdown" id="priceOptions" hidden>
+      <button type="button" data-sort="low">↑ Low to High</button>
+      <button type="button" data-sort="high">↓ High to Low</button>
+    </div>
+  </div>
+
+  <div class="collection-control">
+    <button type="button" class="collection-control-btn"
+            id="saleToggle" aria-expanded="false">
+      <span class="control-icon">✧</span>
+      <span class="control-copy">
+        <strong>SALE</strong>
+        <small>Explore offers</small>
+      </span>
+      <span class="control-chevron" id="saleChevron">⌄</span>
+    </button>
+
+    <div class="control-dropdown" id="saleOptions" hidden>
+      <button type="button" data-sale-category="men">Men <span>→</span></button>
+      <button type="button" data-sale-category="women">Women <span>→</span></button>
+      <button type="button" data-sale-category="bedding">Bedsheets <span>→</span></button>
+      <button type="button" data-sale-category="home">Home Accessories <span>→</span></button>
+    </div>
+  </div>
+
+</div>
     <div class="product-grid" id="productGrid">
       <div class="empty-state">Loading VEYORA collection...</div>
     </div>
