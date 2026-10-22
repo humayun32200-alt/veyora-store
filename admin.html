@@ -4,672 +4,391 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VEYORA | Admin</title>
+<title>VEYORA | Store Admin</title>
 <style>
 :root {
-  --bg: #080908;
-  --panel: #10110f;
-  --panel2: #171712;
-  --gold: #d9b56b;
-  --gold-light: #f4d99b;
-  --text: #f8f0df;
-  --muted: #a9a497;
-  --line: #51432a;
-  --green: #53d49a;
-  --red: #ff9c91;
+  --bg:#090a08;
+  --panel:#12130f;
+  --panel2:#191a15;
+  --gold:#d8b568;
+  --text:#f6f0df;
+  --muted:#a7a596;
+  --line:#393427;
+  --green:#72d7a4;
+  --red:#ff958b;
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  background:
-    radial-gradient(ellipse at 85% 15%, #211b10 0, transparent 35%),
-    var(--bg);
-  color: var(--text);
-  font-family: Inter, Arial, sans-serif;
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.top{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 25px;background:#0d0e0b;position:sticky;top:0;z-index:5}
+.brand{font-size:19px;letter-spacing:4px;color:var(--gold);font-weight:bold}
+.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:3px;margin-top:6px}
+.layout{display:grid;grid-template-columns:215px minmax(0,1fr);min-height:calc(100vh - 76px)}
+.sidebar{border-right:1px solid var(--line);padding:24px 14px;background:#0c0d0a}
+.side-label{font-size:10px;color:var(--muted);letter-spacing:2px;padding:10px}
+.nav{width:100%;text-align:left;background:transparent;color:var(--muted);border:0;padding:13px 12px;border-radius:8px;margin:3px 0}
+.nav:hover,.nav.active{background:#282318;color:var(--gold)}
+main{padding:27px;min-width:0;max-width:1600px;width:100%;margin:auto}
+h1{font-size:26px;margin:0 0 8px;font-weight:500}
+h2{font-size:17px;font-weight:500;margin:0}
+h3{font-size:13px;color:var(--muted);font-weight:500;margin:0}
+.muted{color:var(--muted);font-size:12px}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:23px}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:7px;padding:10px 14px}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#17140c;font-weight:bold}
+.btn.danger{color:var(--red)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:20px;min-width:0}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:19px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+select,input{background:#0b0c09;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:10px;max-width:100%}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:18px 0}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;min-width:0}
+.metric .label{font-size:12px;color:var(--muted)}
+.metric .value{font-size:25px;color:var(--gold);margin-top:12px;overflow-wrap:anywhere}
+.metric .note{font-size:11px;color:var(--muted);margin-top:7px}
+.chart-wrap{height:235px;width:100%;position:relative}
+canvas{width:100%;height:100%;display:block}
+.activity{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.activity-item{padding:13px;background:var(--panel2);border-radius:8px;display:flex;justify-content:space-between;gap:12px;font-size:12px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:8px}
+.section{display:none}
+.section.active{display:block}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:12px}
+th,td{padding:13px 10px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:500}
+.notice{padding:12px;border:1px solid var(--line);border-radius:8px;margin-bottom:15px;font-size:12px;display:none}
+.login{max-width:400px;margin:70px auto;padding:25px}
+.login input{width:100%;margin:8px 0 15px}
+.login button{width:100%}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form-grid input,.form-grid select{width:100%}
+.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:25px}
+@media(max-width:950px){
+ .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .layout{grid-template-columns:165px minmax(0,1fr)}
+ main{padding:18px}
 }
-
-button, input, textarea, select { font: inherit; }
-button { cursor: pointer; transition: .2s ease; }
-
-button, .btn {
-  padding: 11px 16px;
-  border: 1px solid var(--gold);
-  border-radius: 8px;
-  background: linear-gradient(110deg, #f2d48e, #bc8d43);
-  color: #171209;
-  font-weight: 700;
+@media(max-width:600px){
+ .top{height:65px;padding:0 15px}
+ .layout{display:block}
+ .sidebar{display:flex;overflow:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line);position:sticky;top:65px;z-index:4}
+ .side-label{display:none}
+ .nav{white-space:nowrap;width:auto;padding:10px;font-size:12px}
+ main{padding:14px}
+ .metrics{gap:9px}
+ .metric{padding:13px}
+ .metric .value{font-size:21px}
+ .panel{padding:14px}
+ .activity{grid-template-columns:1fr}
+ h1{font-size:22px}
+ .form-grid{grid-template-columns:1fr}
 }
-
-button:hover { filter: brightness(1.12); transform: translateY(-1px); }
-
-.secondary, .tab {
-  background: #11120f;
-  color: var(--text);
-  border-color: #4d4029;
-}
-
-.danger {
-  background: #50251f;
-  border-color: #a65b52;
-  color: #fff;
-}
-
-.top {
-  min-height: 88px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 28px;
-  border-bottom: 1px solid var(--line);
-  background: rgba(7, 8, 7, .96);
-}
-
-.brand {
-  color: var(--gold-light);
-  font-family: Georgia, serif;
-  font-size: 30px;
-  letter-spacing: 7px;
-  font-weight: 500;
-}
-
-main {
-  max-width: 1500px;
-  margin: auto;
-  padding: 28px;
-}
-
-h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; }
-h1 { font-size: clamp(30px, 4vw, 46px); margin-bottom: 8px; }
-h2 { font-size: 25px; }
-h3 { font-size: 20px; }
-
-.muted {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.65;
-}
-
-.panel, .card {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(145deg, #11120f, #090a09);
-  border: 1px solid var(--line);
-  border-radius: 17px;
-  padding: 20px;
-  margin: 16px 0;
-  box-shadow: 0 8px 26px #0005;
-}
-
-.card::after {
-  content: "";
-  position: absolute;
-  width: 130px;
-  height: 70px;
-  right: -45px;
-  bottom: -42px;
-  border: 1px solid #b08a4930;
-  border-radius: 50%;
-  transform: rotate(-25deg);
-  pointer-events: none;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.grid .card {
-  min-height: 125px;
-  margin: 0;
-  padding: 22px;
-  font-size: 15px;
-  color: #d6d2c9;
-}
-
-.metric {
-  font-family: Georgia, serif;
-  font-size: 35px;
-  color: var(--gold-light);
-  font-weight: 700;
-  margin-top: 10px;
-  overflow-wrap: anywhere;
-}
-
-.tabs {
-  display: flex;
-  gap: 9px;
-  flex-wrap: wrap;
-  margin: 25px 0;
-}
-
-.tab { border-radius: 9px; }
-.tab.active {
-  color: var(--gold-light);
-  border-color: var(--gold);
-  background: #292114;
-  box-shadow: inset 0 0 15px #c9a45c12;
-}
-
-.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.field { flex: 1; min-width: 180px; }
-
-label {
-  display: block;
-  margin: 12px 0 6px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-input, textarea, select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #403724;
-  border-radius: 8px;
-  background: #090a08;
-  color: var(--text);
-  outline: none;
-}
-
-input:focus, textarea:focus, select:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px #d9b56b16;
-}
-
-input[type=checkbox] { width: auto; accent-color: var(--gold); }
-textarea { min-height: 90px; resize: vertical; }
-
-.formgrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.notice {
-  padding: 13px 16px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  margin: 12px 0;
-  overflow-wrap: anywhere;
-  background: #11120f;
-}
-
-.error { color: var(--red); border-color: #75453f; }
-
-.tablewrap { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th, td {
-  text-align: left;
-  padding: 13px 10px;
-  border-bottom: 1px solid #332d21;
-  vertical-align: top;
-}
-th { color: var(--gold-light); font-weight: 600; }
-td button { margin: 3px; padding: 8px 10px; }
-
-.thumb {
-  width: 54px;
-  height: 54px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-#login {
-  max-width: 420px;
-  margin: 8vh auto;
-}
-
-.option-group {
-  border: 1px solid var(--line);
-  padding: 14px;
-  border-radius: 10px;
-  margin: 14px 0;
-  background: #151511;
-}
-
-.option-value {
-  border: 1px dashed #514733;
-  padding: 12px;
-  border-radius: 8px;
-  margin: 10px 0;
-}
-
-.option-value-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 2fr auto;
-  gap: 10px;
-  align-items: end;
-}
-
-[hidden] { display: none !important; }
-
-.banner-preview {
-  width: 100%;
-  max-width: 420px;
-  aspect-ratio: 16/6;
-  object-fit: cover;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #10100e;
-}
-
-.banner-form-note { font-size: 12px; color: var(--muted); line-height: 1.5; }
-
-@media (min-width: 1100px) {
-  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-}
-
-@media (max-width: 700px) {
-  main { padding: 13px; }
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .grid .card { padding: 15px 12px; min-height: 105px; font-size: 13px; }
-  .metric { font-size: 27px; }
-  .formgrid { grid-template-columns: 1fr; }
-  .field { min-width: 100%; }
-  .top { padding: 14px; }
-  .brand { font-size: 22px; letter-spacing: 4px; }
-  .panel { padding: 14px; }
-  .option-value-grid { grid-template-columns: 1fr; }
-  table { min-width: 650px; }
-}</style>
-
+</style>
 </head>
 <body>
-<header class="top"><div><div class="brand">VEYORA</div><div class="muted">STORE ADMIN</div></div><button id="logout" class="secondary" hidden>Sign out</button></header>
 
-<section id="login" class="panel">
-<h1>Admin Login</h1><p class="muted">Sign in with your authorized admin account.</p>
-<form id="loginForm">
-<label>Email</label><input id="email" type="email" autocomplete="username" required>
-<label>Password</label><input id="password" type="password" autocomplete="current-password" required>
-<button style="width:100%;margin-top:18px" id="loginBtn">Sign In</button>
-</form>
-<div id="loginMessage" class="notice" role="status"></div>
-</section>
+<header class="top">
+  <div class="brand">VEYORA<small>STORE ADMIN</small></div>
+  <button class="btn" id="refreshBtn">↻ Refresh</button>
+</header>
 
-<div id="app" hidden><main>
-
-<div class="welcome-header">
-  <div>
-    <p class="muted">VEYORA / STORE MANAGEMENT</p>
-    <h1>Welcome Back, Admin</h1>
-    <p class="muted">Here's what's happening with your store today.</p>
-  </div>
-  <button id="refresh" class="secondary">↻ Refresh Data</button>
-</div>
-<div id="notice" class="notice">Connecting...</div>
-
-<div class="grid">
-<div class="card">Products<div id="productCount" class="metric">—</div></div>
-<div class="card">Categories<div id="categoryCount" class="metric">—</div></div>
-<div class="card">Orders<div id="orderCount" class="metric">—</div></div>
-<div class="card">Pending Orders<div id="pendingCount" class="metric">—</div></div>
-<div class="card">Live Visitors<div id="liveVisitorCount" class="metric">—</div><div class="muted">Activity in last 5 minutes</div></div>
-<div class="card">Total Sessions<div id="sessionCount" class="metric">—</div></div>
-<div class="card">Page Views<div id="pageViewCount" class="metric">—</div></div>
-<div class="card">Total Sales<div id="totalSalesCount" class="metric">—</div></div>
-<div class="card">Conversion Rate<div id="conversionRate" class="metric">—</div></div>
+<div id="login" class="panel login">
+  <h1>Admin Login</h1>
+  <p class="muted">Sign in to access your store dashboard.</p>
+  <label class="muted">Email</label>
+  <input id="email" type="email" placeholder="Admin email" autocomplete="username">
+  <label class="muted">Password</label>
+  <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+  <button class="btn gold" id="loginBtn">Sign In</button>
+  <p id="loginMessage" class="muted"></p>
 </div>
 
-<nav class="tabs">
-<button class="tab active" data-tab="overview">Overview</button>
-<button class="tab" data-tab="products">Products</button>
-<button class="tab" data-tab="categories">Categories</button>
-<button class="tab" data-tab="orders">Orders</button>
-<button class="tab" data-tab="banners">Banners</button>
-</nav>
+<div id="app" class="hidden">
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-label">STORE MENU</div>
+    <button class="nav active" data-section="overview">⌂ Overview</button>
+    <button class="nav" data-section="products">▣ Products</button>
+    <button class="nav" data-section="categories">◇ Categories</button>
+    <button class="nav" data-section="orders">▤ Orders</button>
+    <button class="nav" data-section="analytics">⌁ Analytics</button>
+    <button class="nav" data-section="banners">▧ Banners</button>
+    <button class="nav" id="logoutBtn">↪ Sign Out</button>
+  </aside>
 
-<section id="overview" class="panel">
-<div class="row" style="justify-content:space-between"><h2>Recent Orders</h2></div>
-<div id="recentOrders"></div>
-</section>
+  <main>
+    <div class="header-row">
+      <div>
+        <h1>Welcome Back, Admin</h1>
+        <div class="muted">Your Veyora store at a glance.</div>
+      </div>
+      <span class="muted" id="updatedAt">Waiting for data</span>
+    </div>
 
-<section id="products" class="panel" hidden>
-<div class="row" style="justify-content:space-between"><h2>Products</h2><button id="newProduct">+ Add Product</button></div>
-<form id="productForm" hidden>
-<h3 id="productFormTitle">Add Product</h3><input id="pId" type="hidden">
-<div class="formgrid">
-<div><label>Product name *</label><input id="pName" required></div>
-<div><label>Category</label><select id="pCategory"><option value="">No category</option></select></div>
-<div><label>Slug (optional)</label><input id="pSlug" placeholder="Auto-generated if blank"></div>
-<div><label>SKU</label><input id="pSku"></div>
-<div><label>Barcode</label><input id="pBarcode"></div>
-<div><label>Stock quantity</label><input id="pStock" type="number" min="0" value="0" required></div>
-<div><label>Retail price (PKR) *</label><input id="pRetail" type="number" min="0" step="0.01" required></div>
-<div><label>Sale price (PKR, optional)</label><input id="pSale" type="number" min="0" step="0.01"></div>
+    <div class="notice" id="notice"></div>
+
+    <section class="section active" id="overview">
+      <div class="panel">
+        <div class="panel-head">
+          <div><h2>Store Analytics</h2><p class="muted">Sessions over time</p></div>
+          <div class="filters">
+            <select id="range">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="365">Last year</option>
+              <option value="all">All available</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="sessionsChart"></canvas></div>
+        <div class="muted" id="chartCaption">Based on recorded analytics events.</div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="label">Products</div><div class="value" id="productCount">—</div><div class="note">Store catalogue</div></div>
+        <div class="metric"><div class="label">Categories</div><div class="value" id="categoryCount">—</div><div class="note">Product groups</div></div>
+        <div class="metric"><div class="label">Orders</div><div class="value" id="orderCount">—</div><div class="note">All recorded orders</div></div>
+        <div class="metric"><div class="label">Pending Orders</div><div class="value" id="pendingCount">—</div><div class="note">Awaiting processing</div></div>
+        <div class="metric"><div class="label">Live Visitors</div><div class="value" id="liveVisitorCount">—</div><div class="note">Events in last 5 minutes</div></div>
+        <div class="metric"><div class="label">Total Sessions</div><div class="value" id="sessionCount">—</div><div class="note">Unique session IDs</div></div>
+        <div class="metric"><div class="label">Page Views</div><div class="value" id="pageViewCount">—</div><div class="note">Page and product views</div></div>
+        <div class="metric"><div class="label">Total Sales</div><div class="value" id="totalSalesCount">—</div><div class="note">Non-cancelled orders</div></div>
+        <div class="metric"><div class="label">Conversion Rate</div><div class="value" id="conversionRate">—</div><div class="note">Orders ÷ sessions</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Live Visitor Activity</h2><span class="muted">Last 5 minutes</span></div>
+        <div id="visitorActivity" class="activity">
+          <div class="muted">Load analytics to view recent activity.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div><h2>Start Fresh From Now</h2><p class="muted">Set a new analytics starting point on this browser.</p></div>
+          <button class="btn danger" id="freshBtn">Start Fresh From Now</button>
+        </div>
+        <p class="muted">This changes the dashboard's local reporting cutoff only. It does not delete database records, products, or orders, and the cutoff is stored in this browser.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Recent Orders</h2><button class="btn" data-go="orders">View all</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody id="recentOrders"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="analytics">
+      <div class="panel">
+        <div class="panel-head"><div><h2>Analytics Report</h2><p class="muted">Choose a date range to update the graph.</p></div><select id="range2"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option><option value="365">1 year</option><option value="all">All available</option></select></div>
+        <div class="chart-wrap"><canvas id="sessionsChart2"></canvas></div>
+      </div>
+      <div class="panel"><h2>Visitor Activity</h2><p class="muted">Only events actually recorded in analytics_events can appear here.</p><div id="visitorActivity2" class="activity"></div></div>
+    </section>
+
+    <section class="section" id="products">
+      <div class="panel">
+        <div class="panel-head"><h2>Products</h2></div>
+        <p class="muted">This dashboard shell needs to be connected to your existing product CRUD code before adding, editing, deleting products, or managing custom options.</p>
+        <div class="table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead><tbody id="productsTable"><tr><td colspan="4">Product manager connection required.</td></tr></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="section" id="categories">
+      <div class="panel"><h2>Categories</h2><p class="muted">Connect your existing category CRUD functions to manage categories here.</p><div class="table-wrap"><table><thead><tr><th>Category</th><th>Status</th></tr></thead><tbody id="categoriesTable"><tr><td colspan="2">Category manager connection required.</td></tr></tbody></table></div></div>
+    </section>
+
+    <section class="section" id="orders">
+      <div class="panel"><h2>Orders</h2><p class="muted">Connect your existing order CRUD functions to update status and tracking numbers.</p><div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody id="ordersTable"><tr><td colspan="4">Order manager connection required.</td></tr></tbody></table></div></div>
+    </section>
+
+    <section class="section" id="banners">
+      <div class="panel"><h2>Banners</h2><p class="muted">Connect your existing banners CRUD functions to add, edit and publish homepage banners.</p><div class="table-wrap"><table><thead><tr><th>Banner</th><th>Status</th></tr></thead><tbody id="bannersTable"><tr><td colspan="2">Banner manager connection required.</td></tr></tbody></table></div></div>
+    </section>
+
+    <footer>VEYORA · STORE ADMIN</footer>
+  </main>
 </div>
-<label>Description</label><textarea id="pDescription"></textarea>
-<label>Product images (JPG, PNG or WebP; max 5 MB each)</label><input id="pImages" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-<div class="row" style="margin-top:14px"><label><input id="pActive" type="checkbox" checked> Active</label><label><input id="pFeatured" type="checkbox"> Featured</label></div>
-<div class="row" style="margin-top:14px"><button id="saveProduct" type="submit">Save Product</button><button id="cancelProduct" class="secondary" type="button">Cancel</button></div>
-</form>
-<div id="productsTable"></div>
-
-<section id="variantPanel" class="panel" hidden>
-<h3 id="variantHeading">Custom Product Options</h3>
-<p class="muted">Apni marzi ka option name likhein, jaise Color, Size, Design ya Fabric. Har option ki har value ke liye stock aur picture set karein. SKU, barcode aur alag price ki zaroorat nahi.</p>
-<button id="newVariant">+ Add Custom</button>
-<form id="variantForm" hidden>
-<input id="vId" type="hidden">
-<div class="formgrid">
-<div><label>Custom option name *</label><input id="vOptionName" placeholder="e.g. Color, Size, Design" required></div>
-<div><label>Option value *</label><input id="vOptionValue" placeholder="e.g. Black, Large, Floral" required></div>
-<div><label>Stock quantity *</label><input id="vStock" type="number" min="0" value="0" required></div>
-<div><label>Picture (optional)</label><input id="vImage" type="file" accept="image/jpeg,image/png,image/webp"></div>
 </div>
-<p class="muted">Har value alag save karein. Example: Color + Black, phir Color + White.</p>
-<div class="row" style="margin-top:12px"><button type="submit" id="saveVariant">Save Option Value</button><button type="button" id="cancelVariant" class="secondary">Cancel</button></div>
-</form>
-<div id="variantsTable"></div>
-</section>
-</section>
 
-<section id="categories" class="panel" hidden>
-<div class="row" style="justify-content:space-between"><h2>Categories</h2><button id="newCategory">+ Add Category</button></div>
-<form id="categoryForm" hidden>
-<input id="cId" type="hidden">
-<div class="formgrid">
-<div><label>Category name *</label><input id="cName" required></div>
-<div><label>Slug (optional)</label><input id="cSlug"></div>
-<div><label>Image URL (optional)</label><input id="cImage" type="url"></div>
-<div><label>Sort order</label><input id="cSort" type="number" value="0"></div>
-</div>
-<label><input id="cActive" type="checkbox" checked> Active</label>
-<div class="row" style="margin-top:12px"><button type="submit" id="saveCategory">Save Category</button><button type="button" id="cancelCategory" class="secondary">Cancel</button></div>
-</form>
-<div id="categoriesTable"></div>
-</section>
-
-<section id="orders" class="panel" hidden>
-<h2>Orders</h2><p class="muted">Update order status and tracking number.</p><div id="ordersTable"></div>
-</section>
-
-<section id="banners" class="panel" hidden>
-<div class="row" style="justify-content:space-between">
-<div><h2>Homepage Banners</h2><p class="muted">Add banners for the customer homepage. Published banners rotate every 4 seconds.</p></div>
-<button id="newBanner">+ Add Banner</button>
-</div>
-<form id="bannerForm" hidden>
-<h3 id="bannerFormTitle">Add Banner</h3><input id="bId" type="hidden">
-<div class="formgrid">
-<div><label>Banner heading *</label><input id="bTitle" maxlength="180" required placeholder="Elevate Your Everyday"></div>
-<div style="grid-column:1/-1"><label>Description</label><textarea id="bDescription" maxlength="500" placeholder="Banner description"></textarea></div>
-<div><label>Banner image URL</label><input id="bImageUrl" type="url" placeholder="https://..."></div>
-<div><label>Or upload banner image</label><input id="bImageFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
-<div><label>Button text</label><input id="bButtonText" maxlength="80" value="EXPLORE COLLECTION"></div>
-<div><label>Button target (URL, product ID or category ID)</label><input id="bTarget" placeholder="#products or https://..."></div>
-<div><label>Sort order</label><input id="bSort" type="number" value="0"></div>
-<div><label><input id="bPublished" type="checkbox" checked> Published</label></div>
-</div>
-<p class="banner-form-note">If target is a product ID, the button opens that product. If it is a category ID, it filters that category. You can also use #products, #categories or a full URL.</p>
-<img id="bannerPreview" class="banner-preview" alt="Banner preview" hidden>
-<div class="row" style="margin-top:14px"><button id="saveBanner" type="submit">Save Banner</button><button id="cancelBanner" type="button" class="secondary">Cancel</button></div>
-</form>
-<div id="bannersTable"></div>
-</section>
-</main></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL="https://fudkfvwwbqmflmtkbtkk.supabase.co";
-const SUPABASE_KEY="sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const $=id=>document.getElementById(id);
-const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const money=v=>"Rs "+Number(v||0).toLocaleString("en-PK",{maximumFractionDigits:2});
-const slugify=s=>String(s||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-let products=[],categories=[],orders=[],variants=[],banners=[],activeVariantProduct=null,analyticsEvents=[];
+/*
+  IMPORTANT:
+  This is the dashboard UI shell, not a replacement for your
+  existing Supabase CRUD implementation. Connect your current
+  admin login, product, category, order and banner functions
+  before using it as your live admin page.
+*/
+const $ = id => document.getElementById(id);
+const cutoffKey = "veyora_admin_analytics_cutoff";
+let analyticsEvents = [];
+let orders = [];
 
-function notice(msg,error=false){$("notice").textContent=msg;$("notice").className="notice"+(error?" error":"")}
-function tab(name){["overview","products","categories","orders","banners"].forEach(id=>$(id).hidden=id!==name);document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name))}
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
-function table(headers,rows){if(!rows.length)return '<p class="muted">No records found.</p>';return '<div class="tablewrap"><table><thead><tr>'+headers.map(h=>'<th>'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(v=>'<td>'+v+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>'}
-function pct(retail,sale){const r=Number(retail),s=Number(sale);return r>0&&sale!=null&&s>=0&&s<r?Math.round((r-s)/r*100)+"% OFF":"—"}
-async function result(q){const {data,error}=await q;if(error)throw error;return data||[]}
-
-async function verifyAdmin(){
- const {data:{session},error}=await db.auth.getSession();if(error)throw error;
- if(!session){showLogin();return}
- const {data:{user},error:e}=await db.auth.getUser();
- if(e||!user||user.app_metadata?.role!=="admin"){await db.auth.signOut();showLogin("This account is not authorized as admin.");return}
- $("login").hidden=true;$("app").hidden=false;$("logout").hidden=false;await loadAll()
-}
-function showLogin(msg=""){$("app").hidden=true;$("login").hidden=false;$("logout").hidden=true;$("loginMessage").textContent=msg}
-
-function updateAnalytics(){
- const cutoff=Date.now()-300000;
- const recent=new Set(analyticsEvents.filter(e=>e.created_at&&new Date(e.created_at).getTime()>=cutoff).map(e=>e.session_id).filter(Boolean));
- const sessions=new Set(analyticsEvents.map(e=>e.session_id).filter(Boolean));
- const views=analyticsEvents.filter(e=>["page_view","product_view"].includes(e.event_type)).length;
- const valid=orders.filter(o=>String(o.status||"").toLowerCase()!=="cancelled");
- const sales=valid.reduce((s,o)=>s+Number(o.total||0),0);
- $("liveVisitorCount").textContent=recent.size;$("sessionCount").textContent=sessions.size;$("pageViewCount").textContent=views;
- $("totalSalesCount").textContent=money(sales);$("conversionRate").textContent=(sessions.size?valid.length/sessions.size*100:0).toFixed(2)+"%"
-}
-async function loadAll(){
- notice("Loading store data…");
- try{
-  [products,categories,orders]=await Promise.all([
-   result(db.from("products").select("*").order("created_at",{ascending:false}).limit(500)),
-   result(db.from("categories").select("*").order("sort_order").limit(300)),
-   result(db.from("orders").select("*").order("created_at",{ascending:false}).limit(500))
-  ]);
-  banners=await result(db.from("banners").select("*").order("sort_order").order("created_at",{ascending:false}).limit(300));
-  $("productCount").textContent=products.length;$("categoryCount").textContent=categories.length;$("orderCount").textContent=orders.length;
-  $("pendingCount").textContent=orders.filter(o=>!["delivered","cancelled"].includes(String(o.status||"").toLowerCase())).length;
-  renderProducts();renderCategories();renderOrders();renderBanners();fillCategorySelect();
-  try{analyticsEvents=await result(db.from("analytics_events").select("session_id,event_type,created_at").order("created_at",{ascending:false}).limit(10000))}
-  catch(err){analyticsEvents=[];console.error("Analytics loading error:",err)}
-  updateAnalytics();notice("Connected. Store data loaded.")
- }catch(e){notice("Could not load data: "+e.message,true)}
+function getCutoff(){
+  try { return Number(localStorage.getItem(cutoffKey)) || 0; }
+  catch(e){ return 0; }
 }
 
-function renderProducts(){
- $("productsTable").innerHTML=table(["Product","Retail","Sale","Discount","Stock","Active","Actions"],products.map(p=>[
- esc(p.name),esc(money(p.retail_price)),esc(p.sale_price==null?"—":money(p.sale_price)),esc(pct(p.retail_price,p.sale_price)),esc(p.stock_quantity),p.is_active?"Yes":"No",
- '<button data-edit-product="'+esc(p.id)+'">Edit</button><button data-images="'+esc(p.id)+'" class="secondary">Images</button><button data-variants="'+esc(p.id)+'" class="secondary">Custom Options</button><button data-delete-product="'+esc(p.id)+'" class="danger">Delete</button>'
- ]));
- $("productsTable").querySelectorAll("[data-edit-product]").forEach(b=>b.onclick=()=>editProduct(b.dataset.editProduct));
- $("productsTable").querySelectorAll("[data-delete-product]").forEach(b=>b.onclick=()=>deleteProduct(b.dataset.deleteProduct));
- $("productsTable").querySelectorAll("[data-images]").forEach(b=>b.onclick=()=>uploadImages(b.dataset.images));
- $("productsTable").querySelectorAll("[data-variants]").forEach(b=>b.onclick=()=>openVariants(b.dataset.variants))
-}
-function fillCategorySelect(){$("pCategory").innerHTML='<option value="">No category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")}
-function resetProduct(){$("productForm").reset();$("pId").value="";$("pActive").checked=true;$("productFormTitle").textContent="Add Product";$("productForm").hidden=true}
-$("newProduct").onclick=()=>{resetProduct();$("productForm").hidden=false;$("productFormTitle").textContent="Add Product";$("productForm").scrollIntoView({behavior:"smooth"})};
-$("cancelProduct").onclick=resetProduct;
-function editProduct(id){
- const p=products.find(x=>String(x.id)===String(id));if(!p)return;
- $("pId").value=p.id;$("pName").value=p.name||"";$("pSlug").value=p.slug||"";$("pCategory").value=p.category_id||"";
- $("pSku").value=p.sku||"";$("pBarcode").value=p.barcode||"";$("pStock").value=p.stock_quantity??0;
- $("pRetail").value=p.retail_price??"";$("pSale").value=p.sale_price??"";$("pDescription").value=p.description||"";
- $("pActive").checked=!!p.is_active;$("pFeatured").checked=!!p.is_featured;$("pImages").value="";
- $("productFormTitle").textContent="Edit Product";$("productForm").hidden=false;$("productForm").scrollIntoView({behavior:"smooth"})
-}
-async function uploadToStorage(file,path){
- if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw Error("Use JPG, PNG or WebP images.");
- if(file.size>5*1024*1024)throw Error("Each image must be 5 MB or smaller.");
- const {error}=await db.storage.from("veyora-products").upload(path,file,{upsert:true,contentType:file.type});if(error)throw error;
- return db.storage.from("veyora-products").getPublicUrl(path).data.publicUrl
-}
-async function saveProductImages(productId,fileList){
- const sort=await result(db.from("product_images").select("sort_order").eq("product_id",productId).order("sort_order",{ascending:false}).limit(1));
- let n=(sort[0]?.sort_order??-1)+1;
- for(const file of fileList){const path="products/"+productId+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const url=await uploadToStorage(file,path);
-  const {error}=await db.from("product_images").insert({product_id:productId,image_url:url,alt_text:file.name,sort_order:n++});if(error)throw error}
-}
-$("productForm").onsubmit=async e=>{
- e.preventDefault();const btn=$("saveProduct");btn.disabled=true;
- try{
-  const id=$("pId").value,retail=Number($("pRetail").value),sale=$("pSale").value===""?null:Number($("pSale").value);
-  if(sale!==null&&(sale<0||sale>retail))throw Error("Sale price must be between zero and retail price.");
-  const name=$("pName").value.trim();
-  const payload={name,slug:$("pSlug").value.trim()||slugify(name),description:$("pDescription").value.trim()||null,category_id:$("pCategory").value||null,sku:$("pSku").value.trim()||null,barcode:$("pBarcode").value.trim()||null,retail_price:retail,sale_price:sale,stock_quantity:Number($("pStock").value),is_active:$("pActive").checked,is_featured:$("pFeatured").checked,updated_at:new Date().toISOString()};
-  let savedId=id;
-  if(id){const {error}=await db.from("products").update(payload).eq("id",id);if(error)throw error}
-  else{const {data,error}=await db.from("products").insert(payload).select("id").single();if(error)throw error;savedId=data.id}
-  if($("pImages").files.length)await saveProductImages(savedId,$("pImages").files);
-  resetProduct();await loadAll();notice("Product saved successfully.")
- }catch(err){notice("Could not save product: "+err.message,true)}finally{btn.disabled=false}
-};
-async function deleteProduct(id){
- const p=products.find(x=>String(x.id)===String(id));if(!p||!confirm('Delete "'+p.name+'" and its images and options? This cannot be undone.'))return;
- try{
-  let r=await db.from("product_images").delete().eq("product_id",id);if(r.error)throw r.error;
-  r=await db.from("product_variants").delete().eq("product_id",id);if(r.error)throw r.error;
-  r=await db.from("products").delete().eq("id",id);if(r.error)throw r.error;
-  if(String(activeVariantProduct)===String(id))$("variantPanel").hidden=true;
-  await loadAll();notice("Product deleted.")
- }catch(err){notice("Delete failed: "+err.message,true)}
-}
-async function uploadImages(id){
- const input=document.createElement("input");input.type="file";input.multiple=true;input.accept="image/jpeg,image/png,image/webp";
- input.onchange=async()=>{if(!input.files.length)return;try{await saveProductImages(id,input.files);notice("Images uploaded.")}catch(err){notice("Image upload failed: "+err.message,true)}};
- input.click()
+function showNotice(message){
+  $("notice").textContent = message;
+  $("notice").style.display = "block";
 }
 
-/* CUSTOM OPTIONS: one row in product_variants per option value */
-async function openVariants(id){
- activeVariantProduct=id;const p=products.find(x=>String(x.id)===String(id));
- $("variantHeading").textContent="Custom Options: "+(p?.name||"Product");
- $("variantPanel").hidden=false;$("variantForm").hidden=true;$("variantPanel").scrollIntoView({behavior:"smooth"});await loadVariants()
+function money(value){
+  return "Rs " + Number(value || 0).toLocaleString("en-PK");
 }
-async function loadVariants(){
- try{
-  variants=await result(db.from("product_variants").select("*").eq("product_id",activeVariantProduct).order("sort_order"));
-  $("variantsTable").innerHTML=table(["Option name","Value","Stock","Picture","Actions"],variants.map(v=>[
-   esc(v.option_name||"Option"),esc(v.option_value||""),esc(v.stock_quantity??0),
-   v.image_url?'<a href="'+esc(v.image_url)+'" target="_blank" rel="noopener">View picture</a>':"—",
-   '<button data-edit-variant="'+esc(v.id)+'">Edit</button><button class="danger" data-delete-variant="'+esc(v.id)+'">Delete</button>'
-  ]));
-  $("variantsTable").querySelectorAll("[data-edit-variant]").forEach(b=>b.onclick=()=>editVariant(b.dataset.editVariant));
-  $("variantsTable").querySelectorAll("[data-delete-variant]").forEach(b=>b.onclick=()=>deleteVariant(b.dataset.deleteVariant));
- }catch(err){notice("Could not load custom options: "+err.message,true)}
-}
-$("newVariant").onclick=()=>{
- $("variantForm").reset();$("vId").value="";$("vStock").value=0;
- $("variantForm").hidden=false;$("vOptionName").focus()
-};
-$("cancelVariant").onclick=()=>{$("variantForm").hidden=true};
-function editVariant(id){
- const v=variants.find(x=>String(x.id)===String(id));if(!v)return;
- $("vId").value=v.id;$("vOptionName").value=v.option_name||"";$("vOptionValue").value=v.option_value||"";
- $("vStock").value=v.stock_quantity??0;$("vImage").value="";$("variantForm").hidden=false;$("variantForm").scrollIntoView({behavior:"smooth"})
-}
-$("variantForm").onsubmit=async e=>{
- e.preventDefault();const btn=$("saveVariant");btn.disabled=true;
- try{
-  const id=$("vId").value;
-  const p=products.find(x=>String(x.id)===String(activeVariantProduct));if(!p)throw Error("Product not found. Please refresh and try again.");
-  const payload={product_id:activeVariantProduct,option_name:$("vOptionName").value.trim(),option_value:$("vOptionValue").value.trim(),stock_quantity:Number($("vStock").value),retail_price:Number(p.retail_price||0),sale_price:p.sale_price==null?null:Number(p.sale_price),sku:null,barcode:null};
-  if(!payload.option_name||!payload.option_value)throw Error("Enter both custom option name and value.");
-  let target=id;
-  if(id){const {error}=await db.from("product_variants").update(payload).eq("id",id);if(error)throw error}
-  else{const {data,error}=await db.from("product_variants").insert({...payload,sort_order:variants.length}).select("id").single();if(error)throw error;target=data.id}
-  const file=$("vImage").files[0];
-  if(file){const path="variants/"+activeVariantProduct+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const url=await uploadToStorage(file,path);
-   const {error}=await db.from("product_variants").update({image_url:url}).eq("id",target);if(error)throw error}
-  $("variantForm").hidden=true;await loadVariants();await loadAll();notice("Custom option value saved.")
- }catch(err){notice("Could not save custom option: "+err.message,true)}finally{btn.disabled=false}
-};
-async function deleteVariant(id){if(!confirm("Delete this option value?"))return;try{const {error}=await db.from("product_variants").delete().eq("id",id);if(error)throw error;await loadVariants();await loadAll();notice("Option value deleted.")}catch(err){notice("Delete failed: "+err.message,true)}}
 
-function renderCategories(){
- $("categoriesTable").innerHTML=table(["Category","Slug","Active","Actions"],categories.map(c=>[
-  esc(c.name),esc(c.slug),c.is_active?"Yes":"No",
-  '<button data-edit-category="'+esc(c.id)+'">Edit</button><button class="danger" data-delete-category="'+esc(c.id)+'">Delete</button>'
- ]));
- $("categoriesTable").querySelectorAll("[data-edit-category]").forEach(b=>b.onclick=()=>editCategory(b.dataset.editCategory));
- $("categoriesTable").querySelectorAll("[data-delete-category]").forEach(b=>b.onclick=()=>deleteCategory(b.dataset.deleteCategory))
+function filteredEvents(){
+  const cutoff = getCutoff();
+  const range = $("range").value;
+  const since = range === "all" ? 0 : Date.now() - Number(range)*86400000;
+  return analyticsEvents.filter(e => {
+    const t = new Date(e.created_at).getTime();
+    return Number.isFinite(t) && t >= Math.max(cutoff, since);
+  });
 }
-function resetCategory(){$("categoryForm").reset();$("cId").value="";$("cActive").checked=true;$("categoryForm").hidden=true}
-$("newCategory").onclick=()=>{resetCategory();$("categoryForm").hidden=false};$("cancelCategory").onclick=resetCategory;
-function editCategory(id){const c=categories.find(x=>String(x.id)===String(id));if(!c)return;$("cId").value=c.id;$("cName").value=c.name||"";$("cSlug").value=c.slug||"";$("cImage").value=c.image_url||"";$("cSort").value=c.sort_order??0;$("cActive").checked=!!c.is_active;$("categoryForm").hidden=false}
-$("categoryForm").onsubmit=async e=>{
- e.preventDefault();const btn=$("saveCategory");btn.disabled=true;
- try{
-  const id=$("cId").value,name=$("cName").value.trim();
-  const payload={name,slug:$("cSlug").value.trim()||slugify(name),image_url:$("cImage").value.trim()||null,sort_order:Number($("cSort").value),is_active:$("cActive").checked};
-  const q=id?db.from("categories").update(payload).eq("id",id):db.from("categories").insert(payload);
-  const {error}=await q;if(error)throw error;resetCategory();await loadAll();notice("Category saved.")
- }catch(err){notice("Could not save category: "+err.message,true)}finally{btn.disabled=false}
-};
-async function deleteCategory(id){
- if(products.some(p=>String(p.category_id)===String(id))){alert("This category has products. Move those products to another category first.");return}
- if(!confirm("Delete this category?"))return;
- try{const {error}=await db.from("categories").delete().eq("id",id);if(error)throw error;await loadAll();notice("Category deleted.")}catch(err){notice("Delete failed: "+err.message,true)}
+
+function renderMetrics(){
+  const events = filteredEvents();
+  const cutoff = getCutoff();
+  const allEvents = analyticsEvents.filter(e => new Date(e.created_at).getTime() >= cutoff);
+  const sessions = new Set(allEvents.map(e => e.session_id).filter(Boolean));
+  const recent = allEvents.filter(e => Date.now()-new Date(e.created_at).getTime() <= 300000);
+  const live = new Set(recent.map(e => e.session_id).filter(Boolean));
+  const views = allEvents.filter(e => ["page_view","product_view"].includes(e.event_type)).length;
+  const validOrders = orders.filter(o => String(o.status||"").toLowerCase() !== "cancelled" && new Date(o.created_at).getTime() >= cutoff);
+  const sales = validOrders.reduce((sum,o) => sum + Number(o.total || 0),0);
+
+  $("sessionCount").textContent = sessions.size.toLocaleString();
+  $("liveVisitorCount").textContent = live.size.toLocaleString();
+  $("pageViewCount").textContent = views.toLocaleString();
+  $("orderCount").textContent = orders.length.toLocaleString();
+  $("pendingCount").textContent = orders.filter(o => ["pending","new"].includes(String(o.status||"").toLowerCase())).length.toLocaleString();
+  $("totalSalesCount").textContent = money(sales);
+  $("conversionRate").textContent = sessions.size ? (validOrders.length/sessions.size*100).toFixed(2)+"%" : "0.00%";
+  renderChart($("sessionsChart"), events);
+  renderChart($("sessionsChart2"), events);
+  renderActivity(recent);
 }
+
+function renderChart(canvas, events){
+  if(!canvas) return;
+  const rect = canvas.getBoundingClientRect();
+  const w = Math.max(280, rect.width);
+  const h = Math.max(160, rect.height);
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w*dpr;
+  canvas.height = h*dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,w,h);
+  const pad = {l:35,r:12,t:16,b:28};
+  const cw = w-pad.l-pad.r, ch = h-pad.t-pad.b;
+  const range = $("range").value;
+  const days = range === "all" ? 30 : Number(range);
+  const buckets = Math.min(days,30);
+  const vals = Array(buckets).fill(0);
+  const now = Date.now();
+  const start = range === "all"
+    ? Math.max(getCutoff(), ...[0])
+    : Math.max(getCutoff(), now-days*86400000);
+  const span = Math.max(1, now-start);
+  const seen = Array.from({length:buckets},()=>new Set());
+  events.forEach(e=>{
+    const t = new Date(e.created_at).getTime();
+    if(t < start || t > now || !e.session_id) return;
+    const i = Math.min(buckets-1,Math.floor((t-start)/span*buckets));
+    seen[i].add(e.session_id);
+  });
+  seen.forEach((s,i)=>vals[i]=s.size);
+  const max = Math.max(1,...vals);
+  ctx.font="10px Arial";
+  ctx.strokeStyle="#393427";
+  ctx.fillStyle="#a7a596";
+  ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch*i/4;
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+    ctx.fillText(String(Math.round(max*(1-i/4))),3,y+3);
+  }
+  const pts=vals.map((v,i)=>({x:pad.l+(buckets===1?0:i/(buckets-1))*cw,y:pad.t+ch-(v/max)*ch}));
+  if(pts.length){
+    ctx.beginPath();
+    pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+    ctx.strokeStyle="#d8b568";ctx.lineWidth=2;ctx.stroke();
+    pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,2.5,0,Math.PI*2);ctx.fillStyle="#d8b568";ctx.fill();});
+  }
+  ctx.fillStyle="#a7a596";
+  ctx.fillText("Earlier",pad.l,h-7);
+  ctx.fillText("Now",w-pad.r-22,h-7);
+  $("chartCaption").textContent = "Unique recorded sessions grouped across the selected period.";
+}
+
+function renderActivity(events){
+  const target=$("visitorActivity");
+  const target2=$("visitorActivity2");
+  if(!events.length){
+    target.innerHTML='<div class="muted">No recorded visitor events in the last five minutes.</div>';
+    target2.innerHTML='<div class="muted">No recent events.</div>';
+    return;
+  }
+  const html=events.slice(-12).reverse().map(e=>{
+    const type=String(e.event_type||"activity").replace(/_/g," ");
+    const time=new Date(e.created_at).toLocaleTimeString();
+    const path=String(e.page_path||"/").slice(0,90);
+    return '<div class="activity-item"><span><span class="dot"></span>'+escapeHtml(type)+'<br><span class="muted">'+escapeHtml(path)+'</span></span><span class="muted">'+escapeHtml(time)+'</span></div>';
+  }).join("");
+  target.innerHTML=html;
+  target2.innerHTML=html;
+}
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
 function renderOrders(){
- $("ordersTable").innerHTML=table(["Order ID","Customer","Contact","City","Total","Payment","Status","Tracking","Date","Actions"],orders.map(o=>[
-  esc(o.id),esc(o.customer_name),esc((o.phone||"")+(o.email?" / "+o.email:"")),esc(o.city),esc(money(o.total)),esc(o.payment_method),esc(o.status),esc(o.tracking_number||"—"),
-  esc(o.created_at?new Date(o.created_at).toLocaleDateString():"—"),'<button data-order="'+esc(o.id)+'">Update</button>'
- ]));
- $("ordersTable").querySelectorAll("[data-order]").forEach(b=>b.onclick=()=>updateOrder(b.dataset.order));
- $("recentOrders").innerHTML=table(["Order","Customer","Total","Status"],orders.slice(0,5).map(o=>[esc(o.id),esc(o.customer_name),esc(money(o.total)),esc(o.status)]))
-}
-async function updateOrder(id){
- const o=orders.find(x=>String(x.id)===String(id));if(!o)return;
- const statuses=["Pending","Confirmed","Packed","Shipped","Dispatched","Delivered","Cancelled"];
- const current=statuses.find(s=>s.toLowerCase()===String(o.status||"").toLowerCase())||"Pending";
- const status=prompt("Order status:\n"+statuses.join(", "),current);if(status===null)return;
- const chosen=statuses.find(s=>s.toLowerCase()===status.trim().toLowerCase());if(!chosen){alert("Choose one of the listed statuses.");return}
- const tracking=prompt("Tracking number (leave blank to clear):",o.tracking_number||"");if(tracking===null)return;
- try{const {error}=await db.from("orders").update({status:chosen,tracking_number:tracking.trim()||null,updated_at:new Date().toISOString()}).eq("id",id);if(error)throw error;await loadAll();notice("Order updated.")}
- catch(err){notice("Could not update order: "+err.message,true)}
+  const rows=orders.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,10);
+  const html=rows.map(o=>'<tr><td>'+escapeHtml(o.tracking_number||o.id||"—")+'</td><td>'+escapeHtml(o.customer_name||o.name||"—")+'</td><td>'+money(o.total)+'</td><td>'+escapeHtml(o.status||"—")+'</td><td>'+escapeHtml(o.created_at?new Date(o.created_at).toLocaleDateString():"—")+'</td></tr>').join("");
+  $("recentOrders").innerHTML=html||'<tr><td colspan="5">No orders loaded.</td></tr>';
 }
 
-/* BANNER MANAGEMENT */
-function resetBanner(){
- $("bannerForm").reset();$("bId").value="";$("bSort").value="0";$("bPublished").checked=true;$("bButtonText").value="EXPLORE COLLECTION";$("bImageFile").value="";$("bannerPreview").hidden=true;$("bannerPreview").removeAttribute("src");$("bannerFormTitle").textContent="Add Banner";$("bannerForm").hidden=true;
+function setSection(name){
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===name));
+  document.querySelectorAll(".nav[data-section]").forEach(b=>b.classList.toggle("active",b.dataset.section===name));
 }
-$("newBanner").onclick=()=>{resetBanner();$("bannerForm").hidden=false;$("bannerFormTitle").textContent="Add Banner";$("bannerForm").scrollIntoView({behavior:"smooth"})};
-$("cancelBanner").onclick=resetBanner;
-$("bImageUrl").addEventListener("input",()=>{const url=$("bImageUrl").value.trim();if(url){$("bannerPreview").src=url;$("bannerPreview").hidden=false}else if(!$("bImageFile").files.length){$("bannerPreview").hidden=true}});
-$("bImageFile").addEventListener("change",()=>{const file=$("bImageFile").files[0];if(file){$("bannerPreview").src=URL.createObjectURL(file);$("bannerPreview").hidden=false}});
-function renderBanners(){
- $("bannersTable").innerHTML=table(["Banner","Order","Status","Button target","Actions"],banners.map(b=>[
-  (b.image_url?'<img class="thumb" src="'+esc(b.image_url)+'" alt="">':"")+"<strong>"+esc(b.title||"Untitled banner")+"</strong><div class=\"muted\">"+esc(b.description||"")+"</div>",
-  esc(b.sort_order??0),b.is_published?"Published":"Unpublished",esc(b.target_product_id||"#products"),
-  '<button data-edit-banner="'+esc(b.id)+'">Edit</button><button data-toggle-banner="'+esc(b.id)+'" class="secondary">'+(b.is_published?"Unpublish":"Publish")+'</button><button data-delete-banner="'+esc(b.id)+'" class="danger">Delete</button>'
- ]));
- $("bannersTable").querySelectorAll("[data-edit-banner]").forEach(b=>b.onclick=()=>editBanner(b.dataset.editBanner));
- $("bannersTable").querySelectorAll("[data-toggle-banner]").forEach(b=>b.onclick=()=>toggleBanner(b.dataset.toggleBanner));
- $("bannersTable").querySelectorAll("[data-delete-banner]").forEach(b=>b.onclick=()=>deleteBanner(b.dataset.deleteBanner));
-}
-function editBanner(id){
- const b=banners.find(x=>String(x.id)===String(id));if(!b)return;
- $("bId").value=b.id;$("bTitle").value=b.title||"";$("bDescription").value=b.description||"";$("bImageUrl").value=b.image_url||"";$("bImageFile").value="";$("bButtonText").value=b.button_text||"EXPLORE COLLECTION";$("bTarget").value=b.target_product_id||"";$("bSort").value=b.sort_order??0;$("bPublished").checked=!!b.is_published;
- if(b.image_url){$("bannerPreview").src=b.image_url;$("bannerPreview").hidden=false}else $("bannerPreview").hidden=true;
- $("bannerFormTitle").textContent="Edit Banner";$("bannerForm").hidden=false;$("bannerForm").scrollIntoView({behavior:"smooth"});
-}
-async function toggleBanner(id){const b=banners.find(x=>String(x.id)===String(id));if(!b)return;try{const {error}=await db.from("banners").update({is_published:!b.is_published,updated_at:new Date().toISOString()}).eq("id",id);if(error)throw error;await loadAll();notice("Banner status updated.")}catch(err){notice("Could not update banner: "+err.message,true)}}
-async function deleteBanner(id){const b=banners.find(x=>String(x.id)===String(id));if(!b||!confirm('Delete banner "'+(b.title||"Untitled")+'"?'))return;try{const {error}=await db.from("banners").delete().eq("id",id);if(error)throw error;await loadAll();notice("Banner deleted.")}catch(err){notice("Could not delete banner: "+err.message,true)}}
-$("bannerForm").onsubmit=async e=>{
- e.preventDefault();const btn=$("saveBanner");btn.disabled=true;
- try{
-  const id=$("bId").value;let imageUrl=$("bImageUrl").value.trim();const file=$("bImageFile").files[0];
-  if(file){const path="banners/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");imageUrl=await uploadToStorage(file,path)}
-  if(!imageUrl&&id){imageUrl=banners.find(x=>String(x.id)===String(id))?.image_url||""}
-  if(!imageUrl)throw Error("Add a banner image URL or upload an image.");
-  const payload={title:$("bTitle").value.trim(),description:$("bDescription").value.trim(),image_url:imageUrl,button_text:$("bButtonText").value.trim()||"EXPLORE COLLECTION",target_product_id:$("bTarget").value.trim()||null,is_published:$("bPublished").checked,sort_order:Number($("bSort").value)||0,updated_at:new Date().toISOString()};
-  if(!payload.title)throw Error("Enter a banner heading.");
-  if(id){const {error}=await db.from("banners").update(payload).eq("id",id);if(error)throw error}
-  else{const {error}=await db.from("banners").insert(payload);if(error)throw error}
-  resetBanner();await loadAll();notice("Banner saved successfully.");
- }catch(err){notice("Could not save banner: "+err.message,true)}finally{btn.disabled=false}
-};
 
-$("loginForm").onsubmit=async e=>{
- e.preventDefault();$("loginBtn").disabled=true;$("loginMessage").textContent="Checking login…";
- try{const {error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error)throw error;await verifyAdmin()}
- catch(err){$("loginMessage").textContent=err.message||"Login failed."}
- finally{$("loginBtn").disabled=false}
-};
-$("logout").onclick=async()=>{await db.auth.signOut();showLogin("Signed out.")};
-$("refresh").onclick=loadAll;
-verifyAdmin().catch(err=>showLogin("Could not verify session: "+err.message));
+document.querySelectorAll(".nav[data-section]").forEach(b=>b.addEventListener("click",()=>setSection(b.dataset.section)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setSection(b.dataset.go)));
+$("range").addEventListener("change",()=>{ $("range2").value=$("range").value;renderMetrics(); });
+$("range2").addEventListener("change",()=>{ $("range").value=$("range2").value;renderMetrics(); });
+$("refreshBtn").addEventListener("click",()=>location.reload());
+
+$("freshBtn").addEventListener("click",()=>{
+  if(!confirm("Start analytics reporting from now on this browser? Existing database records will not be deleted.")) return;
+  try{
+    localStorage.setItem(cutoffKey,String(Date.now()));
+    renderMetrics();
+    showNotice("Analytics reporting cutoff updated on this browser. Database records were not deleted.");
+  }catch(e){
+    showNotice("Browser storage is unavailable. Analytics cutoff could not be saved.");
+  }
+});
+
+window.addEventListener("resize",()=>renderMetrics());
+$("loginBtn").addEventListener("click",()=>{
+  $("loginMessage").textContent="Supabase authentication is not connected in this standalone UI. Restore your existing admin login and CRUD script before replacing your live admin.html.";
+});
+
+/* These are placeholders until your existing Supabase loader is connected. */
+$("productCount").textContent="—";
+$("categoryCount").textContent="—";
+$("updatedAt").textContent="Supabase connection required";
+renderMetrics();
+renderOrders();
+showNotice("Dashboard design loaded. Your existing Supabase login, data loader, and CRUD functions still need to be integrated. Do not use this shell as a replacement for your working admin page.");
 </script>
 </body>
 </html>
