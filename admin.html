@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VEYORA | Store Admin</title>
-<!-- Google Fonts & Chart.js -->
+<!-- Google Fonts & Chart.js & Supabase -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
@@ -42,7 +43,7 @@ body {
 ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
 
-/* SVG Icons Helper */
+/* SVG Icons */
 .icon {
   width: 20px;
   height: 20px;
@@ -324,7 +325,7 @@ body {
   cursor: pointer;
 }
 
-/* TOTAL SESSIONS GRAPH BLOCK */
+/* CHART BLOCK */
 .chart-container-box {
   display: flex;
   flex-direction: column;
@@ -551,7 +552,6 @@ td {
   font-size: 12px;
 }
 
-/* Responsive adjust */
 @media(max-width: 1024px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -578,11 +578,11 @@ td {
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+        <input type="password" id="loginPassword" class="form-control" placeholder="Enter Supabase Password" required>
       </div>
       <button type="submit" class="btn-gold" id="loginBtn">SIGN IN TO DASHBOARD</button>
     </form>
-    <div id="loginError" style="color: var(--danger); font-size: 12px; margin-top: 15px;"></div>
+    <div id="loginError" style="color: var(--danger); font-size: 12px; margin-top: 15px; min-height: 18px;"></div>
   </div>
 </div>
 
@@ -637,7 +637,7 @@ td {
         <span>VEYORA</span> <span style="font-size: 12px; color: var(--text-muted); font-family:'Plus Jakarta Sans'">STORE ADMIN</span>
       </div>
       <div class="header-user">
-        <div class="user-avatar" id="logoutBtn" title="Click to Sign Out">
+        <div class="user-avatar" id="logoutBtn" title="Sign Out">
           <svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </div>
       </div>
@@ -686,7 +686,7 @@ td {
         <div class="stat-card">
           <div class="stat-info">
             <div class="stat-title">Products</div>
-            <div class="stat-value" id="valProducts">2</div>
+            <div class="stat-value" id="valProducts">—</div>
           </div>
           <div class="stat-icon-wrapper">
             <svg class="icon" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/></svg>
@@ -697,7 +697,7 @@ td {
         <div class="stat-card">
           <div class="stat-info">
             <div class="stat-title">Categories</div>
-            <div class="stat-value" id="valCategories">2</div>
+            <div class="stat-value" id="valCategories">—</div>
           </div>
           <div class="stat-icon-wrapper">
             <svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
@@ -708,7 +708,7 @@ td {
         <div class="stat-card">
           <div class="stat-info">
             <div class="stat-title">Orders</div>
-            <div class="stat-value" id="valOrders">0</div>
+            <div class="stat-value" id="valOrders">—</div>
           </div>
           <div class="stat-icon-wrapper">
             <svg class="icon" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -719,7 +719,7 @@ td {
         <div class="stat-card">
           <div class="stat-info">
             <div class="stat-title">Pending Orders</div>
-            <div class="stat-value" id="valPending">0</div>
+            <div class="stat-value" id="valPending">—</div>
           </div>
           <div class="stat-icon-wrapper">
             <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -755,4 +755,252 @@ td {
             <div class="stat-title">Page Views</div>
             <div class="stat-value" id="valViews">10</div>
           </div>
-          <div class="
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Total Sales</div>
+            <div class="stat-value" id="valSales">Rs 0</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M17 9B4 4 0 1 0 7 9c0 5 10 2 10 7a4 4 0 1 1-9 0"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-title">Conversion Rate</div>
+            <div class="stat-value">0.00%</div>
+          </div>
+          <div class="stat-icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+          </div>
+          <span class="arrow-link">&rarr;</span>
+        </div>
+      </div>
+
+      <!-- LIVE VISITOR ACTIVITY -->
+      <div class="dash-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <div style="display:flex; align-items:center;">
+            <span class="pulse-dot"></span>
+            <span style="font-weight:600; font-size:14px">Live Visitor Activity</span>
+          </div>
+          <a href="#" style="color:var(--gold-primary); font-size:12px; text-decoration:none;">View All &rarr;</a>
+        </div>
+        <div class="live-visitor-box">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="user-avatar"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div>
+              <div style="font-weight:600; font-size:13px">Visitor #1</div>
+              <div style="font-size:11px; color:var(--text-muted)">Browsing your store</div>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted)">2m ago</div>
+        </div>
+      </div>
+
+      <!-- RESET COUNTS BANNER -->
+      <div class="reset-banner">
+        <div style="display:flex; gap:16px; align-items:center;">
+          <div class="stat-icon-wrapper" style="width:50px; height:50px">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          </div>
+          <div>
+            <div style="font-size:11px; color:var(--gold-primary); letter-spacing:1px; text-transform:uppercase">RESET DASHBOARD COUNTS</div>
+            <div class="reset-banner-title">Start Fresh From Now</div>
+            <div class="reset-banner-desc">Reset your analytics and dashboard counts. This will clear current visitor, session and page view data, but your products, categories and past orders will remain safe.</div>
+          </div>
+        </div>
+        <button class="btn-reset" id="resetBtn">
+          <svg class="icon" style="stroke:#000; width:16px; height:16px" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          Start Fresh From Now &rarr;
+        </button>
+      </div>
+
+      <!-- RECENT ORDERS TABLE -->
+      <div class="dash-panel">
+        <div class="tabs-nav">
+          <button class="tab-btn active">Overview</button>
+          <button class="tab-btn">Products</button>
+          <button class="tab-btn">Categories</button>
+          <button class="tab-btn">Orders</button>
+          <button class="tab-btn">Banners</button>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <h3 style="font-family:'Cinzel',serif; font-size:18px">Recent Orders</h3>
+          <a href="#" style="color:var(--gold-primary); font-size:12px; text-decoration:none">View All Orders &rarr;</a>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <tr>
+                <td>#VY001</td>
+                <td>John Doe</td>
+                <td>Rs 2,300</td>
+                <td><span class="status-badge">Pending</span></td>
+                <td>May 9, 2025</td>
+                <td><button class="btn-action">Update</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// Supabase Configuration
+const SUPABASE_URL = "https://fudkfvwwbqmflmtkbtkk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const loginSection = document.getElementById('loginSection');
+const loginForm = document.getElementById('loginForm');
+const loginError = document.getElementById('loginError');
+const loginBtn = document.getElementById('loginBtn');
+
+// Auto-check Supabase Auth Session
+async function checkAuthSession() {
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    loginSection.style.display = 'none';
+    loadDashboardData();
+  } else {
+    loginSection.style.display = 'flex';
+  }
+}
+checkAuthSession();
+
+// Login Submission via Supabase Auth
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  loginError.textContent = '';
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'SIGNING IN...';
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+
+  try {
+    const { data, error } = await db.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) throw error;
+
+    loginSection.style.display = 'none';
+    loadDashboardData();
+  } catch (err) {
+    loginError.textContent = err.message || 'Login failed. Please check your password.';
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'SIGN IN TO DASHBOARD';
+  }
+});
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await db.auth.signOut();
+  loginSection.style.display = 'flex';
+});
+
+// Load Database Store Data
+async function loadDashboardData() {
+  try {
+    const [products, categories, orders] = await Promise.all([
+      db.from("products").select("id", { count: 'exact' }),
+      db.from("categories").select("id", { count: 'exact' }),
+      db.from("orders").select("*").order("created_at", { ascending: false }).limit(10)
+    ]);
+
+    if (products.count !== null) document.getElementById('valProducts').textContent = products.count;
+    if (categories.count !== null) document.getElementById('valCategories').textContent = categories.count;
+    if (orders.data) {
+      document.getElementById('valOrders').textContent = orders.data.length;
+      const pending = orders.data.filter(o => String(o.status||'').toLowerCase() === 'pending').length;
+      document.getElementById('valPending').textContent = pending;
+
+      if (orders.data.length > 0) {
+        const tbody = document.getElementById('ordersTableBody');
+        tbody.innerHTML = orders.data.map(o => `
+          <tr>
+            <td>#${o.id ? String(o.id).slice(0,6) : 'VY001'}</td>
+            <td>${o.customer_name || o.email || 'Customer'}</td>
+            <td>Rs ${Number(o.total || 0).toLocaleString()}</td>
+            <td><span class="status-badge">${o.status || 'Pending'}</span></td>
+            <td>${new Date(o.created_at || Date.now()).toLocaleDateString()}</td>
+            <td><button class="btn-action">Update</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+  } catch (e) {
+    console.log("Data fetch info:", e);
+  }
+}
+
+// Chart.js Area Graph Setup
+const ctx = document.getElementById('sessionsChart').getContext('2d');
+const goldGradient = ctx.createLinearGradient(0, 0, 0, 160);
+goldGradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
+goldGradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['May 3', 'May 4', 'May 5', 'May 6', 'May 7', 'May 8', 'May 9'],
+    datasets: [{
+      data: [4, 2, 3, 4, 3.5, 4.2, 5],
+      borderColor: '#d4af37',
+      borderWidth: 2,
+      fill: true,
+      backgroundColor: goldGradient,
+      tension: 0.4,
+      pointRadius: 3,
+      pointBackgroundColor: '#d4af37'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { color: '#666', font: { size: 10 } } },
+      y: { display: false }
+    }
+  }
+});
+
+// Reset Dashboard Action
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm("Are you sure you want to reset current session counters?")) {
+    document.getElementById('valVisitors').textContent = '0';
+    document.getElementById('valViews').textContent = '0';
+    document.getElementById('totalSessionsNum').textContent = '0';
+    alert("Dashboard counters refreshed!");
+  }
+});
+</script>
+</body>
+</html>
