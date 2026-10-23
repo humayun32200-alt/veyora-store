@@ -76,30 +76,6 @@ nav a,nav button{
   background:none;border:0;color:#f0e5ce;padding:4px 0
 }
 nav a:hover,nav button:hover{color:var(--gold-light)}
-.hero{
-  min-height:295px;display:flex;align-items:center;
-  padding:40px 6%;position:relative;overflow:hidden;
-  background:
-    linear-gradient(90deg,#070706 0%,#090908ee 30%,#09090860 65%,#07070615 100%),
-    url('./WhatsApp%20Image%202026-10-21%20at%206.05.13%20PM.jpeg') center 42%/cover no-repeat;
-  border-bottom:1px solid var(--gold)
-}
-.hero:after{content:"";position:absolute;inset:10px;border:1px solid #c5a15b20;pointer-events:none}
-.hero-inner{position:relative;z-index:1;max-width:500px}
-.eyebrow{font-size:10px;letter-spacing:4px;color:var(--gold-light)}
-.hero h1{
-  font-family:Georgia,serif;font-size:clamp(42px,5vw,62px);
-  line-height:1.02;font-weight:400;margin:10px 0
-}
-.hero h1 em{font-weight:400;color:#e7c783}
-.hero p{max-width:400px;font-size:13px;line-height:1.8;color:#eee5d4}
-.gold-button{
-  display:inline-block;border:1px solid #f1dca5;
-  background:linear-gradient(110deg,#b58a3e,#f1dca0,#b58a3e);
-  color:#15120b;padding:13px 24px;font-size:10px;font-weight:bold;
-  letter-spacing:1px;text-transform:uppercase;border-radius:2px;margin-top:12px
-}
-.gold-button:hover{filter:brightness(1.08)}
 .section{max-width:1400px;margin:auto;padding:25px 4%}
 .section-heading{text-align:center;margin-bottom:23px}
 .section-heading h2{
@@ -257,6 +233,125 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 .tracking-refresh{width:100%;margin-top:12px}
 .delivery-breakdown{margin-top:10px;padding:11px;background:#17150f;border:1px solid #57472b;font-size:12px;line-height:1.9;color:#f0e5ce}
 
+/* EXACT MATCH IMAGE STYLES FOR ORDER SUCCESS */
+.vy-success-card {
+  border: 1px solid #c5a15b;
+  border-radius: 16px;
+  background: radial-gradient(circle at top, #1a160d 0%, #080807 100%);
+  padding: 30px 22px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(197, 161, 91, 0.15);
+  color: #f7f0df;
+  margin-top: 15px;
+}
+.vy-success-badge {
+  width: 48px;
+  height: 48px;
+  background: #2e7d32;
+  color: #fff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 12px;
+  box-shadow: 0 0 15px rgba(46, 125, 50, 0.5);
+  border: 1px solid #4caf50;
+}
+.vy-success-title {
+  font-family: Georgia, serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: #f0dba5;
+  margin: 6px 0;
+  text-transform: uppercase;
+}
+.vy-success-subtitle {
+  font-size: 12px;
+  color: #d1c7b3;
+  margin-bottom: 15px;
+}
+.vy-thankyou {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 26px;
+  color: #f0dba5;
+  margin: 10px 0 4px;
+}
+.vy-appreciation {
+  font-size: 11px;
+  color: #b6ad9a;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0 auto 20px;
+}
+.vy-summary-box {
+  border: 1px solid #59482b;
+  border-radius: 12px;
+  background: #11110e;
+  padding: 16px;
+  text-align: left;
+}
+.vy-summary-header {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: #f0dba5;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1px;
+}
+.vy-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.vy-grid-item {
+  border: 1px solid #423620;
+  background: #15130e;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.vy-grid-icon {
+  color: #c5a15b;
+  font-size: 18px;
+}
+.vy-grid-label {
+  font-size: 9px;
+  color: #b6ad9a;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.vy-grid-val {
+  font-size: 13px;
+  font-weight: bold;
+  color: #f0dba5;
+  margin-top: 2px;
+}
+.vy-full-item {
+  border: 1px solid #423620;
+  background: #15130e;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.vy-track-highlight {
+  border: 1px solid #c5a15b;
+  background: linear-gradient(135deg, #241d11, #12100c);
+  box-shadow: 0 0 15px rgba(197, 161, 91, 0.25);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 /* COLLECTION CONTROLS */
 .collection-controls {
   display: grid;
@@ -369,10 +464,6 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   .icon-label{font-size:8px}
   nav{gap:15px;padding:10px 5px}
   nav a,nav button{font-size:8px;letter-spacing:.3px}
-  .hero{min-height:290px;padding:32px 6%;background-position:58% center}
-  .hero h1{font-size:43px}
-  .hero p{font-size:12px;max-width:270px}
-  .eyebrow{font-size:9px;letter-spacing:2.5px}
   .section{padding:22px 3%}
   .section-heading h2{font-size:25px}
   .category-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -492,6 +583,157 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     padding: 38px 22px;
   }
 }
+
+/* VEYORA LUXURY TRACKING PAGE */
+.tracking-page-modal {
+  width: min(760px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 38px 5%;
+  box-sizing: border-box;
+  background:
+    radial-gradient(ellipse at bottom right, #30230e 0%, transparent 42%),
+    #080807;
+  border: 1px solid #b99a5a;
+  box-shadow: 0 0 35px #b99a5a18;
+}
+
+.tracking-page-decoration {
+  text-align: center;
+  color: #e5c77f;
+  font-size: 25px;
+}
+
+.tracking-page-title {
+  text-align: center;
+  font-size: clamp(34px, 6vw, 60px) !important;
+  margin: 20px 0 12px !important;
+}
+
+.tracking-page-subtitle {
+  text-align: center;
+  color: #ded5c4;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.tracking-divider {
+  text-align: center;
+  color: #d8b56a;
+  margin: 20px 0 28px;
+  letter-spacing: 3px;
+}
+
+.tracking-page-form label {
+  display: block;
+  letter-spacing: 3px;
+  font-size: 11px;
+  color: #e3d1a5;
+}
+
+.tracking-page-form input {
+  min-height: 58px;
+  border: 1px solid #d0b778;
+  border-radius: 10px;
+  background: #090908;
+  color: #fff2d4;
+  font-size: 18px;
+  padding: 14px 18px;
+  box-sizing: border-box;
+}
+
+.tracking-page-form .gold-button {
+  min-height: 58px;
+  border-radius: 10px;
+  margin-top: 8px;
+  background: linear-gradient(110deg, #b78b3d, #f4dfa0, #c49a4c);
+  color: #100d07;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.tracking-page-modal .tracking-card {
+  margin-top: 36px;
+  padding: 28px 22px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #0c0c0a, #17130b);
+  border: 1px solid #b99a5a;
+}
+
+.tracking-page-modal .tracking-heading {
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.3;
+  margin-bottom: 24px;
+}
+
+.tracking-page-modal .tracking-number {
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.tracking-page-modal .tracking-current {
+  border: 1px solid #c6a052;
+  border-radius: 8px;
+  background: #211a0c;
+  color: #f0d99b;
+  padding: 12px 16px;
+  margin: 22px 0;
+}
+
+.tracking-page-modal .tracking-steps {
+  justify-content: space-between;
+  gap: 8px;
+  margin: 28px 0;
+}
+
+.tracking-page-modal .tracking-step {
+  width: 68px;
+  max-width: 68px;
+  aspect-ratio: 1;
+  border: 1px solid #b99a5a;
+  border-radius: 50%;
+  font-size: 10px;
+  flex-shrink: 1;
+}
+
+.tracking-page-modal .tracking-meta {
+  font-size: 13px;
+}
+
+.tracking-thankyou {
+  text-align: center;
+  margin-top: 30px;
+  color: #e5d3a8;
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+
+.tracking-thankyou em {
+  display: block;
+  margin-top: 10px;
+  font-family: Georgia, serif;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+/* USER ORDERS LIST IN ACCOUNT MODAL */
+.user-order-item {
+  background: #14130f;
+  border: 1px solid #423620;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.user-order-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #332918;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  color: #f0dba5;
+}
 </style>
 </head>
 
@@ -502,7 +744,7 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   <div class="header-main">
     <a href="#" class="brand" aria-label="VEYORA Home">
       <div class="logo-placeholder">
-        <img src="./WhatsApp%20Image%202026-10-12%20at%2011.22.27%20PM.jpeg" alt="VEYORA Logo">
+        <img src="WhatsApp Image 2026-10-23 at 2.32.43 PM.jpeg" alt="VEYORA Logo">
       </div>
       <div>
         <div class="brand-name">VEYORA</div>
@@ -545,8 +787,6 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
       <div id="veyoraBannerDots" class="veyora-banner-dots"></div>
     </div>
   </section>
-
-
 
   <section class="section" id="categories">
     <div class="section-heading">
@@ -715,16 +955,29 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 
 <!-- ORDER TRACKING -->
 <div class="overlay" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
-  <div class="modal">
+  <div class="modal tracking-page-modal">
     <button class="close" data-close="trackModal" type="button" aria-label="Close">×</button>
-    <h2 id="trackTitle">Track Your Order</h2>
-    <p class="notice">Enter the tracking number provided by VEYORA.</p>
-    <form id="trackForm">
-      <label for="trackingNumber">Tracking number</label>
-      <input id="trackingNumber" required placeholder="Your tracking number" autocomplete="off">
+
+    <div class="tracking-page-decoration">✦</div>
+
+    <h2 id="trackTitle" class="tracking-page-title">Track Your Order</h2>
+    <p class="tracking-page-subtitle">Enter the tracking number provided by VEYORA.</p>
+
+    <div class="tracking-divider">────── ✦ ──────</div>
+
+    <form id="trackForm" class="tracking-page-form">
+      <label for="trackingNumber">TRACKING NUMBER</label>
+      <input id="trackingNumber" required placeholder="Enter your tracking number" autocomplete="off">
       <button class="gold-button" type="submit">CHECK STATUS →</button>
     </form>
+
     <div class="result" id="trackResult" aria-live="polite"></div>
+
+    <div class="tracking-thankyou">
+      <div class="tracking-divider">────── ✦ ──────</div>
+      <p>THANK YOU FOR SHOPPING WITH VEYORA</p>
+      <em>Your trust inspires us.</em>
+    </div>
   </div>
 </div>
 
@@ -777,32 +1030,26 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   </div>
 </div>
 
-<!-- CUSTOMER ACCOUNT -->
+<!-- CUSTOMER ACCOUNT & ORDER HISTORY -->
 <div class="overlay" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
   <div class="modal">
     <button class="close" data-close="accountModal" type="button" aria-label="Close">×</button>
     <h2 id="accountTitle">My VEYORA Account</h2>
-    <p class="notice">Sign in or create your customer account.</p>
 
-    
-<div id="accountSignedIn" hidden>
-  <p id="accountUserEmail" class="notice"></p>
+    <div id="accountSignedIn" hidden>
+      <p id="accountUserEmail" class="notice" style="color:#f0dba5;font-weight:bold;"></p>
+      
+      <div style="margin:20px 0;">
+        <h3 style="font-family:Georgia,serif;color:#f0dfb6;border-bottom:1px solid #5a482b;padding-bottom:5px;">My Orders</h3>
+        <div id="userOrdersList" class="notice">Loading orders...</div>
+      </div>
 
-  <button class="gold-button" id="accountSignOut" type="button">
-    SIGN OUT
-  </button>
-
-  <section class="account-dashboard">
-    <h3>MY ORDERS</h3>
-    <p>Your orders, tracking and delivery updates.</p>
-
-    <div id="myOrderStats" class="account-order-stats"></div>
-    <div id="myOrdersList"></div>
-  </section>
-</div>
-
+      <button class="gold-button" id="accountSignOut" type="button">SIGN OUT</button>
+    </div>
 
     <div id="accountAuthForm">
+      <p class="notice">Please sign in or create an account to proceed with your order.</p>
+
       <label for="accountName">Full name (for signup)</label>
       <input id="accountName" maxlength="120" placeholder="Your full name" autocomplete="name">
 
@@ -849,6 +1096,7 @@ let activeCategory = "all";
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
+let currentUser = null;
 
 $("year").textContent = new Date().getFullYear();
 
@@ -1011,7 +1259,8 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
     });
   });
 });
-  document.querySelectorAll("[data-showcase-category]").forEach(tile => {
+
+document.querySelectorAll("[data-showcase-category]").forEach(tile => {
   tile.addEventListener("click", event => {
     event.preventDefault();
 
@@ -1417,68 +1666,75 @@ function showProductDetails(id) {
   openModal("productModal");
 }
 
-
-/* ACCOUNT + CUSTOMER ORDER DASHBOARD */
+/* ACCOUNT & USER ORDER HISTORY */
 let accountBusy = false;
 
 function showAccountMessage(message) {
   $("accountMessage").textContent = message;
 }
 
-function escapeAccountHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
+async function loadUserOrders(userId) {
+  const container = $("userOrdersList");
+  if (!container || !db) return;
 
-function accountMoney(value) {
-  return "Rs " + Number(value || 0).toLocaleString("en-PK");
-}
+  container.textContent = "Fetching your orders...";
 
-function normaliseOrderStatus(status) {
-  const s = String(status || "Confirmed").toLowerCase();
+  try {
+    const { data: orders, error } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
 
-  if (s === "delivered") return "Delivered";
-  if (s === "shipped" || s === "dispatched" || s === "shipping") {
-    return "Shipped";
+    if (error) throw error;
+
+    if (!orders || orders.length === 0) {
+      container.innerHTML = "<p>No orders found for your account.</p>";
+      return;
+    }
+
+    container.innerHTML = orders.map(ord => `
+      <div class="user-order-item">
+        <div class="user-order-header">
+          <span>Tracking: <strong>${escapeHTML(ord.tracking_number)}</strong></span>
+          <span>Status: <strong>${escapeHTML(ord.status || 'Confirmed')}</strong></span>
+        </div>
+        <div>Total Amount: <strong>${money(ord.total)}</strong></div>
+        <div style="font-size:10px;color:#a39882;margin-top:4px;">Date: ${new Date(ord.created_at).toLocaleDateString()}</div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    console.error("Error loading user orders:", err);
+    container.textContent = "Could not load orders.";
   }
-  if (s === "packed" || s === "processing") return "Packed";
-
-  return "Confirmed";
 }
 
 function showAccountSession(session) {
-  const loggedIn = !!session?.user;
-
-  $("accountSignedIn").hidden = !loggedIn;
-  $("accountAuthForm").hidden = loggedIn;
-
-  $("accountUserEmail").textContent = loggedIn
-    ? "Signed in as: " + (session.user.email || "Customer")
-    : "";
+  currentUser = session?.user || null;
+  const loggedIn = !!currentUser;
+  
+  if ($("accountSignedIn")) $("accountSignedIn").hidden = !loggedIn;
+  if ($("accountAuthForm")) $("accountAuthForm").hidden = loggedIn;
 
   if (loggedIn) {
-    loadMyOrders();
+    if ($("accountUserEmail")) $("accountUserEmail").textContent = "Signed in as: " + (currentUser.email || "Customer");
+    if (currentUser.email && $("customerEmail")) {
+      $("customerEmail").value = currentUser.email;
+    }
+    loadUserOrders(currentUser.id);
   } else {
-    const list = $("myOrdersList");
-    if (list) list.innerHTML = "";
-    const stats = $("myOrderStats");
-    if (stats) stats.innerHTML = "";
+    if ($("accountUserEmail")) $("accountUserEmail").textContent = "";
   }
 }
 
 async function refreshAccountSession() {
   if (!db) {
-    showAccountMessage("Account service unavailable. Please try again later.");
+    showAccountMessage("Account service unavailable.");
     return;
   }
-
   try {
-    const { data, error } = await db.auth.getSession();
+    const {data, error} = await db.auth.getSession();
     if (error) throw error;
     showAccountSession(data.session);
   } catch (error) {
@@ -1487,167 +1743,10 @@ async function refreshAccountSession() {
   }
 }
 
-async function loadMyOrders() {
-  const list = $("myOrdersList");
-  if (!list || !db) return;
-
-  list.innerHTML = '<p class="account-orders-loading">Loading your orders...</p>';
-
-  try {
-    const { data: sessionData, error: sessionError } =
-      await db.auth.getSession();
-
-    if (sessionError) throw sessionError;
-
-    const user = sessionData.session?.user;
-
-    if (!user) {
-      list.innerHTML = '<p>Please sign in to view your orders.</p>';
-      return;
-    }
-
-    const { data: orders, error: ordersError } = await db
-      .from("orders")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (ordersError) throw ordersError;
-
-    const safeOrders = orders || [];
-    const stats = $("myOrderStats");
-
-    if (stats) {
-      const active = safeOrders.filter(o =>
-        normaliseOrderStatus(o.status) !== "Delivered"
-      ).length;
-
-      const delivered = safeOrders.filter(o =>
-        normaliseOrderStatus(o.status) === "Delivered"
-      ).length;
-
-      stats.innerHTML = `
-        <div class="account-stat">
-          <span>Total Orders</span>
-          <strong>${safeOrders.length}</strong>
-        </div>
-        <div class="account-stat">
-          <span>In Progress</span>
-          <strong>${active}</strong>
-        </div>
-        <div class="account-stat">
-          <span>Delivered</span>
-          <strong>${delivered}</strong>
-        </div>
-      `;
-    }
-
-    if (!safeOrders.length) {
-      list.innerHTML = `
-        <div class="account-empty">
-          <strong>No orders yet</strong>
-          <p>Your orders will appear here after you place an order.</p>
-        </div>
-      `;
-      return;
-    }
-
-    const orderIds = safeOrders.map(order => order.id);
-
-    const { data: items, error: itemsError } = await db
-      .from("order_items")
-      .select("*")
-      .in("order_id", orderIds);
-
-    if (itemsError) throw itemsError;
-
-    const itemsByOrder = {};
-
-    (items || []).forEach(item => {
-      const key = String(item.order_id);
-      if (!itemsByOrder[key]) itemsByOrder[key] = [];
-      itemsByOrder[key].push(item);
-    });
-
-    list.innerHTML = safeOrders.map(order => {
-      const orderItems = itemsByOrder[String(order.id)] || [];
-      const status = normaliseOrderStatus(order.status);
-      const date = order.created_at
-        ? new Date(order.created_at).toLocaleDateString("en-PK", {
-            day: "numeric",
-            month: "short",
-            year: "numeric"
-          })
-        : "Date unavailable";
-
-      const steps = ["Confirmed", "Packed", "Shipped", "Delivered"];
-      const activeIndex = steps.indexOf(status);
-
-      const itemHTML = orderItems.map(item => `
-        <div class="account-order-item">
-          <div class="account-order-item-info">
-            <strong>${escapeAccountHTML(item.product_name || "Product")}</strong>
-            ${item.variant_name
-              ? `<span>${escapeAccountHTML(item.variant_name)}</span>`
-              : ""}
-            <small>Qty: ${Number(item.quantity || 1)}</small>
-          </div>
-          <strong>${accountMoney(item.line_total)}</strong>
-        </div>
-      `).join("");
-
-      return `
-        <article class="account-order-card">
-          <div class="account-order-top">
-            <div>
-              <span class="account-order-label">ORDER DATE</span>
-              <strong>${escapeAccountHTML(date)}</strong>
-            </div>
-            <span class="account-status">${escapeAccountHTML(status)}</span>
-          </div>
-
-          <div class="account-order-number">
-            <span>Tracking Number</span>
-            <strong>${escapeAccountHTML(order.tracking_number || "Pending")}</strong>
-          </div>
-
-          <div class="account-order-items">
-            ${itemHTML || "<p>Order item details unavailable.</p>"}
-          </div>
-
-          <div class="account-order-progress">
-            ${steps.map((step, index) => `
-              <div class="account-progress-step ${index <= activeIndex ? "is-done" : ""}">
-                <span class="account-progress-dot"></span>
-                <small>${step}</small>
-              </div>
-            `).join("")}
-          </div>
-
-          <div class="account-order-total">
-            <span>Order Total</span>
-            <strong>${accountMoney(order.total)}</strong>
-          </div>
-        </article>
-      `;
-    }).join("");
-
-  } catch (error) {
-    console.error("Load customer orders error:", error);
-    list.innerHTML = `
-      <div class="account-empty">
-        <strong>Orders could not be loaded</strong>
-        <p>Please refresh and try again. If the problem continues, check your Supabase RLS policies.</p>
-      </div>
-    `;
-  }
-}
-
 async function runAccountAction(action) {
   if (accountBusy) return;
-
   if (!db) {
-    showAccountMessage("Account service is unavailable. Please try again later.");
+    showAccountMessage("Account service is unavailable.");
     return;
   }
 
@@ -1659,38 +1758,27 @@ async function runAccountAction(action) {
     showAccountMessage("Please enter your email address.");
     return;
   }
-
   if (action !== "reset" && !password) {
     showAccountMessage("Please enter your password.");
     return;
   }
 
-  if (action !== "reset" && password.length < 6) {
-    showAccountMessage("Password must contain at least 6 characters.");
-    return;
-  }
-
-  if (action === "signup" && !name) {
-    showAccountMessage("Please enter your name to create an account.");
-    return;
-  }
-
   accountBusy = true;
-  ["accountSignIn", "accountSignUp", "accountReset"]
-    .forEach(id => $(id).disabled = true);
-
+  ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => {
+    if ($(id)) $(id).disabled = true;
+  });
   showAccountMessage("Please wait...");
 
   try {
     let response;
 
     if (action === "signin") {
-      response = await db.auth.signInWithPassword({ email, password });
+      response = await db.auth.signInWithPassword({email, password});
     } else if (action === "signup") {
       response = await db.auth.signUp({
         email,
         password,
-        options: { data: { full_name: name } }
+        options: {data: {full_name: name}}
       });
     } else {
       response = await db.auth.resetPasswordForEmail(email, {
@@ -1703,61 +1791,55 @@ async function runAccountAction(action) {
     if (action === "signin") {
       showAccountSession(response.data.session);
       showAccountMessage("Welcome back to VEYORA!");
+      closeModal("accountModal");
     } else if (action === "signup") {
       if (response.data.session) {
         showAccountSession(response.data.session);
         showAccountMessage("Your account has been created.");
+        closeModal("accountModal");
       } else {
-        showAccountMessage(
-          "Please check your email and confirm your account before signing in."
-        );
+        showAccountMessage("Signup submitted. Please check your email.");
       }
     } else {
-      showAccountMessage(
-        "If an account exists for this email, a password reset email will be sent."
-      );
+      showAccountMessage("Password reset email sent.");
     }
   } catch (error) {
-    console.error("Account action error:", error);
-    showAccountMessage(error.message || "Account action failed. Please try again.");
+    console.error("Account error:", error);
+    showAccountMessage(error.message || "Account action failed.");
   } finally {
     accountBusy = false;
-    ["accountSignIn", "accountSignUp", "accountReset"]
-      .forEach(id => $(id).disabled = false);
+    ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => {
+      if ($(id)) $(id).disabled = false;
+    });
   }
 }
 
-$("accountSignIn").addEventListener("click", () => runAccountAction("signin"));
-$("accountSignUp").addEventListener("click", () => runAccountAction("signup"));
-$("accountReset").addEventListener("click", () => runAccountAction("reset"));
-
-$("accountSignOut").addEventListener("click", async () => {
+if ($("accountSignIn")) $("accountSignIn").addEventListener("click", () => runAccountAction("signin"));
+if ($("accountSignUp")) $("accountSignUp").addEventListener("click", () => runAccountAction("signup"));
+if ($("accountReset")) $("accountReset").addEventListener("click", () => runAccountAction("reset"));
+if ($("accountSignOut")) $("accountSignOut").addEventListener("click", async () => {
   if (!db) return;
-
-  const { error } = await db.auth.signOut();
-
+  const {error} = await db.auth.signOut();
   if (error) {
     showAccountMessage(error.message);
     return;
   }
-
   showAccountSession(null);
   showAccountMessage("You have signed out.");
 });
 
 if (db) {
-  db.auth.onAuthStateChange((_event, session) => {
-    showAccountSession(session);
-  });
+  db.auth.onAuthStateChange((_event, session) => showAccountSession(session));
 }
 
 /* ORDER TRACKING */
-const trackingSteps = ["Confirmed", "Dispatched", "Shipping", "Delivered"];
+const trackingSteps = ["Confirmed", "Packed", "Shipped", "Delivered"];
+
 const statusDescriptions = {
-  Confirmed:"Your order has been confirmed by VEYORA.",
-  Dispatched:"Your order has been dispatched.",
-  Shipping:"Your order is on its way to you.",
-  Delivered:"Your order has been delivered."
+  Confirmed: "Your order has been confirmed by VEYORA.",
+  Packed: "Your order has been packed and is being prepared.",
+  Shipped: "Your order has been shipped and is on its way.",
+  Delivered: "Your order has been delivered."
 };
 
 function renderTracking(order, searchedNumber) {
@@ -1835,9 +1917,17 @@ $("trackForm").addEventListener("submit", async event => {
   }
 });
 
-/* COD CHECKOUT */
+/* COD CHECKOUT WITH LOGIN REQUIREMENT & IMAGE UI TEMPLATE */
 $("checkoutButton").addEventListener("click", () => {
   if (!cart.length) return;
+
+  // CHECK LOGIN STATUS FIRST
+  if (!currentUser) {
+    closeModal("cartModal");
+    showAccountMessage("Please login or create your account first to place an order.");
+    openModal("accountModal");
+    return;
+  }
 
   $("checkoutResult").textContent = "";
   $("placeOrderButton").style.display = "block";
@@ -1860,6 +1950,13 @@ $("checkoutButton").addEventListener("click", () => {
 $("checkoutForm").addEventListener("submit", async event => {
   event.preventDefault();
 
+  if (!currentUser) {
+    closeModal("checkoutModal");
+    showAccountMessage("Please login or create your account first to place an order.");
+    openModal("accountModal");
+    return;
+  }
+
   if (!db) {
     $("checkoutResult").textContent = "Store connection is unavailable.";
     return;
@@ -1881,7 +1978,7 @@ $("checkoutForm").addEventListener("submit", async event => {
   try {
     const customerName = $("customerName").value.trim();
     const phone = $("customerPhone").value.trim();
-    const email = $("customerEmail").value.trim() || null;
+    const email = $("customerEmail").value.trim() || currentUser.email || null;
     const address = $("customerAddress").value.trim();
     const city = $("customerCity").value.trim();
 
@@ -1906,7 +2003,8 @@ $("checkoutForm").addEventListener("submit", async event => {
       delivery_charges: deliveryCharges,
       total,
       payment_method: "COD",
-      status: "Confirmed"
+      status: "Confirmed",
+      user_id: currentUser.id
     };
 
     const {data: order, error: orderError} = await db
@@ -1942,21 +2040,89 @@ $("checkoutForm").addEventListener("submit", async event => {
     itemsSaved = true;
     const reference = order.tracking_number || trackingNumber;
 
+    // MATCHING IMAGE UI PATTERN CARD (WITHOUT TRACK NOW BUTTON & ORDER/PACKAGE ICON INSTEAD OF LOCATION)
     result.innerHTML = `
-      <strong>Order submitted successfully!</strong><br>
-      Tracking number: <strong>${escapeHTML(reference)}</strong><br>
-      Products saved: ${verifyRows.length}<br>
-      Subtotal: ${money(subtotal)}<br>
-      Delivery: ${money(deliveryCharges)}<br>
-      Total payable: <strong>${money(total)}</strong><br>
-      Payment: Cash on Delivery<br><br>
-      <a class="gold-button" style="display:block;text-align:center"
-         target="_blank" rel="noopener noreferrer"
-         href="https://wa.me/923713763119?text=${encodeURIComponent(
-           "Assalam-o-Alaikum VEYORA, please confirm my order " + reference +
-           ". Subtotal: " + money(subtotal) + ". Delivery: " + money(deliveryCharges) +
-           ". Total payable: " + money(total)
-         )}">CONFIRM VIA WHATSAPP</a>`;
+      <div class="vy-success-card">
+        <div class="vy-success-badge">✓</div>
+        <div class="vy-success-title">✦ ORDER SUBMITTED ✦</div>
+        <div class="vy-success-subtitle">Your order has been placed successfully!</div>
+        
+        <div class="vy-thankyou">Thank You! ♡</div>
+        <div class="vy-appreciation">We appreciate your trust in Veyora. Your order is now in process and will be delivered soon.</div>
+
+        <div class="vy-summary-box">
+          <div class="vy-summary-header">📦 Order Summary</div>
+          
+          <div class="vy-grid-2">
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">📦</span>
+              <div>
+                <div class="vy-grid-label">Subtotal</div>
+                <div class="vy-grid-val">${money(subtotal)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">🚚</span>
+              <div>
+                <div class="vy-grid-label">Delivery charges</div>
+                <div class="vy-grid-val">${money(deliveryCharges)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">👛</span>
+              <div>
+                <div class="vy-grid-label">Total payable</div>
+                <div class="vy-grid-val">${money(total)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">👤</span>
+              <div>
+                <div class="vy-grid-label">Products saved</div>
+                <div class="vy-grid-val">${verifyRows.length}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="vy-full-item">
+            <span class="vy-grid-icon">📦</span>
+            <div>
+              <div class="vy-grid-label">Delivery breakdown</div>
+              <div style="font-size:11px;color:#f0dba5;">${renderDeliveryBreakdown(checkoutCart)}</div>
+            </div>
+          </div>
+
+          <div class="vy-full-item">
+            <span class="vy-grid-icon">💳</span>
+            <div>
+              <div class="vy-grid-label">Payment</div>
+              <div style="font-size:11px;color:#f0dba5;">Cash on Delivery</div>
+            </div>
+          </div>
+
+          <div class="vy-full-item vy-track-highlight">
+            <span class="vy-grid-icon" style="font-size:20px;">📋</span>
+            <div>
+              <div class="vy-grid-label">Tracking Number</div>
+              <div style="font-size:15px;font-weight:bold;color:#fff8e9;letter-spacing:1px;">${escapeHTML(reference)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:#b6ad9a;margin-top:12px;">🚚 Order will be delivered soon!</div>
+        <div style="color:#c5a15b;font-size:10px;margin-top:3px;">♥</div>
+
+        <a class="gold-button" style="display:block;text-align:center;margin-top:15px;"
+           target="_blank" rel="noopener noreferrer"
+           href="https://wa.me/923713763119?text=${encodeURIComponent(
+             "Assalam-o-Alaikum VEYORA, please confirm my order " + reference +
+             ". Subtotal: " + money(subtotal) + ". Delivery: " + money(deliveryCharges) +
+             ". Total payable: " + money(total)
+           )}">CONFIRM VIA WHATSAPP</a>
+      </div>`;
 
     $("checkoutForm").reset();
     cart = [];
@@ -2021,21 +2187,16 @@ let veyoraBannerTimer = null;
 
 function renderVeyoraBanner() {
   const section = document.getElementById("veyoraBanner");
-  const defaultHero = document.getElementById("veyoraDefaultHero");
   if (!section) return;
 
-  // Agar koi banner active/available na ho, to default hero show hoga
   if (!veyoraBanners.length) {
     section.hidden = true;
-    if (defaultHero) defaultHero.hidden = false;
     if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
     veyoraBannerTimer = null;
     return;
   }
 
-  // Active banners mojood hone par banner carousel show hoga
   section.hidden = false;
-  if (defaultHero) defaultHero.hidden = true;
 
   const banner = veyoraBanners[veyoraBannerIndex];
   const image = document.getElementById("veyoraBannerImage");
@@ -2086,7 +2247,6 @@ function renderVeyoraBanner() {
 function restartVeyoraBannerTimer() {
   if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
 
-  // Har 4 Seconds (4000ms) baad banner automatic change hoga
   if (veyoraBanners.length > 1) {
     veyoraBannerTimer = setInterval(() => {
       veyoraBannerIndex = (veyoraBannerIndex + 1) % veyoraBanners.length;
@@ -2114,15 +2274,13 @@ async function loadVeyoraBanners() {
     restartVeyoraBannerTimer();
   } catch (error) {
     console.error("VEYORA banner loading error:", error);
-    // Error aane par fallback default hero dikhayega
     if (section) section.hidden = true;
-    const defaultHero = document.getElementById("veyoraDefaultHero");
-    if (defaultHero) defaultHero.hidden = false;
   }
 }
 
 loadVeyoraBanners();
 loadStore();
+refreshAccountSession();
 
 /* PAGE VIEW ANALYTICS */
 (function(){
