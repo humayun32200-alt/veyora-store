@@ -2446,6 +2446,195 @@ $("checkoutForm").addEventListener("submit", async event => {
         font-size: 19px;
       }
     }
+    
+/* VEYORA — Compact Premium Order Confirmation */
+
+.vy-confirmation {
+  max-width: 850px !important;
+  margin: 12px auto !important;
+  padding: 18px !important;
+  background: #f5efdf !important;
+  color: #211e18 !important;
+  border: 1px solid #c9a45c !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18) !important;
+}
+
+.vy-confirmation-header {
+  padding: 4px 0 14px !important;
+}
+
+.vy-confirmation-header h2 {
+  font-size: 23px !important;
+  margin: 0 0 6px !important;
+}
+
+.vy-confirmation-header p {
+  margin: 4px 0 !important;
+  line-height: 1.45 !important;
+}
+
+.vy-tracking-box {
+  margin-top: 12px !important;
+  padding: 11px !important;
+  background: #eae0c9 !important;
+}
+
+.vy-tracking-number {
+  margin: 5px 0 !important;
+  font-size: 19px !important;
+}
+
+.vy-confirmation-note {
+  margin: 5px 0 0 !important;
+  line-height: 1.45 !important;
+}
+
+.vy-confirmation-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-top: 14px !important;
+  align-items: start !important;
+}
+
+.vy-confirmation-section {
+  padding: 12px !important;
+  background: #211f1a !important;
+  color: #f5efdf !important;
+  border: 1px solid #b89650 !important;
+  border-radius: 9px !important;
+}
+
+.vy-confirmation-section h3,
+.vy-confirmation-products h3 {
+  margin: 0 0 9px !important;
+  padding-bottom: 7px !important;
+  font-size: 14px !important;
+}
+
+.vy-confirmation-section h3 {
+  color: #d5b46b !important;
+  border-bottom-color: #51452f !important;
+}
+
+.vy-detail-row {
+  margin: 6px 0 !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.vy-confirmation-section .vy-detail-row span:first-child {
+  color: #d2c8b3 !important;
+}
+
+.vy-confirmation-section .vy-detail-row strong {
+  color: #fff8e9 !important;
+}
+
+.vy-confirmation-products {
+  margin-top: 12px !important;
+  padding: 12px !important;
+  background: #fffaf0 !important;
+  border: 1px solid #d8c49a !important;
+  border-radius: 9px !important;
+}
+
+.vy-confirmation-products h3 {
+  color: #9a742e !important;
+}
+
+.vy-confirmation-product {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 0 !important;
+  min-height: 0 !important;
+  border-bottom: 1px solid #e9dfcc !important;
+}
+
+.vy-confirmation-product img {
+  width: 54px !important;
+  height: 58px !important;
+  object-fit: cover !important;
+  border-radius: 6px !important;
+}
+
+.vy-confirmation-product-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.vy-confirmation-product-info strong {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.vy-confirmation-product-info p {
+  margin: 3px 0 0 !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+.vy-confirmation-product-price {
+  font-size: 12px !important;
+}
+
+.vy-confirmation-total {
+  max-width: 360px !important;
+  margin: 10px 0 0 auto !important;
+}
+
+.vy-confirmation-total .vy-grand-total {
+  margin-top: 7px !important;
+  padding-top: 8px !important;
+  font-size: 15px !important;
+}
+
+.vy-confirmation-footer {
+  margin-top: 14px !important;
+  padding-top: 13px !important;
+  border-top: 1px solid #d8c49a !important;
+}
+
+.vy-confirmation-footer h3 {
+  margin: 0 0 5px !important;
+  font-size: 18px !important;
+}
+
+.vy-confirmation-footer p {
+  margin: 5px 0 !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+.vy-whatsapp-button {
+  margin-top: 7px !important;
+  padding: 10px 17px !important;
+}
+
+@media (max-width: 600px) {
+  .vy-confirmation {
+    padding: 12px !important;
+    margin: 8px auto !important;
+  }
+
+  .vy-confirmation-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .vy-confirmation-header h2 {
+    font-size: 21px !important;
+  }
+
+  .vy-confirmation-product img {
+    width: 48px !important;
+    height: 52px !important;
+  }
+}
+
   </style>
 
   <div class="vy-confirmation">
