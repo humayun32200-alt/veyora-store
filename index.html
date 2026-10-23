@@ -3041,7 +3041,7 @@ function renderVeyoraBanner() {
 
   const dots = document.getElementById("veyoraBannerDots");
   dots.innerHTML = veyoraBanners.map((item, index) =>
-    <button type="button" class="veyora-banner-dot ${index === veyoraBannerIndex ? "active" : ""}" data-banner-index="${index}" aria-label="Show banner ${index + 1}"></button>
+    `<button type="button" class="veyora-banner-dot ${index === veyoraBannerIndex ? "active" : ""}" data-banner-index="${index}" aria-label="Show banner ${index + 1}"></button>`
   ).join("");
 
   dots.querySelectorAll("[data-banner-index]").forEach(dot => {
