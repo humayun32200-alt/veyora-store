@@ -257,6 +257,116 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 .tracking-refresh{width:100%;margin-top:12px}
 .delivery-breakdown{margin-top:10px;padding:11px;background:#17150f;border:1px solid #57472b;font-size:12px;line-height:1.9;color:#f0e5ce}
 
+/* CUSTOM ORDER SUCCESSFUL CARD STYLES */
+.vy-success-card {
+  border: 1px solid #c5a15b;
+  border-radius: 12px;
+  background: radial-gradient(circle at top, #1a1710 0%, #0d0d0b 100%);
+  padding: 24px 18px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  color: #f7f0df;
+  margin-top: 15px;
+}
+.vy-success-badge {
+  width: 42px;
+  height: 42px;
+  background: #388e3c;
+  color: #fff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 12px rgba(56, 142, 60, 0.4);
+}
+.vy-success-title {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #f0dba5;
+  margin: 5px 0;
+  text-transform: uppercase;
+}
+.vy-success-subtitle {
+  font-size: 11px;
+  color: #c6bdab;
+  margin-bottom: 12px;
+}
+.vy-thankyou {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  color: #f0dba5;
+  margin: 8px 0;
+}
+.vy-appreciation {
+  font-size: 11px;
+  color: #b6ad9a;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+.vy-summary-box {
+  border: 1px solid #59482b;
+  border-radius: 8px;
+  background: #11110e;
+  padding: 14px;
+  text-align: left;
+}
+.vy-summary-header {
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: #f0dba5;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vy-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.vy-grid-item {
+  border: 1px solid #3d321d;
+  background: #171510;
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.vy-grid-icon {
+  color: #c5a15b;
+  font-size: 16px;
+}
+.vy-grid-label {
+  font-size: 9px;
+  color: #b6ad9a;
+}
+.vy-grid-val {
+  font-size: 12px;
+  font-weight: bold;
+  color: #f0dba5;
+}
+.vy-full-item {
+  border: 1px solid #3d321d;
+  background: #171510;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.vy-track-highlight {
+  border: 1px solid #c5a15b;
+  background: linear-gradient(90deg, #261f14, #171510);
+  box-shadow: 0 0 10px rgba(197, 161, 91, 0.2);
+}
+
 /* COLLECTION CONTROLS */
 .collection-controls {
   display: grid;
@@ -1015,7 +1125,7 @@ let activeCategory = "all";
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
-let currentUser = null; // ONLY SINGLE DECLARATION HERE
+let currentUser = null;
 
 $("year").textContent = new Date().getFullYear();
 
@@ -1836,7 +1946,7 @@ $("trackForm").addEventListener("submit", async event => {
   }
 });
 
-/* COD CHECKOUT WITH LOGIN REQUIREMENT */
+/* COD CHECKOUT WITH LOGIN REQUIREMENT & IMAGE UI TEMPLATE */
 $("checkoutButton").addEventListener("click", () => {
   if (!cart.length) return;
 
@@ -1959,21 +2069,89 @@ $("checkoutForm").addEventListener("submit", async event => {
     itemsSaved = true;
     const reference = order.tracking_number || trackingNumber;
 
+    // MATCHING IMAGE UI PATTERN CARD
     result.innerHTML = `
-      <strong>Order submitted successfully!</strong><br>
-      Tracking number: <strong>${escapeHTML(reference)}</strong><br>
-      Products saved: ${verifyRows.length}<br>
-      Subtotal: ${money(subtotal)}<br>
-      Delivery: ${money(deliveryCharges)}<br>
-      Total payable: <strong>${money(total)}</strong><br>
-      Payment: Cash on Delivery<br><br>
-      <a class="gold-button" style="display:block;text-align:center"
-         target="_blank" rel="noopener noreferrer"
-         href="https://wa.me/923713763119?text=${encodeURIComponent(
-           "Assalam-o-Alaikum VEYORA, please confirm my order " + reference +
-           ". Subtotal: " + money(subtotal) + ". Delivery: " + money(deliveryCharges) +
-           ". Total payable: " + money(total)
-         )}">CONFIRM VIA WHATSAPP</a>`;
+      <div class="vy-success-card">
+        <div class="vy-success-badge">✓</div>
+        <div class="vy-success-title">✦ ORDER SUBMITTED ✦</div>
+        <div class="vy-success-subtitle">Your order has been placed successfully!</div>
+        
+        <div class="vy-thankyou">Thank You! ♡</div>
+        <div class="vy-appreciation">We appreciate your trust in Veyora. Your order is now in process and will be delivered soon.</div>
+
+        <div class="vy-summary-box">
+          <div class="vy-summary-header">📦 Order Summary</div>
+          
+          <div class="vy-grid-2">
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">📦</span>
+              <div>
+                <div class="vy-grid-label">Subtotal</div>
+                <div class="vy-grid-val">${money(subtotal)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">🚚</span>
+              <div>
+                <div class="vy-grid-label">Delivery charges</div>
+                <div class="vy-grid-val">${money(deliveryCharges)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">👛</span>
+              <div>
+                <div class="vy-grid-label">Total payable</div>
+                <div class="vy-grid-val">${money(total)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">👤</span>
+              <div>
+                <div class="vy-grid-label">Products saved</div>
+                <div class="vy-grid-val">${verifyRows.length}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="vy-full-item">
+            <span class="vy-grid-icon">📦</span>
+            <div>
+              <div class="vy-grid-label">Delivery breakdown</div>
+              <div style="font-size:11px;color:#f0dba5;">${renderDeliveryBreakdown(checkoutCart)}</div>
+            </div>
+          </div>
+
+          <div class="vy-full-item">
+            <span class="vy-grid-icon">💳</span>
+            <div>
+              <div class="vy-grid-label">Payment</div>
+              <div style="font-size:11px;color:#f0dba5;">Cash on Delivery</div>
+            </div>
+          </div>
+
+          <div class="vy-full-item vy-track-highlight">
+            <span class="vy-grid-icon" style="font-size:20px;">📍</span>
+            <div>
+              <div class="vy-grid-label">Tracking Number</div>
+              <div style="font-size:15px;font-weight:bold;color:#fff8e9;letter-spacing:1px;">${escapeHTML(reference)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:#b6ad9a;margin-top:12px;">🚚 Order will be delivered soon!</div>
+        <div style="color:#c5a15b;font-size:10px;margin-top:3px;">♥</div>
+
+        <a class="gold-button" style="display:block;text-align:center;margin-top:15px;"
+           target="_blank" rel="noopener noreferrer"
+           href="https://wa.me/923713763119?text=${encodeURIComponent(
+             "Assalam-o-Alaikum VEYORA, please confirm my order " + reference +
+             ". Subtotal: " + money(subtotal) + ". Delivery: " + money(deliveryCharges) +
+             ". Total payable: " + money(total)
+           )}">CONFIRM VIA WHATSAPP</a>
+      </div>`;
 
     $("checkoutForm").reset();
     cart = [];
