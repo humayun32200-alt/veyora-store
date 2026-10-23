@@ -763,6 +763,55 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   outline: 2px solid #E0BE78;
   outline-offset: 3px;
 }
+  
+/* VEYORA — Premium Gold Buttons */
+
+/* Account, cart, checkout and order buttons */
+#accountModal button,
+#accountModal input[type="button"],
+#accountModal input[type="submit"],
+#cartModal button,
+#cartModal input[type="button"],
+#cartModal input[type="submit"],
+#checkoutModal button,
+#checkoutModal input[type="button"],
+#checkoutModal input[type="submit"],
+button.add-to-cart,
+button.checkout-btn,
+button.place-order-btn,
+.add-to-cart-btn,
+.checkout-button,
+.place-cod-order {
+  background: #C9A45C !important;
+  color: #17140D !important;
+  border: 1px solid #C9A45C !important;
+  border-radius: 7px !important;
+  font-weight: 700 !important;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* Hover effect */
+#accountModal button:hover,
+#cartModal button:hover,
+#checkoutModal button:hover,
+button.add-to-cart:hover,
+button.checkout-btn:hover,
+button.place-order-btn:hover,
+.add-to-cart-btn:hover,
+.checkout-button:hover,
+.place-cod-order:hover {
+  background: #B18B43 !important;
+  color: #000000 !important;
+  border-color: #E0BE78 !important;
+}
+
+/* Disabled buttons */
+button:disabled,
+input[type="submit"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 </style>
 </head>
 
