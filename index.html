@@ -492,7 +492,8 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     padding: 38px 22px;
   }
 }
-  /* VEYORA LUXURY TRACKING PAGE */
+
+/* VEYORA LUXURY TRACKING PAGE */
 .tracking-page-modal {
   width: min(760px, 100%);
   max-height: 92vh;
@@ -625,26 +626,22 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   letter-spacing: 0;
 }
 
-@media (max-width: 520px) {
-  .tracking-page-modal {
-    padding: 35px 16px 24px;
-  }
-
-  .tracking-page-modal .tracking-card {
-    padding: 22px 12px;
-  }
-
-  .tracking-page-modal .tracking-steps {
-    gap: 3px;
-  }
-
-  .tracking-page-modal .tracking-step {
-    font-size: 8px;
-  }
-
-  .tracking-page-modal .tracking-arrow {
-    font-size: 12px;
-  }
+/* USER ORDERS LIST IN ACCOUNT MODAL */
+.user-order-item {
+  background: #14130f;
+  border: 1px solid #423620;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.user-order-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #332918;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  color: #f0dba5;
 }
 </style>
 </head>
@@ -700,7 +697,15 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     </div>
   </section>
 
-
+  <!-- DEFAULT HERO FALLBACK SECTION -->
+  <section class="hero" id="veyoraDefaultHero">
+    <div class="hero-inner">
+      <div class="eyebrow">STYLE FOR EVERY SPACE</div>
+      <h1>Elevate Your<br><em>Everyday</em></h1>
+      <p>Timeless clothing, cozy home essentials, and elegant bedding — all in one place.</p>
+      <a href="#products" class="gold-button">EXPLORE COLLECTION →</a>
+    </div>
+  </section>
 
   <section class="section" id="categories">
     <div class="section-heading">
@@ -882,7 +887,7 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     <form id="trackForm" class="tracking-page-form">
       <label for="trackingNumber">TRACKING NUMBER</label>
       <input id="trackingNumber" required placeholder="Enter your tracking number" autocomplete="off">
-      <button class="gold-button" type="submit">CHECK STATUS　→</button>
+      <button class="gold-button" type="submit">CHECK STATUS →</button>
     </form>
 
     <div class="result" id="trackResult" aria-live="polite"></div>
@@ -894,7 +899,6 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     </div>
   </div>
 </div>
-
 
 <!-- CART -->
 <div class="overlay" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
@@ -945,19 +949,26 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   </div>
 </div>
 
-<!-- CUSTOMER ACCOUNT -->
+<!-- CUSTOMER ACCOUNT & ORDER HISTORY -->
 <div class="overlay" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
   <div class="modal">
     <button class="close" data-close="accountModal" type="button" aria-label="Close">×</button>
     <h2 id="accountTitle">My VEYORA Account</h2>
-    <p class="notice">Sign in or create your customer account.</p>
 
     <div id="accountSignedIn" hidden>
-      <p id="accountUserEmail" class="notice"></p>
+      <p id="accountUserEmail" class="notice" style="color:#f0dba5;font-weight:bold;"></p>
+      
+      <div style="margin:20px 0;">
+        <h3 style="font-family:Georgia,serif;color:#f0dfb6;border-bottom:1px solid #5a482b;padding-bottom:5px;">My Orders</h3>
+        <div id="userOrdersList" class="notice">Loading orders...</div>
+      </div>
+
       <button class="gold-button" id="accountSignOut" type="button">SIGN OUT</button>
     </div>
 
     <div id="accountAuthForm">
+      <p class="notice">Please sign in or create an account to proceed with your order.</p>
+
       <label for="accountName">Full name (for signup)</label>
       <input id="accountName" maxlength="120" placeholder="Your full name" autocomplete="name">
 
@@ -1004,6 +1015,7 @@ let activeCategory = "all";
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
+let currentUser = null;
 
 $("year").textContent = new Date().getFullYear();
 
@@ -1573,23 +1585,72 @@ function showProductDetails(id) {
   openModal("productModal");
 }
 
-/* ACCOUNT */
+/* ACCOUNT & USER ORDER HISTORY */
 let accountBusy = false;
+let currentUser = null;
 
 function showAccountMessage(message) {
   $("accountMessage").textContent = message;
 }
-function showAccountSession(session) {
-  const loggedIn = !!session?.user;
-  $("accountSignedIn").hidden = !loggedIn;
-  $("accountAuthForm").hidden = loggedIn;
-  $("accountUserEmail").textContent = loggedIn
-    ? "Signed in as: " + (session.user.email || "Customer")
-    : "";
+
+async function loadUserOrders(userId) {
+  const container = $("userOrdersList");
+  if (!container || !db) return;
+
+  container.textContent = "Fetching your orders...";
+
+  try {
+    const { data: orders, error } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    if (!orders || orders.length === 0) {
+      container.innerHTML = "<p>No orders found for your account.</p>";
+      return;
+    }
+
+    container.innerHTML = orders.map(ord => `
+      <div class="user-order-item">
+        <div class="user-order-header">
+          <span>Tracking: <strong>${escapeHTML(ord.tracking_number)}</strong></span>
+          <span>Status: <strong>${escapeHTML(ord.status || 'Confirmed')}</strong></span>
+        </div>
+        <div>Total Amount: <strong>${money(ord.total)}</strong></div>
+        <div style="font-size:10px;color:#a39882;margin-top:4px;">Date: ${new Date(ord.created_at).toLocaleDateString()}</div>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    console.error("Error loading user orders:", err);
+    container.textContent = "Could not load orders.";
+  }
 }
+
+function showAccountSession(session) {
+  currentUser = session?.user || null;
+  const loggedIn = !!currentUser;
+  
+  if ($("accountSignedIn")) $("accountSignedIn").hidden = !loggedIn;
+  if ($("accountAuthForm")) $("accountAuthForm").hidden = loggedIn;
+
+  if (loggedIn) {
+    if ($("accountUserEmail")) $("accountUserEmail").textContent = "Signed in as: " + (currentUser.email || "Customer");
+    if (currentUser.email && $("customerEmail")) {
+      $("customerEmail").value = currentUser.email;
+    }
+    loadUserOrders(currentUser.id);
+  } else {
+    if ($("accountUserEmail")) $("accountUserEmail").textContent = "";
+  }
+}
+
 async function refreshAccountSession() {
   if (!db) {
-    showAccountMessage("Account service unavailable. Please try again later.");
+    showAccountMessage("Account service unavailable.");
     return;
   }
   try {
@@ -1601,10 +1662,11 @@ async function refreshAccountSession() {
     showAccountMessage("Could not load your account session.");
   }
 }
+
 async function runAccountAction(action) {
   if (accountBusy) return;
   if (!db) {
-    showAccountMessage("Account service is unavailable. Please try again later.");
+    showAccountMessage("Account service is unavailable.");
     return;
   }
 
@@ -1620,17 +1682,11 @@ async function runAccountAction(action) {
     showAccountMessage("Please enter your password.");
     return;
   }
-  if (action !== "reset" && password.length < 6) {
-    showAccountMessage("Password must contain at least 6 characters.");
-    return;
-  }
-  if (action === "signup" && !name) {
-    showAccountMessage("Please enter your name to create an account.");
-    return;
-  }
 
   accountBusy = true;
-  ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => $(id).disabled = true);
+  ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => {
+    if ($(id)) $(id).disabled = true;
+  });
   showAccountMessage("Please wait...");
 
   try {
@@ -1655,29 +1711,33 @@ async function runAccountAction(action) {
     if (action === "signin") {
       showAccountSession(response.data.session);
       showAccountMessage("Welcome back to VEYORA!");
+      closeModal("accountModal");
     } else if (action === "signup") {
       if (response.data.session) {
         showAccountSession(response.data.session);
         showAccountMessage("Your account has been created.");
+        closeModal("accountModal");
       } else {
-        showAccountMessage("Signup submitted. Please check your email for the confirmation link.");
+        showAccountMessage("Signup submitted. Please check your email.");
       }
     } else {
-      showAccountMessage("If an account exists for this email, a password reset email will be sent.");
+      showAccountMessage("Password reset email sent.");
     }
   } catch (error) {
-    console.error("Account action error:", error);
-    showAccountMessage(error.message || "Account action failed. Please try again.");
+    console.error("Account error:", error);
+    showAccountMessage(error.message || "Account action failed.");
   } finally {
     accountBusy = false;
-    ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => $(id).disabled = false);
+    ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => {
+      if ($(id)) $(id).disabled = false;
+    });
   }
 }
 
-$("accountSignIn").addEventListener("click", () => runAccountAction("signin"));
-$("accountSignUp").addEventListener("click", () => runAccountAction("signup"));
-$("accountReset").addEventListener("click", () => runAccountAction("reset"));
-$("accountSignOut").addEventListener("click", async () => {
+if ($("accountSignIn")) $("accountSignIn").addEventListener("click", () => runAccountAction("signin"));
+if ($("accountSignUp")) $("accountSignUp").addEventListener("click", () => runAccountAction("signup"));
+if ($("accountReset")) $("accountReset").addEventListener("click", () => runAccountAction("reset"));
+if ($("accountSignOut")) $("accountSignOut").addEventListener("click", async () => {
   if (!db) return;
   const {error} = await db.auth.signOut();
   if (error) {
@@ -1777,9 +1837,17 @@ $("trackForm").addEventListener("submit", async event => {
   }
 });
 
-/* COD CHECKOUT */
+/* COD CHECKOUT WITH LOGIN REQUIREMENT */
 $("checkoutButton").addEventListener("click", () => {
   if (!cart.length) return;
+
+  // CHECK LOGIN STATUS FIRST
+  if (!currentUser) {
+    closeModal("cartModal");
+    showAccountMessage("Please login or create your account first to place an order.");
+    openModal("accountModal");
+    return;
+  }
 
   $("checkoutResult").textContent = "";
   $("placeOrderButton").style.display = "block";
@@ -1802,6 +1870,13 @@ $("checkoutButton").addEventListener("click", () => {
 $("checkoutForm").addEventListener("submit", async event => {
   event.preventDefault();
 
+  if (!currentUser) {
+    closeModal("checkoutModal");
+    showAccountMessage("Please login or create your account first to place an order.");
+    openModal("accountModal");
+    return;
+  }
+
   if (!db) {
     $("checkoutResult").textContent = "Store connection is unavailable.";
     return;
@@ -1823,7 +1898,7 @@ $("checkoutForm").addEventListener("submit", async event => {
   try {
     const customerName = $("customerName").value.trim();
     const phone = $("customerPhone").value.trim();
-    const email = $("customerEmail").value.trim() || null;
+    const email = $("customerEmail").value.trim() || currentUser.email || null;
     const address = $("customerAddress").value.trim();
     const city = $("customerCity").value.trim();
 
@@ -1848,7 +1923,8 @@ $("checkoutForm").addEventListener("submit", async event => {
       delivery_charges: deliveryCharges,
       total,
       payment_method: "COD",
-      status: "Confirmed"
+      status: "Confirmed",
+      user_id: currentUser.id // Link order to logged in user
     };
 
     const {data: order, error: orderError} = await db
@@ -1884,6 +1960,7 @@ $("checkoutForm").addEventListener("submit", async event => {
     itemsSaved = true;
     const reference = order.tracking_number || trackingNumber;
 
+    // ORDER SUBMITTED CARD (WITHOUT TRACK NOW BUTTON)
     result.innerHTML = `
       <strong>Order submitted successfully!</strong><br>
       Tracking number: <strong>${escapeHTML(reference)}</strong><br>
@@ -1966,7 +2043,6 @@ function renderVeyoraBanner() {
   const defaultHero = document.getElementById("veyoraDefaultHero");
   if (!section) return;
 
-  // Agar koi banner active/available na ho, to default hero show hoga
   if (!veyoraBanners.length) {
     section.hidden = true;
     if (defaultHero) defaultHero.hidden = false;
@@ -1975,7 +2051,6 @@ function renderVeyoraBanner() {
     return;
   }
 
-  // Active banners mojood hone par banner carousel show hoga
   section.hidden = false;
   if (defaultHero) defaultHero.hidden = true;
 
@@ -2028,7 +2103,6 @@ function renderVeyoraBanner() {
 function restartVeyoraBannerTimer() {
   if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
 
-  // Har 4 Seconds (4000ms) baad banner automatic change hoga
   if (veyoraBanners.length > 1) {
     veyoraBannerTimer = setInterval(() => {
       veyoraBannerIndex = (veyoraBannerIndex + 1) % veyoraBanners.length;
@@ -2056,7 +2130,6 @@ async function loadVeyoraBanners() {
     restartVeyoraBannerTimer();
   } catch (error) {
     console.error("VEYORA banner loading error:", error);
-    // Error aane par fallback default hero dikhayega
     if (section) section.hidden = true;
     const defaultHero = document.getElementById("veyoraDefaultHero");
     if (defaultHero) defaultHero.hidden = false;
@@ -2065,6 +2138,7 @@ async function loadVeyoraBanners() {
 
 loadVeyoraBanners();
 loadStore();
+refreshAccountSession();
 
 /* PAGE VIEW ANALYTICS */
 (function(){
