@@ -1760,17 +1760,17 @@ function renderProducts() {
     const sale = isOnSale(product);
     const name = escapeHTML(product.name || "VEYORA product");
     const imageHTML = image
-      ? <img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>
-      : <div class="image-placeholder">VEYORA</div>;
+  ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`
+  : `<div class="image-placeholder">VEYORA</div>`;
 
     return `<article class="product-card">
-      <div class="image-wrap">${imageHTML}${sale ? <span class="sale-badge">${discountPercent(product)}% OFF</span> : ""}</div>
+      <div class="image-wrap">${imageHTML}${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}</div>
       <div class="product-info">
         <div class="product-category">${escapeHTML(getProductCategory(product))}</div>
         <div class="product-name">${name}</div>
         <div class="prices">
           <span class="sale-price">${money(currentPrice(product))}</span>
-          ${sale ? <span class="old-price">${money(product.retail_price)}</span> : ""}
+        ${sale ? `<span class="old-price">${money(product.retail_price)}</span>` : ""}
         </div>
         <div class="product-actions">
           <button class="small-button" data-details="${escapeHTML(product.id)}" type="button">QUICK VIEW</button>
@@ -1836,10 +1836,10 @@ function renderCart() {
   $("checkoutButton").disabled = false;
   $("cartItems").innerHTML = cart.map(item => `
     <div class="cart-item">
-      ${item.image ? <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'"> : ""}
+       ${item.image ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'">` : ""}
       <span style="flex:1">
         <strong>${escapeHTML(item.name)}</strong>
-        ${item.variant_name ? <br><small>${escapeHTML(item.variant_name)}</small> : ""}
+        ${item.variant_name ? `<br><small>${escapeHTML(item.variant_name)}</small>` : ""}
         <br>Qty: ${Number(item.quantity)}
         <br>${money(item.price)} each
       </span>
@@ -1875,14 +1875,14 @@ function showProductDetails(id) {
   const firstImage = firstVariant?.image_url || mainImage;
 
   const imageHTML = firstImage
-    ? <img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">
-    : <div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>;
+  ? `<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`
+  : `<div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>`;
 
   const variantsHTML = productVariantList.length
     ? `<label class="variant-label">Choose design / variant</label>
        <div class="design-options" id="designOptions">
        ${productVariantList.map((variant, index) =>
-         <button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>
+         `<button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>`
        ).join("")}
        </div>
        <div class="design-image-label" id="selectedDesignName"></div>
@@ -1910,9 +1910,10 @@ function showProductDetails(id) {
       if (imageURL) image.src = imageURL;
     } else if (imageURL) {
       const placeholder = $("detailImagePlaceholder");
-      if (placeholder) placeholder.outerHTML =
-        <img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">;
-    }
+      if (placeholder) {
+  placeholder.outerHTML =
+    `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
+}
 
     $("detailPrice").innerHTML = "<strong>" + money(variantPrice(variant, product)) + "</strong>";
 
