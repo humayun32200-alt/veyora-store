@@ -1015,7 +1015,7 @@ let activeCategory = "all";
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
-let currentUser = null;
+let currentUser = null; // ONLY SINGLE DECLARATION HERE
 
 $("year").textContent = new Date().getFullYear();
 
@@ -1587,7 +1587,6 @@ function showProductDetails(id) {
 
 /* ACCOUNT & USER ORDER HISTORY */
 let accountBusy = false;
-let currentUser = null;
 
 function showAccountMessage(message) {
   $("accountMessage").textContent = message;
@@ -1924,7 +1923,7 @@ $("checkoutForm").addEventListener("submit", async event => {
       total,
       payment_method: "COD",
       status: "Confirmed",
-      user_id: currentUser.id // Link order to logged in user
+      user_id: currentUser.id
     };
 
     const {data: order, error: orderError} = await db
@@ -1960,7 +1959,6 @@ $("checkoutForm").addEventListener("submit", async event => {
     itemsSaved = true;
     const reference = order.tracking_number || trackingNumber;
 
-    // ORDER SUBMITTED CARD (WITHOUT TRACK NOW BUTTON)
     result.innerHTML = `
       <strong>Order submitted successfully!</strong><br>
       Tracking number: <strong>${escapeHTML(reference)}</strong><br>
