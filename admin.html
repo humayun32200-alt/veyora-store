@@ -117,9 +117,21 @@ td button{margin:3px;padding:7px 9px}.thumb{width:54px;height:54px;object-fit:co
    <div><label>Banner image URL</label><input id="bImageUrl" type="url" placeholder="https://..." ></div>
    <div><label>Or upload banner image</label><input id="bImageFile" type="file" accept="image/jpeg,image/png,image/webp"></div>
    <div><label>Button text</label><input id="bButtonText" maxlength="80" value="EXPLORE COLLECTION"></div>
-   <div><label>Button target (URL, product ID or category ID)</label><input id="bTarget" placeholder="#products or https://..." ></div>
-   <div><label>Sort order</label><input id="bSort" type="number" value="0"></div>
-   <div><label><input id="bPublished" type="checkbox" checked> Published</label></div>
+   
+<div>
+  <label>Shop Now — Select Product</label>
+  <select id="bTarget">
+    <option value="">Select a product</option>
+  </select>
+</div>
+<div>
+  <label>Sort order</label>
+  <input id="bSort" type="number" value="0">
+</div>
+<div>
+  <label><input id="bPublished" type="checkbox" checked> Published</label>
+</div>
+
   </div>
   <p class="banner-form-note">If target is a product ID, the button opens that product. If it is a category ID, it filters that category. You can also use #products, #categories or a full URL.</p>
   <img id="bannerPreview" class="banner-preview" alt="Banner preview" hidden>
@@ -178,7 +190,14 @@ async function loadAll(){
   banners=await result(db.from("banners").select("*").order("sort_order").order("created_at",{ascending:false}).limit(300));
   $("productCount").textContent=products.length;$("categoryCount").textContent=categories.length;$("orderCount").textContent=orders.length;
   $("pendingCount").textContent=orders.filter(o=>!["delivered","cancelled"].includes(String(o.status||"").toLowerCase())).length;
-  renderProducts();renderCategories();renderOrders();renderBanners();fillCategorySelect();
+  
+renderProducts();
+renderCategories();
+renderOrders();
+renderBanners();
+fillCategorySelect();
+loadBannerProducts();
+
   try{analyticsEvents=await result(db.from("analytics_events").select("session_id,event_type,created_at").order("created_at",{ascending:false}).limit(10000))}
   catch(err){analyticsEvents=[];console.error("Analytics loading error:",err)}
   updateAnalytics();notice("Connected. Store data loaded.")
@@ -195,6 +214,27 @@ function renderProducts(){
  $("productsTable").querySelectorAll("[data-images]").forEach(b=>b.onclick=()=>uploadImages(b.dataset.images));
  $("productsTable").querySelectorAll("[data-variants]").forEach(b=>b.onclick=()=>openVariants(b.dataset.variants))
 }
+ 
+function loadBannerProducts(){
+  const select = $("bTarget");
+  if(!select) return;
+
+  const selected = select.value;
+
+  select.innerHTML = '<option value="">Select a product</option>';
+
+  products
+    .filter(p => p.is_active)
+    .forEach(p => {
+      const option = document.createElement("option");
+      option.value = p.id;
+      option.textContent = p.name;
+      select.appendChild(option);
+    });
+
+  select.value = selected;
+}
+
 function fillCategorySelect(){$("pCategory").innerHTML='<option value="">No category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join("")}
 function resetProduct(){$("productForm").reset();$("pId").value="";$("pActive").checked=true;$("productFormTitle").textContent="Add Product";$("productForm").hidden=true}
 $("newProduct").onclick=()=>{resetProduct();$("productForm").hidden=false;$("productFormTitle").textContent="Add Product";$("productForm").scrollIntoView({behavior:"smooth"})};
