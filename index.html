@@ -532,15 +532,27 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   </nav>
 </header>
 
-<main>
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="eyebrow">STYLE FOR EVERY SPACE</div>
-      <h1>Elevate Your<br><em>Everyday</em></h1>
-      <p>Timeless clothing, cozy home essentials, and elegant bedding — all in one place.</p>
-      <a href="#products" class="gold-button">EXPLORE COLLECTION  →</a>
-    </div>
-  </section>
+
+<section class="hero" id="veyoraDefaultHero">
+  <div class="hero-inner">
+    <div class="eyebrow">STYLE FOR EVERY SPACE</div>
+    <h1>Elevate Your<br><em>Everyday</em></h1>
+    <p>Timeless clothing, cozy home essentials, and elegant bedding — all in one place.</p>
+    <a href="#products" class="gold-button">EXPLORE COLLECTION →</a>
+  </div>
+</section>
+
+<section id="veyoraBanner" class="veyora-banner" hidden>
+  <img id="veyoraBannerImage" class="veyora-banner-image" alt="VEYORA collection">
+  <div class="veyora-banner-overlay">
+    <p class="veyora-banner-label">VEYORA · NEW COLLECTION</p>
+    <h1 id="veyoraBannerTitle"></h1>
+    <p id="veyoraBannerDescription"></p>
+    <button id="veyoraBannerButton" type="button">SHOP NOW</button>
+    <div id="veyoraBannerDots" class="veyora-banner-dots"></div>
+  </div>
+</section>
+
 
   <section class="section" id="categories">
     <div class="section-heading">
@@ -568,16 +580,7 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     </div>
   </section>
 
-<section id="veyoraBanner" class="veyora-banner" hidden>
-  <img id="veyoraBannerImage" class="veyora-banner-image" alt="VEYORA collection">
-  <div class="veyora-banner-overlay">
-    <p class="veyora-banner-label">VEYORA · NEW COLLECTION</p>
-    <h1 id="veyoraBannerTitle"></h1>
-    <p id="veyoraBannerDescription"></p>
-    <button id="veyoraBannerButton" type="button">SHOP NOW</button>
-    <div id="veyoraBannerDots" class="veyora-banner-dots"></div>
-  </div>
-</section>
+
 
   <section class="section" id="products">
     <div class="section-heading">
@@ -1799,16 +1802,19 @@ let veyoraBannerTimer = null;
 
 function renderVeyoraBanner() {
   const section = document.getElementById("veyoraBanner");
+  const defaultHero = document.getElementById("veyoraDefaultHero");
   if (!section) return;
 
   if (!veyoraBanners.length) {
     section.hidden = true;
+    if (defaultHero) defaultHero.hidden = false;
     if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
     veyoraBannerTimer = null;
     return;
   }
 
   section.hidden = false;
+  if (defaultHero) defaultHero.hidden = true;
 
   const banner = veyoraBanners[veyoraBannerIndex];
   const image = document.getElementById("veyoraBannerImage");
