@@ -849,17 +849,165 @@ header.veyora-header .header-main > a.brand img,
   position: static !important;
   flex: 0 0 45px !important;
 }
-
-/* Keep header layout controlled */
-.veyora-header .header-main {
-  display: flex !important;
-  align-items: center !important;
+  
+/* VEYORA — Balanced Premium Header */
+header.veyora-header .header-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 4%;
+  display: grid !important;
+  grid-template-columns: minmax(200px, 1fr) minmax(220px, 1.4fr) minmax(150px, 1fr) !important;
+  align-items: center;
+  gap: 24px;
 }
 
-.veyora-header .brand {
+header.veyora-header .brand {
   display: flex !important;
-  align-items: center !important;
-  flex: 0 0 auto !important;
+  align-items: center;
+  justify-self: start;
+  min-width: 0;
+  flex: none !important;
+  gap: 10px;
+}
+
+header.veyora-header .brand img {
+  display: block;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  object-fit: contain;
+  flex: 0 0 48px !important;
+}
+
+header.veyora-header .brand-text {
+  min-width: 0;
+}
+
+header.veyora-header .brand-name {
+  font-size: 25px !important;
+  line-height: 1.1;
+  letter-spacing: 3px;
+}
+
+header.veyora-header .brand-sub {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+header.veyora-header .search {
+  width: 100%;
+  max-width: 440px;
+  justify-self: center;
+  min-width: 0;
+}
+
+header.veyora-header .header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  justify-self: end;
+}
+
+header.veyora-header .icon-button {
+  min-width: 48px;
+  font-size: 23px;
+}
+
+header.veyora-header .icon-label {
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  header.veyora-header .header-main {
+    grid-template-columns: minmax(160px, 1fr) minmax(180px, 1.2fr) minmax(110px, 1fr) !important;
+    gap: 12px;
+    padding: 12px 3%;
+  }
+
+  header.veyora-header .brand img {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    flex-basis: 40px !important;
+  }
+
+  header.veyora-header .brand-name {
+    font-size: 20px !important;
+    letter-spacing: 2px;
+  }
+
+  header.veyora-header .header-actions {
+    gap: 5px;
+  }
+
+  header.veyora-header .icon-button {
+    min-width: 40px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  header.veyora-header .header-main {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    gap: 9px;
+    padding: 9px 3%;
+  }
+
+  header.veyora-header .brand {
+    gap: 6px;
+  }
+
+  header.veyora-header .brand img {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    flex-basis: 36px !important;
+  }
+
+  header.veyora-header .brand-name {
+    font-size: 18px !important;
+    letter-spacing: 2px;
+  }
+
+  header.veyora-header .brand-sub {
+    font-size: 7px;
+    letter-spacing: 1.5px;
+  }
+
+  header.veyora-header .search {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: none;
+  }
+
+  header.veyora-header .header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 5px;
+  }
+
+  header.veyora-header .icon-button {
+    min-width: 36px;
+    padding: 2px;
+    font-size: 19px;
+  }
+
+  header.veyora-header .icon-label {
+    font-size: 8px;
+  }
 }
 
 </style>
@@ -916,7 +1064,6 @@ header.veyora-header .header-main > a.brand img,
 </header>
 
 <main>
-
 <main>
   <!-- DYNAMIC BANNER SECTION -->
   <section id="veyoraBanner" class="veyora-banner" hidden>
