@@ -2182,88 +2182,430 @@ $("checkoutForm").addEventListener("submit", async event => {
     const reference = order.tracking_number || trackingNumber;
 
     // MATCHING IMAGE UI PATTERN CARD (WITHOUT TRACK NOW BUTTON & ORDER/PACKAGE ICON INSTEAD OF LOCATION)
-    result.innerHTML = `
-      <div class="vy-success-card">
-        <div class="vy-success-badge">✓</div>
-        <div class="vy-success-title">✦ ORDER SUBMITTED ✦</div>
-        <div class="vy-success-subtitle">Your order has been placed successfully!</div>
-        
-        <div class="vy-thankyou">Thank You! ♡</div>
-        <div class="vy-appreciation">We appreciate your trust in Veyora. Your order is now in process and will be delivered soon.</div>
+   result.innerHTML = `
+  <style>
+    .vy-confirmation {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 24px;
+      background: #fffdf8;
+      color: #25231e;
+      border: 1px solid #d6bd83;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      font-family: Arial, sans-serif;
+    }
 
-        <div class="vy-summary-box">
-          <div class="vy-summary-header">📦 Order Summary</div>
-          
-          <div class="vy-grid-2">
-            <div class="vy-grid-item">
-              <span class="vy-grid-icon">📦</span>
-              <div>
-                <div class="vy-grid-label">Subtotal</div>
-                <div class="vy-grid-val">${money(subtotal)}</div>
-              </div>
-            </div>
-            
-            <div class="vy-grid-item">
-              <span class="vy-grid-icon">🚚</span>
-              <div>
-                <div class="vy-grid-label">Delivery charges</div>
-                <div class="vy-grid-val">${money(deliveryCharges)}</div>
-              </div>
-            </div>
-            
-            <div class="vy-grid-item">
-              <span class="vy-grid-icon">👛</span>
-              <div>
-                <div class="vy-grid-label">Total payable</div>
-                <div class="vy-grid-val">${money(total)}</div>
-              </div>
-            </div>
-            
-            <div class="vy-grid-item">
-              <span class="vy-grid-icon">👤</span>
-              <div>
-                <div class="vy-grid-label">Products saved</div>
-                <div class="vy-grid-val">${verifyRows.length}</div>
-              </div>
-            </div>
-          </div>
+    .vy-confirmation * {
+      box-sizing: border-box;
+    }
 
-          <div class="vy-full-item">
-            <span class="vy-grid-icon">📦</span>
-            <div>
-              <div class="vy-grid-label">Delivery breakdown</div>
-              <div style="font-size:11px;color:#f0dba5;">${renderDeliveryBreakdown(checkoutCart)}</div>
-            </div>
-          </div>
+    .vy-confirmation-header {
+      text-align: center;
+      padding: 10px 0 22px;
+      border-bottom: 1px solid #e8dfcc;
+    }
 
-          <div class="vy-full-item">
-            <span class="vy-grid-icon">💳</span>
-            <div>
-              <div class="vy-grid-label">Payment</div>
-              <div style="font-size:11px;color:#f0dba5;">Cash on Delivery</div>
-            </div>
-          </div>
+    .vy-confirmation-brand {
+      color: #a17b35;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
 
-          <div class="vy-full-item vy-track-highlight">
-            <span class="vy-grid-icon" style="font-size:20px;">📋</span>
-            <div>
-              <div class="vy-grid-label">Tracking Number</div>
-              <div style="font-size:15px;font-weight:bold;color:#fff8e9;letter-spacing:1px;">${escapeHTML(reference)}</div>
-            </div>
-          </div>
+    .vy-confirmation-header h2 {
+      margin: 0 0 10px;
+      font-size: 27px;
+      color: #24221d;
+    }
+
+    .vy-confirmation-header p {
+      color: #716b60;
+      font-size: 14px;
+      line-height: 1.7;
+      margin: 6px 0;
+    }
+
+    .vy-status {
+      display: inline-block;
+      background: #e7f5e9;
+      color: #216b34;
+      padding: 7px 15px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .vy-tracking-box {
+      margin-top: 18px;
+      padding: 16px;
+      background: #f5efe1;
+      border: 1px dashed #b49352;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .vy-tracking-label {
+      font-size: 12px;
+      color: #75684e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .vy-tracking-number {
+      display: block;
+      margin: 8px 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #9a742e;
+      overflow-wrap: anywhere;
+    }
+
+    .vy-confirmation-note {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #655d50;
+      margin: 8px 0 0;
+    }
+
+    .vy-confirmation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .vy-confirmation-section {
+      min-width: 0;
+      padding: 17px;
+      border: 1px solid #eee6d7;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .vy-confirmation-section h3 {
+      margin: 0 0 14px;
+      font-size: 15px;
+      color: #9a742e;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee6d7;
+    }
+
+    .vy-detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .vy-detail-row span:first-child {
+      color: #777064;
+      flex-shrink: 0;
+    }
+
+    .vy-detail-row strong {
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .vy-confirmation-products {
+      margin-top: 20px;
+      padding: 17px;
+      border: 1px solid #eee6d7;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .vy-confirmation-products h3 {
+      margin: 0 0 15px;
+      font-size: 16px;
+      color: #9a742e;
+    }
+
+    .vy-confirmation-product {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 13px 0;
+      border-bottom: 1px solid #f0eadf;
+    }
+
+    .vy-confirmation-product:last-child {
+      border-bottom: 0;
+    }
+
+    .vy-confirmation-product img {
+      width: 70px;
+      height: 78px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #f5f0e6;
+      flex-shrink: 0;
+    }
+
+    .vy-confirmation-product-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .vy-confirmation-product-info strong {
+      display: block;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .vy-confirmation-product-info p {
+      margin: 5px 0 0;
+      color: #777064;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .vy-confirmation-product-price {
+      text-align: right;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .vy-confirmation-total {
+      max-width: 390px;
+      margin: 18px 0 0 auto;
+    }
+
+    .vy-confirmation-total .vy-grand-total {
+      margin-top: 12px;
+      padding-top: 13px;
+      border-top: 1px solid #d8c49a;
+      font-size: 18px;
+      color: #9a742e;
+      font-weight: 700;
+    }
+
+    .vy-confirmation-footer {
+      text-align: center;
+      padding-top: 22px;
+    }
+
+    .vy-confirmation-footer h3 {
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+
+    .vy-confirmation-footer p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #716b60;
+    }
+
+    .vy-whatsapp-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 13px 22px;
+      border-radius: 8px;
+      background: #171713;
+      color: #f4dfad !important;
+      text-decoration: none !important;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media(max-width:600px) {
+      .vy-confirmation {
+        padding: 15px;
+        margin: 12px auto;
+      }
+
+      .vy-confirmation-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .vy-confirmation-header h2 {
+        font-size: 23px;
+      }
+
+      .vy-confirmation-product img {
+        width: 58px;
+        height: 66px;
+      }
+
+      .vy-confirmation-product {
+        gap: 9px;
+      }
+
+      .vy-confirmation-product-price {
+        font-size: 12px;
+      }
+
+      .vy-tracking-number {
+        font-size: 19px;
+      }
+    }
+  </style>
+
+  <div class="vy-confirmation">
+    <div class="vy-confirmation-header">
+      <div class="vy-confirmation-brand">VEYORA</div>
+      <h2>Thank You for Your Order!</h2>
+      <div class="vy-status">Order Status: Confirmed</div>
+      <p>Your order has been received successfully.</p>
+      <p>We will process your order and prepare it for delivery.</p>
+
+      <div class="vy-tracking-box">
+        <div class="vy-tracking-label">Your Tracking Number</div>
+        <span class="vy-tracking-number">${escapeHTML(String(reference ?? ""))}</span>
+        <p class="vy-confirmation-note">
+          Please save your tracking number. Open the
+          <strong>Track Order</strong> option on our website and enter this
+          number to check future updates to your order status.
+        </p>
+      </div>
+    </div>
+
+    <div class="vy-confirmation-grid">
+      <div class="vy-confirmation-section">
+        <h3>Customer Details</h3>
+
+        <div class="vy-detail-row">
+          <span>Name</span>
+          <strong>${escapeHTML(String(customerName ?? ""))}</strong>
         </div>
 
-        <div style="font-size:11px;color:#b6ad9a;margin-top:12px;">🚚 Order will be delivered soon!</div>
-        <div style="color:#c5a15b;font-size:10px;margin-top:3px;">♥</div>
+        <div class="vy-detail-row">
+          <span>Phone</span>
+          <strong>${escapeHTML(String(phone ?? ""))}</strong>
+        </div>
 
-        <a class="gold-button" style="display:block;text-align:center;margin-top:15px;"
-           target="_blank" rel="noopener noreferrer"
-           href="https://wa.me/923713763119?text=${encodeURIComponent(
-             "Assalam-o-Alaikum VEYORA, please confirm my order " + reference +
-             ". Subtotal: " + money(subtotal) + ". Delivery: " + money(deliveryCharges) +
-             ". Total payable: " + money(total)
-           )}">CONFIRM VIA WHATSAPP</a>
-      </div>`;
+        ${email ? `
+          <div class="vy-detail-row">
+            <span>Email</span>
+            <strong>${escapeHTML(String(email))}</strong>
+          </div>
+        ` : ""}
+
+        <div class="vy-detail-row">
+          <span>City</span>
+          <strong>${escapeHTML(String(city ?? ""))}</strong>
+        </div>
+
+        <div class="vy-detail-row">
+          <span>Address</span>
+          <strong>${escapeHTML(String(address ?? ""))}</strong>
+        </div>
+      </div>
+
+      <div class="vy-confirmation-section">
+        <h3>Payment & Delivery</h3>
+
+        <div class="vy-detail-row">
+          <span>Payment Method</span>
+          <strong>Cash on Delivery</strong>
+        </div>
+
+        <div class="vy-detail-row">
+          <span>Payment Status</span>
+          <strong>Pay on Delivery</strong>
+        </div>
+
+        <div class="vy-detail-row">
+          <span>Delivery</span>
+          <strong>Pakistan</strong>
+        </div>
+
+        <div class="vy-detail-row">
+          <span>Estimated Delivery</span>
+          <strong>3–5 Working Days</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="vy-confirmation-products">
+      <h3>Order Summary</h3>
+
+      ${checkoutCart.map(item => {
+        const productName = item.name || item.product_name || "Product";
+        const variantName = item.variant_name || item.variantName || "";
+        const quantity = Number(item.quantity || 1);
+        const unitPrice = Number(item.sale_price ?? item.price ?? item.unit_price ?? 0);
+        const imageUrl = item.image_url || item.image || item.imageUrl || "";
+        const lineTotal = unitPrice * quantity;
+
+        return `
+          <div class="vy-confirmation-product">
+            ${imageUrl ? `
+              <img
+                src="${escapeHTML(String(imageUrl))}"
+                alt="${escapeHTML(String(productName))}"
+                loading="lazy"
+              >
+            ` : ""}
+
+            <div class="vy-confirmation-product-info">
+              <strong>${escapeHTML(String(productName))}</strong>
+              ${variantName ? `
+                <p>Option: ${escapeHTML(String(variantName))}</p>
+              ` : ""}
+              <p>Quantity: ${quantity} × ${money(unitPrice)}</p>
+            </div>
+
+            <div class="vy-confirmation-product-price">
+              ${money(lineTotal)}
+            </div>
+          </div>
+        `;
+      }).join("")}
+
+      <div class="vy-confirmation-total">
+        <div class="vy-detail-row">
+          <span>Items</span>
+          <strong>${checkoutCart.reduce((sum, item) => sum + Number(item.quantity || 1), 0)}</strong>
+        </div>
+
+        <div class="vy-detail-row">
+          <span>Subtotal</span>
+          <strong>${money(subtotal)}</strong>
+        </div>
+
+        <div class="vy-detail-row">
+          <span>Delivery Charges</span>
+          <strong>${money(deliveryCharges)}</strong>
+        </div>
+
+        <div class="vy-detail-row vy-grand-total">
+          <span>Total to Pay</span>
+          <strong>${money(total)}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="vy-confirmation-footer">
+      <h3>Order Will Be Delivered Soon!</h3>
+      <p>
+        Thank you for choosing Veyora. Please keep your phone available
+        for delivery updates.
+      </p>
+
+      <a
+        class="vy-whatsapp-button"
+        href="https://wa.me/923713763119"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Contact Us on WhatsApp
+      </a>
+
+      <p style="margin-top:18px;letter-spacing:3px;font-weight:700;color:#a17b35;">
+        VEYORA
+      </p>
+      <p>Premium Shopping Experience</p>
+    </div>
+  </div>
+`;
 
     $("checkoutForm").reset();
     cart = [];
