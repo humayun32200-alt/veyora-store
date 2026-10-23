@@ -784,10 +784,23 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
     <h2 id="accountTitle">My VEYORA Account</h2>
     <p class="notice">Sign in or create your customer account.</p>
 
-    <div id="accountSignedIn" hidden>
-      <p id="accountUserEmail" class="notice"></p>
-      <button class="gold-button" id="accountSignOut" type="button">SIGN OUT</button>
-    </div>
+    
+<div id="accountSignedIn" hidden>
+  <p id="accountUserEmail" class="notice"></p>
+
+  <button class="gold-button" id="accountSignOut" type="button">
+    SIGN OUT
+  </button>
+
+  <section class="account-dashboard">
+    <h3>MY ORDERS</h3>
+    <p>Your orders, tracking and delivery updates.</p>
+
+    <div id="myOrderStats" class="account-order-stats"></div>
+    <div id="myOrdersList"></div>
+  </section>
+</div>
+
 
     <div id="accountAuthForm">
       <label for="accountName">Full name (for signup)</label>
@@ -1404,27 +1417,68 @@ function showProductDetails(id) {
   openModal("productModal");
 }
 
-/* ACCOUNT */
+
+/* ACCOUNT + CUSTOMER ORDER DASHBOARD */
 let accountBusy = false;
 
 function showAccountMessage(message) {
   $("accountMessage").textContent = message;
 }
+
+function escapeAccountHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function accountMoney(value) {
+  return "Rs " + Number(value || 0).toLocaleString("en-PK");
+}
+
+function normaliseOrderStatus(status) {
+  const s = String(status || "Confirmed").toLowerCase();
+
+  if (s === "delivered") return "Delivered";
+  if (s === "shipped" || s === "dispatched" || s === "shipping") {
+    return "Shipped";
+  }
+  if (s === "packed" || s === "processing") return "Packed";
+
+  return "Confirmed";
+}
+
 function showAccountSession(session) {
   const loggedIn = !!session?.user;
+
   $("accountSignedIn").hidden = !loggedIn;
   $("accountAuthForm").hidden = loggedIn;
+
   $("accountUserEmail").textContent = loggedIn
     ? "Signed in as: " + (session.user.email || "Customer")
     : "";
+
+  if (loggedIn) {
+    loadMyOrders();
+  } else {
+    const list = $("myOrdersList");
+    if (list) list.innerHTML = "";
+    const stats = $("myOrderStats");
+    if (stats) stats.innerHTML = "";
+  }
 }
+
 async function refreshAccountSession() {
   if (!db) {
     showAccountMessage("Account service unavailable. Please try again later.");
     return;
   }
+
   try {
-    const {data, error} = await db.auth.getSession();
+    const { data, error } = await db.auth.getSession();
     if (error) throw error;
     showAccountSession(data.session);
   } catch (error) {
@@ -1432,8 +1486,166 @@ async function refreshAccountSession() {
     showAccountMessage("Could not load your account session.");
   }
 }
+
+async function loadMyOrders() {
+  const list = $("myOrdersList");
+  if (!list || !db) return;
+
+  list.innerHTML = '<p class="account-orders-loading">Loading your orders...</p>';
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const user = sessionData.session?.user;
+
+    if (!user) {
+      list.innerHTML = '<p>Please sign in to view your orders.</p>';
+      return;
+    }
+
+    const { data: orders, error: ordersError } = await db
+      .from("orders")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (ordersError) throw ordersError;
+
+    const safeOrders = orders || [];
+    const stats = $("myOrderStats");
+
+    if (stats) {
+      const active = safeOrders.filter(o =>
+        normaliseOrderStatus(o.status) !== "Delivered"
+      ).length;
+
+      const delivered = safeOrders.filter(o =>
+        normaliseOrderStatus(o.status) === "Delivered"
+      ).length;
+
+      stats.innerHTML = `
+        <div class="account-stat">
+          <span>Total Orders</span>
+          <strong>${safeOrders.length}</strong>
+        </div>
+        <div class="account-stat">
+          <span>In Progress</span>
+          <strong>${active}</strong>
+        </div>
+        <div class="account-stat">
+          <span>Delivered</span>
+          <strong>${delivered}</strong>
+        </div>
+      `;
+    }
+
+    if (!safeOrders.length) {
+      list.innerHTML = `
+        <div class="account-empty">
+          <strong>No orders yet</strong>
+          <p>Your orders will appear here after you place an order.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const orderIds = safeOrders.map(order => order.id);
+
+    const { data: items, error: itemsError } = await db
+      .from("order_items")
+      .select("*")
+      .in("order_id", orderIds);
+
+    if (itemsError) throw itemsError;
+
+    const itemsByOrder = {};
+
+    (items || []).forEach(item => {
+      const key = String(item.order_id);
+      if (!itemsByOrder[key]) itemsByOrder[key] = [];
+      itemsByOrder[key].push(item);
+    });
+
+    list.innerHTML = safeOrders.map(order => {
+      const orderItems = itemsByOrder[String(order.id)] || [];
+      const status = normaliseOrderStatus(order.status);
+      const date = order.created_at
+        ? new Date(order.created_at).toLocaleDateString("en-PK", {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+          })
+        : "Date unavailable";
+
+      const steps = ["Confirmed", "Packed", "Shipped", "Delivered"];
+      const activeIndex = steps.indexOf(status);
+
+      const itemHTML = orderItems.map(item => `
+        <div class="account-order-item">
+          <div class="account-order-item-info">
+            <strong>${escapeAccountHTML(item.product_name || "Product")}</strong>
+            ${item.variant_name
+              ? `<span>${escapeAccountHTML(item.variant_name)}</span>`
+              : ""}
+            <small>Qty: ${Number(item.quantity || 1)}</small>
+          </div>
+          <strong>${accountMoney(item.line_total)}</strong>
+        </div>
+      `).join("");
+
+      return `
+        <article class="account-order-card">
+          <div class="account-order-top">
+            <div>
+              <span class="account-order-label">ORDER DATE</span>
+              <strong>${escapeAccountHTML(date)}</strong>
+            </div>
+            <span class="account-status">${escapeAccountHTML(status)}</span>
+          </div>
+
+          <div class="account-order-number">
+            <span>Tracking Number</span>
+            <strong>${escapeAccountHTML(order.tracking_number || "Pending")}</strong>
+          </div>
+
+          <div class="account-order-items">
+            ${itemHTML || "<p>Order item details unavailable.</p>"}
+          </div>
+
+          <div class="account-order-progress">
+            ${steps.map((step, index) => `
+              <div class="account-progress-step ${index <= activeIndex ? "is-done" : ""}">
+                <span class="account-progress-dot"></span>
+                <small>${step}</small>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="account-order-total">
+            <span>Order Total</span>
+            <strong>${accountMoney(order.total)}</strong>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Load customer orders error:", error);
+    list.innerHTML = `
+      <div class="account-empty">
+        <strong>Orders could not be loaded</strong>
+        <p>Please refresh and try again. If the problem continues, check your Supabase RLS policies.</p>
+      </div>
+    `;
+  }
+}
+
 async function runAccountAction(action) {
   if (accountBusy) return;
+
   if (!db) {
     showAccountMessage("Account service is unavailable. Please try again later.");
     return;
@@ -1447,33 +1659,38 @@ async function runAccountAction(action) {
     showAccountMessage("Please enter your email address.");
     return;
   }
+
   if (action !== "reset" && !password) {
     showAccountMessage("Please enter your password.");
     return;
   }
+
   if (action !== "reset" && password.length < 6) {
     showAccountMessage("Password must contain at least 6 characters.");
     return;
   }
+
   if (action === "signup" && !name) {
     showAccountMessage("Please enter your name to create an account.");
     return;
   }
 
   accountBusy = true;
-  ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => $(id).disabled = true);
+  ["accountSignIn", "accountSignUp", "accountReset"]
+    .forEach(id => $(id).disabled = true);
+
   showAccountMessage("Please wait...");
 
   try {
     let response;
 
     if (action === "signin") {
-      response = await db.auth.signInWithPassword({email, password});
+      response = await db.auth.signInWithPassword({ email, password });
     } else if (action === "signup") {
       response = await db.auth.signUp({
         email,
         password,
-        options: {data: {full_name: name}}
+        options: { data: { full_name: name } }
       });
     } else {
       response = await db.auth.resetPasswordForEmail(email, {
@@ -1491,36 +1708,47 @@ async function runAccountAction(action) {
         showAccountSession(response.data.session);
         showAccountMessage("Your account has been created.");
       } else {
-        showAccountMessage("Signup submitted. Please check your email for the confirmation link.");
+        showAccountMessage(
+          "Please check your email and confirm your account before signing in."
+        );
       }
     } else {
-      showAccountMessage("If an account exists for this email, a password reset email will be sent.");
+      showAccountMessage(
+        "If an account exists for this email, a password reset email will be sent."
+      );
     }
   } catch (error) {
     console.error("Account action error:", error);
     showAccountMessage(error.message || "Account action failed. Please try again.");
   } finally {
     accountBusy = false;
-    ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => $(id).disabled = false);
+    ["accountSignIn", "accountSignUp", "accountReset"]
+      .forEach(id => $(id).disabled = false);
   }
 }
 
 $("accountSignIn").addEventListener("click", () => runAccountAction("signin"));
 $("accountSignUp").addEventListener("click", () => runAccountAction("signup"));
 $("accountReset").addEventListener("click", () => runAccountAction("reset"));
+
 $("accountSignOut").addEventListener("click", async () => {
   if (!db) return;
-  const {error} = await db.auth.signOut();
+
+  const { error } = await db.auth.signOut();
+
   if (error) {
     showAccountMessage(error.message);
     return;
   }
+
   showAccountSession(null);
   showAccountMessage("You have signed out.");
 });
 
 if (db) {
-  db.auth.onAuthStateChange((_event, session) => showAccountSession(session));
+  db.auth.onAuthStateChange((_event, session) => {
+    showAccountSession(session);
+  });
 }
 
 /* ORDER TRACKING */
