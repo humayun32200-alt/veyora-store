@@ -412,6 +412,85 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   .tracking-step{font-size:7px}
   .tracking-arrow{font-size:12px}
 }
+
+/* VEYORA BANNER STYLE */
+.veyora-banner {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  background: #171510;
+  color: #fff5dc;
+}
+.veyora-banner[hidden] {
+  display: none !important;
+}
+.veyora-banner-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.veyora-banner-overlay {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  min-height: 390px;
+  padding: 60px 8%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  background: linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.35), transparent);
+}
+.veyora-banner-label {
+  color: #d8b56a;
+  letter-spacing: 3px;
+  font-size: 10px;
+}
+.veyora-banner-overlay h1 {
+  max-width: 650px;
+  margin: 10px 0;
+  font-size: clamp(28px, 5vw, 54px);
+}
+.veyora-banner-overlay p:not(.veyora-banner-label) {
+  max-width: 500px;
+  line-height: 1.7;
+}
+#veyoraBannerButton {
+  margin-top: 18px;
+  padding: 14px 25px;
+  border: 1px solid #d8b56a;
+  background: #d8b56a;
+  color: #171510;
+  font-weight: bold;
+  cursor: pointer;
+}
+.veyora-banner-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}
+.veyora-banner-dot {
+  width: 22px;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  background: #817968;
+  cursor: pointer;
+}
+.veyora-banner-dot.active {
+  background: #e0bd73;
+}
+@media (max-width: 600px) {
+  .veyora-banner,
+  .veyora-banner-overlay {
+    min-height: 320px;
+  }
+  .veyora-banner-overlay {
+    padding: 38px 22px;
+  }
+}
 </style>
 </head>
 
@@ -488,6 +567,17 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
       <button class="category-button active" data-category="all">All</button>
     </div>
   </section>
+
+<section id="veyoraBanner" class="veyora-banner" hidden>
+  <img id="veyoraBannerImage" class="veyora-banner-image" alt="VEYORA collection">
+  <div class="veyora-banner-overlay">
+    <p class="veyora-banner-label">VEYORA · NEW COLLECTION</p>
+    <h1 id="veyoraBannerTitle"></h1>
+    <p id="veyoraBannerDescription"></p>
+    <button id="veyoraBannerButton" type="button">SHOP NOW</button>
+    <div id="veyoraBannerDots" class="veyora-banner-dots"></div>
+  </div>
+</section>
 
   <section class="section" id="products">
     <div class="section-heading">
@@ -1702,6 +1792,105 @@ async function loadStore() {
   }
 }
 
+/* VEYORA HOMEPAGE BANNERS */
+let veyoraBanners = [];
+let veyoraBannerIndex = 0;
+let veyoraBannerTimer = null;
+
+function renderVeyoraBanner() {
+  const section = document.getElementById("veyoraBanner");
+  if (!section) return;
+
+  if (!veyoraBanners.length) {
+    section.hidden = true;
+    if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
+    veyoraBannerTimer = null;
+    return;
+  }
+
+  section.hidden = false;
+
+  const banner = veyoraBanners[veyoraBannerIndex];
+  const image = document.getElementById("veyoraBannerImage");
+
+  image.src = banner.image_url || "";
+  image.alt = banner.title || "VEYORA collection";
+  image.style.display = banner.image_url ? "block" : "none";
+
+  document.getElementById("veyoraBannerTitle").textContent = banner.title || "";
+  document.getElementById("veyoraBannerDescription").textContent =
+    banner.description || "";
+
+  const button = document.getElementById("veyoraBannerButton");
+  button.textContent = banner.button_text || "SHOP NOW";
+  button.style.display = "inline-block";
+
+  const dots = document.getElementById("veyoraBannerDots");
+  dots.innerHTML = veyoraBanners.map((item, index) =>
+    `<button type="button" class="veyora-banner-dot ${index === veyoraBannerIndex ? "active" : ""}" data-banner-index="${index}" aria-label="Show banner ${index + 1}"></button>`
+  ).join("");
+
+  dots.querySelectorAll("[data-banner-index]").forEach(dot => {
+    dot.addEventListener("click", () => {
+      veyoraBannerIndex = Number(dot.dataset.bannerIndex);
+      renderVeyoraBanner();
+      restartVeyoraBannerTimer();
+    });
+  });
+
+  button.onclick = () => {
+    const productId = banner.target_product_id;
+
+    if (!productId) {
+      document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
+    const product = products.find(p => String(p.id) === String(productId));
+
+    if (product) {
+      showProductDetails(product.id);
+    } else {
+      alert("This banner's selected product is unavailable.");
+    }
+  };
+}
+
+function restartVeyoraBannerTimer() {
+  if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
+
+  if (veyoraBanners.length > 1) {
+    veyoraBannerTimer = setInterval(() => {
+      veyoraBannerIndex = (veyoraBannerIndex + 1) % veyoraBanners.length;
+      renderVeyoraBanner();
+    }, 3000);
+  }
+}
+
+async function loadVeyoraBanners() {
+  const section = document.getElementById("veyoraBanner");
+  if (!section || !db) return;
+
+  try {
+    const { data, error } = await db
+      .from("banners")
+      .select("id,title,description,image_url,button_text,target_product_id,is_published,sort_order")
+      .eq("is_published", true)
+      .order("sort_order", { ascending: true });
+
+    if (error) throw error;
+
+    veyoraBanners = data || [];
+    veyoraBannerIndex = 0;
+    renderVeyoraBanner();
+    restartVeyoraBannerTimer();
+  } catch (error) {
+    console.error("VEYORA banner loading error:", error);
+  }
+}
+
+loadVeyoraBanners();
+
 loadStore();
 
 /* PAGE VIEW ANALYTICS */
@@ -1733,5 +1922,7 @@ loadStore();
   }
 })();
 </script>
+
+
 </body>
 </html>
