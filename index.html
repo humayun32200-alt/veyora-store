@@ -1602,12 +1602,14 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
   });
 });
 
+
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
+
   $("categoryList").innerHTML =
-    <button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button> +
+    `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
     visible.map(category =>
-      <button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>
+      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
     ).join("");
 
   $("categoryList").querySelectorAll("[data-category]").forEach(button => {
@@ -1620,6 +1622,7 @@ function renderCategories() {
     });
   });
 }
+
 
 function getProductImage(product) {
   const found = productImages.find(image => String(image.product_id) === String(product.id));
