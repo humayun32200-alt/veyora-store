@@ -1908,12 +1908,13 @@ function showProductDetails(id) {
     if (image) {
       image.style.display = imageURL ? "block" : "none";
       if (imageURL) image.src = imageURL;
-    } else if (imageURL) {
+        } else if (imageURL) {
       const placeholder = $("detailImagePlaceholder");
       if (placeholder) {
-  placeholder.outerHTML =
-    `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
-}
+        placeholder.outerHTML =
+          `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
+      }
+    }
 
     $("detailPrice").innerHTML = "<strong>" + money(variantPrice(variant, product)) + "</strong>";
 
