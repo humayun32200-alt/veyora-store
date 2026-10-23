@@ -144,7 +144,18 @@ th{color:var(--gold)}
   </div>
   <div class="panel" style="overflow:auto">
    <table>
-    <thead><tr><th>Image</th><th>Name</th><th>SKU</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
+    <thead>
+<tr>
+<th>Image</th>
+<th>Name</th>
+<th>Product Number</th>
+<th>SKU</th>
+<th>Category</th>
+<th>Compare-at / Sale</th>
+<th>Stock</th>
+<th>Actions</th>
+</tr>
+</thead>
     <tbody id="productsBody"></tbody>
    </table>
   </div>
@@ -233,6 +244,16 @@ th{color:var(--gold)}
 
   <form id="productForm">
    <input type="hidden" id="pId">
+   <div class="field">
+  <label for="pNumber">Product Number</label>
+  <input
+    type="text"
+    id="pNumber"
+    readonly
+    placeholder="Product number save hone ke baad milega"
+  >
+  <small>Admin only — all variants share this product number.</small>
+</div>
    <div class="grid2">
     <div><label class="label">Product Name *</label><input id="pName" class="field" required></div>
     <div><label class="label">Category *</label><select id="pCategory" class="field" required></select></div>
@@ -387,6 +408,16 @@ const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
+ function makeProductNumber(id){
+ return 'VYR-'+String(id||'')
+  .replace(/-/g,'')
+  .slice(0,12)
+  .toUpperCase();
+}
+
+function getProductNumber(product){
+ return product?.product_number || makeProductNumber(product?.id);
+}
 
 /* ADDED: Banner state */
 let banners=[];
@@ -501,13 +532,16 @@ function renderProducts(){
   return `<tr>
    <td>${p._image?`<img src="${esc(p._image)}" style="width:45px;height:45px;object-fit:cover;border-radius:7px">`:'—'}</td>
    <td>${esc(p.name)}</td>
-   <td>${esc(p.sku||'—')}</td>
+<td style="color:var(--gold);font-weight:700;white-space:nowrap">
+ ${esc(getProductNumber(p))}
+</td>
+<td>${esc(p.sku||'—')}</td>
    <td>${esc(categories.find(c=>String(c.id)===String(p.category_id))?.name||'—')}</td>
    <td>${priceHtml}</td>
    <td>${Number(p.stock_quantity)||0}</td>
    <td><button class="btn2" data-editprod="${esc(p.id)}">Edit</button> <button class="btn2" data-delprod="${esc(p.id)}">Delete</button></td>
   </tr>`;
- }).join(''):'<tr><td colspan="7">No products yet.</td></tr>';
+ }).join(''):'<tr><td colspan="8">No products yet.</td></tr>';
 
  document.querySelectorAll('[data-editprod]').forEach(b=>b.onclick=()=>editProduct(b.dataset.editprod));
  document.querySelectorAll('[data-delprod]').forEach(b=>b.onclick=()=>deleteProduct(b.dataset.delprod));
@@ -516,6 +550,7 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
+ $('pNumber').value='';
  $('pStock').value='0';
  $('pActive').checked=true;
  $('pFeatured').checked=false;
@@ -703,8 +738,27 @@ $('productForm').addEventListener('submit',async e=>{
    productId=data.id;
   }
 
-  await saveMainImage(productId);
-  await saveVariants(productId,storedCompare,storedSale);
+  // Save the product number
+const existingProduct = products.find(
+  p => String(p.id) === String(productId)
+);
+
+const number = existingProduct?.product_number ||
+  makeProductNumber(productId);
+
+const { error: numberError } = await db
+  .from('products')
+  .update({ product_number: number })
+  .eq('id', productId);
+
+if (numberError) {
+  throw numberError;
+}
+
+$('pNumber').value = number;
+
+await saveMainImage(productId);
+await saveVariants(productId, storedCompare, storedSale);
   closeProduct();
   await loadProducts();
   note('Product, prices, images and variants saved.');
@@ -722,6 +776,7 @@ async function editProduct(id){
  openProduct();
  $('productTitle').textContent='Edit Product';
  $('pId').value=p.id;
+ $('pNumber').value=getProductNumber(p);
  $('pName').value=p.name||'';
  $('pCategory').value=p.category_id||'';
  $('pSku').value=p.sku||'';
