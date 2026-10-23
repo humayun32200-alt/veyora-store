@@ -818,40 +818,43 @@ input[type="submit"]:disabled {
 <body>
 <div class="announcement">✦  WELCOME TO VEYORA  ·  CASH ON DELIVERY IN PAKISTAN  ✦</div>
 
-
-
-<header>
+<header class="veyora-header">
   <div class="header-main">
-    <a href="index.html" class="brand" aria-label="VEYORA Home"
-       style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+
+    <a href="index.html" class="brand" aria-label="VEYORA Home">
       <img
         src="./WhatsApp%20Image%202026-10-12%20at%2011.22.27%20PM.jpeg"
         alt="VEYORA Logo"
-        style="width:55px;height:55px;max-width:55px;max-height:55px;object-fit:contain;display:block;flex-shrink:0;"
       >
       <div class="brand-text">
         <div class="brand-name">VEYORA</div>
         <div class="brand-sub">MAYU WORLD</div>
       </div>
     </a>
-  </div>
-</header>
-
-
 
     <div class="search">
-      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="Search products..."
+        aria-label="Search products"
+      >
       <button id="searchButton" type="button" aria-label="Search">⌕</button>
     </div>
 
     <div class="header-actions">
       <button class="icon-button" id="accountButton" type="button" aria-label="My Account">
-        ♙<span class="icon-label">Account</span>
+        ♙
+        <span class="icon-label">Account</span>
       </button>
+
       <button class="icon-button" id="cartButton" type="button" aria-label="Shopping Cart">
-        🛒<span class="cart-count" id="cartCount">0</span><span class="icon-label">Cart</span>
+        🛒
+        <span class="cart-count" id="cartCount">0</span>
+        <span class="icon-label">Cart</span>
       </button>
     </div>
+
   </div>
 
   <nav aria-label="Main navigation">
@@ -861,6 +864,8 @@ input[type="submit"]:disabled {
     <button id="trackButton" type="button">Track Order</button>
   </nav>
 </header>
+
+<main>
 
 <main>
   <!-- DYNAMIC BANNER SECTION -->
