@@ -849,165 +849,17 @@ header.veyora-header .header-main > a.brand img,
   position: static !important;
   flex: 0 0 45px !important;
 }
-  
-/* VEYORA — Balanced Premium Header */
-header.veyora-header .header-main {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 12px 4%;
-  display: grid !important;
-  grid-template-columns: minmax(200px, 1fr) minmax(220px, 1.4fr) minmax(150px, 1fr) !important;
-  align-items: center;
-  gap: 24px;
-}
 
-header.veyora-header .brand {
+/* Keep header layout controlled */
+.veyora-header .header-main {
   display: flex !important;
-  align-items: center;
-  justify-self: start;
-  min-width: 0;
-  flex: none !important;
-  gap: 10px;
+  align-items: center !important;
 }
 
-header.veyora-header .brand img {
-  display: block;
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  max-width: 48px !important;
-  max-height: 48px !important;
-  object-fit: contain;
-  flex: 0 0 48px !important;
-}
-
-header.veyora-header .brand-text {
-  min-width: 0;
-}
-
-header.veyora-header .brand-name {
-  font-size: 25px !important;
-  line-height: 1.1;
-  letter-spacing: 3px;
-}
-
-header.veyora-header .brand-sub {
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-align: center;
-}
-
-header.veyora-header .search {
-  width: 100%;
-  max-width: 440px;
-  justify-self: center;
-  min-width: 0;
-}
-
-header.veyora-header .header-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-  justify-self: end;
-}
-
-header.veyora-header .icon-button {
-  min-width: 48px;
-  font-size: 23px;
-}
-
-header.veyora-header .icon-label {
-  font-size: 10px;
-  margin-top: 4px;
-}
-
-@media (max-width: 900px) {
-  header.veyora-header .header-main {
-    grid-template-columns: minmax(160px, 1fr) minmax(180px, 1.2fr) minmax(110px, 1fr) !important;
-    gap: 12px;
-    padding: 12px 3%;
-  }
-
-  header.veyora-header .brand img {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-    flex-basis: 40px !important;
-  }
-
-  header.veyora-header .brand-name {
-    font-size: 20px !important;
-    letter-spacing: 2px;
-  }
-
-  header.veyora-header .header-actions {
-    gap: 5px;
-  }
-
-  header.veyora-header .icon-button {
-    min-width: 40px;
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  header.veyora-header .header-main {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 9px;
-    padding: 9px 3%;
-  }
-
-  header.veyora-header .brand {
-    gap: 6px;
-  }
-
-  header.veyora-header .brand img {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    flex-basis: 36px !important;
-  }
-
-  header.veyora-header .brand-name {
-    font-size: 18px !important;
-    letter-spacing: 2px;
-  }
-
-  header.veyora-header .brand-sub {
-    font-size: 7px;
-    letter-spacing: 1.5px;
-  }
-
-  header.veyora-header .search {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    max-width: none;
-  }
-
-  header.veyora-header .header-actions {
-    grid-column: 2;
-    grid-row: 1;
-    gap: 5px;
-  }
-
-  header.veyora-header .icon-button {
-    min-width: 36px;
-    padding: 2px;
-    font-size: 19px;
-  }
-
-  header.veyora-header .icon-label {
-    font-size: 8px;
-  }
+.veyora-header .brand {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
 }
 
 </style>
@@ -1064,6 +916,7 @@ header.veyora-header .icon-label {
 </header>
 
 <main>
+
 <main>
   <!-- DYNAMIC BANNER SECTION -->
   <section id="veyoraBanner" class="veyora-banner" hidden>
@@ -1344,8 +1197,7 @@ header.veyora-header .icon-label {
 
       <label for="accountEmail">Email address</label>
       <input id="accountEmail" type="email" required autocomplete="email" placeholder="you@example.com">
-
-      <label for="accountPassword">Password</label>
+<label for="accountPassword">Password</label>
       <input id="accountPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters">
 
       <button class="gold-button" id="accountSignIn" type="button">SIGN IN</button>
@@ -1603,9 +1455,9 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
   $("categoryList").innerHTML =
-    `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
+    <button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button> +
     visible.map(category =>
-      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
+      <button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>
     ).join("");
 
   $("categoryList").querySelectorAll("[data-category]").forEach(button => {
@@ -1755,17 +1607,17 @@ function renderProducts() {
     const sale = isOnSale(product);
     const name = escapeHTML(product.name || "VEYORA product");
     const imageHTML = image
-      ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`
-      : `<div class="image-placeholder">VEYORA</div>`;
+      ? <img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>
+      : <div class="image-placeholder">VEYORA</div>;
 
     return `<article class="product-card">
-      <div class="image-wrap">${imageHTML}${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}</div>
+      <div class="image-wrap">${imageHTML}${sale ? <span class="sale-badge">${discountPercent(product)}% OFF</span> : ""}</div>
       <div class="product-info">
         <div class="product-category">${escapeHTML(getProductCategory(product))}</div>
         <div class="product-name">${name}</div>
         <div class="prices">
           <span class="sale-price">${money(currentPrice(product))}</span>
-          ${sale ? `<span class="old-price">${money(product.retail_price)}</span>` : ""}
+          ${sale ? <span class="old-price">${money(product.retail_price)}</span> : ""}
         </div>
         <div class="product-actions">
           <button class="small-button" data-details="${escapeHTML(product.id)}" type="button">QUICK VIEW</button>
@@ -1831,10 +1683,10 @@ function renderCart() {
   $("checkoutButton").disabled = false;
   $("cartItems").innerHTML = cart.map(item => `
     <div class="cart-item">
-      ${item.image ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'">` : ""}
+      ${item.image ? <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'"> : ""}
       <span style="flex:1">
         <strong>${escapeHTML(item.name)}</strong>
-        ${item.variant_name ? `<br><small>${escapeHTML(item.variant_name)}</small>` : ""}
+        ${item.variant_name ? <br><small>${escapeHTML(item.variant_name)}</small> : ""}
         <br>Qty: ${Number(item.quantity)}
         <br>${money(item.price)} each
       </span>
@@ -1870,14 +1722,14 @@ function showProductDetails(id) {
   const firstImage = firstVariant?.image_url || mainImage;
 
   const imageHTML = firstImage
-    ? `<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`
-    : `<div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>`;
+    ? <img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">
+    : <div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>;
 
   const variantsHTML = productVariantList.length
     ? `<label class="variant-label">Choose design / variant</label>
        <div class="design-options" id="designOptions">
        ${productVariantList.map((variant, index) =>
-         `<button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>`
+         <button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>
        ).join("")}
        </div>
        <div class="design-image-label" id="selectedDesignName"></div>
@@ -1906,7 +1758,7 @@ function showProductDetails(id) {
     } else if (imageURL) {
       const placeholder = $("detailImagePlaceholder");
       if (placeholder) placeholder.outerHTML =
-        `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
+        <img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">;
     }
 
     $("detailPrice").innerHTML = "<strong>" + money(variantPrice(variant, product)) + "</strong>";
@@ -2331,616 +2183,87 @@ $("checkoutForm").addEventListener("submit", async event => {
 
     // MATCHING IMAGE UI PATTERN CARD (WITHOUT TRACK NOW BUTTON & ORDER/PACKAGE ICON INSTEAD OF LOCATION)
     result.innerHTML = `
-  <style>
-    .vy-confirmation {
-      max-width: 900px;
-      margin: 24px auto;
-      padding: 24px;
-      background: #fffdf8;
-      color: #25231e;
-      border: 1px solid #d6bd83;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
-      font-family: Arial, sans-serif;
-    }
-
-    .vy-confirmation * {
-      box-sizing: border-box;
-    }
-
-    .vy-confirmation-header {
-      text-align: center;
-      padding: 10px 0 22px;
-      border-bottom: 1px solid #e8dfcc;
-    }
-
-    .vy-confirmation-brand {
-      color: #a17b35;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      margin-bottom: 12px;
-    }
-
-    .vy-confirmation-header h2 {
-      margin: 0 0 10px;
-      font-size: 27px;
-      color: #24221d;
-    }
-
-    .vy-confirmation-header p {
-      color: #716b60;
-      font-size: 14px;
-      line-height: 1.7;
-      margin: 6px 0;
-    }
-
-    .vy-status {
-      display: inline-block;
-      background: #e7f5e9;
-      color: #216b34;
-      padding: 7px 15px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 700;
-      margin: 8px 0;
-    }
-
-    .vy-tracking-box {
-      margin-top: 18px;
-      padding: 16px;
-      background: #f5efe1;
-      border: 1px dashed #b49352;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .vy-tracking-label {
-      font-size: 12px;
-      color: #75684e;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .vy-tracking-number {
-      display: block;
-      margin: 8px 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: #9a742e;
-      overflow-wrap: anywhere;
-    }
-
-    .vy-confirmation-note {
-      font-size: 13px;
-      line-height: 1.6;
-      color: #655d50;
-      margin: 8px 0 0;
-    }
-
-    .vy-confirmation-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .vy-confirmation-section {
-      min-width: 0;
-      padding: 17px;
-      border: 1px solid #eee6d7;
-      border-radius: 12px;
-      background: #fff;
-    }
-
-    .vy-confirmation-section h3 {
-      margin: 0 0 14px;
-      font-size: 15px;
-      color: #9a742e;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee6d7;
-    }
-
-    .vy-detail-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 10px 0;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .vy-detail-row span:first-child {
-      color: #777064;
-      flex-shrink: 0;
-    }
-
-    .vy-detail-row strong {
-      text-align: right;
-      overflow-wrap: anywhere;
-    }
-
-    .vy-confirmation-products {
-      margin-top: 20px;
-      padding: 17px;
-      border: 1px solid #eee6d7;
-      border-radius: 12px;
-      background: #fff;
-    }
-
-    .vy-confirmation-products h3 {
-      margin: 0 0 15px;
-      font-size: 16px;
-      color: #9a742e;
-    }
-
-    .vy-confirmation-product {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 13px 0;
-      border-bottom: 1px solid #f0eadf;
-    }
-
-    .vy-confirmation-product:last-child {
-      border-bottom: 0;
-    }
-
-    .vy-confirmation-product img {
-      width: 70px;
-      height: 78px;
-      object-fit: cover;
-      border-radius: 8px;
-      background: #f5f0e6;
-      flex-shrink: 0;
-    }
-
-    .vy-confirmation-product-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .vy-confirmation-product-info strong {
-      display: block;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    .vy-confirmation-product-info p {
-      margin: 5px 0 0;
-      color: #777064;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .vy-confirmation-product-price {
-      text-align: right;
-      font-size: 13px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .vy-confirmation-total {
-      max-width: 390px;
-      margin: 18px 0 0 auto;
-    }
-
-    .vy-confirmation-total .vy-grand-total {
-      margin-top: 12px;
-      padding-top: 13px;
-      border-top: 1px solid #d8c49a;
-      font-size: 18px;
-      color: #9a742e;
-      font-weight: 700;
-    }
-
-    .vy-confirmation-footer {
-      text-align: center;
-      padding-top: 22px;
-    }
-
-    .vy-confirmation-footer h3 {
-      font-size: 20px;
-      margin: 0 0 8px;
-    }
-
-    .vy-confirmation-footer p {
-      font-size: 13px;
-      line-height: 1.7;
-      color: #716b60;
-    }
-
-    .vy-whatsapp-button {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 13px 22px;
-      border-radius: 8px;
-      background: #171713;
-      color: #f4dfad !important;
-      text-decoration: none !important;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    @media(max-width:600px) {
-      .vy-confirmation {
-        padding: 15px;
-        margin: 12px auto;
-      }
-
-      .vy-confirmation-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .vy-confirmation-header h2 {
-        font-size: 23px;
-      }
-
-      .vy-confirmation-product img {
-        width: 58px;
-        height: 66px;
-      }
-
-      .vy-confirmation-product {
-        gap: 9px;
-      }
-
-      .vy-confirmation-product-price {
-        font-size: 12px;
-      }
-
-      .vy-tracking-number {
-        font-size: 19px;
-      }
-    }
-    /* VEYORA — Compact Premium Order Confirmation */
-
-.vy-confirmation {
-  max-width: 850px !important;
-  margin: 12px auto !important;
-  padding: 18px !important;
-  background: #f5efdf !important;
-  color: #211e18 !important;
-  border: 1px solid #c9a45c !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,.18) !important;
-}
-
-.vy-confirmation-header {
-  padding: 4px 0 14px !important;
-}
-
-.vy-confirmation-header h2 {
-  font-size: 23px !important;
-  margin: 0 0 6px !important;
-}
-
-.vy-confirmation-header p {
-  margin: 4px 0 !important;
-  line-height: 1.45 !important;
-}
-
-.vy-tracking-box {
-  margin-top: 12px !important;
-  padding: 11px !important;
-  background: #eae0c9 !important;
-}
-
-.vy-tracking-number {
-  margin: 5px 0 !important;
-  font-size: 19px !important;
-}
-
-.vy-confirmation-note {
-  margin: 5px 0 0 !important;
-  line-height: 1.45 !important;
-}
-
-.vy-confirmation-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 12px !important;
-  margin-top: 14px !important;
-  align-items: start !important;
-}
-
-.vy-confirmation-section {
-  padding: 12px !important;
-  background: #211f1a !important;
-  color: #f5efdf !important;
-  border: 1px solid #b89650 !important;
-  border-radius: 9px !important;
-}
-
-.vy-confirmation-section h3,
-.vy-confirmation-products h3 {
-  margin: 0 0 9px !important;
-  padding-bottom: 7px !important;
-  font-size: 14px !important;
-}
-
-.vy-confirmation-section h3 {
-  color: #d5b46b !important;
-  border-bottom-color: #51452f !important;
-}
-
-.vy-detail-row {
-  margin: 6px 0 !important;
-  gap: 8px !important;
-  font-size: 12px !important;
-  line-height: 1.4 !important;
-}
-
-.vy-confirmation-section .vy-detail-row span:first-child {
-  color: #d2c8b3 !important;
-}
-
-.vy-confirmation-section .vy-detail-row strong {
-  color: #fff8e9 !important;
-}
-
-.vy-confirmation-products {
-  margin-top: 12px !important;
-  padding: 12px !important;
-  background: #fffaf0 !important;
-  border: 1px solid #d8c49a !important;
-  border-radius: 9px !important;
-}
-
-.vy-confirmation-products h3 {
-  color: #9a742e !important;
-}
-
-.vy-confirmation-product {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 8px 0 !important;
-  min-height: 0 !important;
-  border-bottom: 1px solid #e9dfcc !important;
-}
-
-.vy-confirmation-product img {
-  width: 54px !important;
-  height: 58px !important;
-  object-fit: cover !important;
-  border-radius: 6px !important;
-}
-
-.vy-confirmation-product-info {
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-.vy-confirmation-product-info strong {
-  font-size: 12px !important;
-  line-height: 1.4 !important;
-}
-
-.vy-confirmation-product-info p {
-  margin: 3px 0 0 !important;
-  font-size: 11px !important;
-  line-height: 1.4 !important;
-}
-
-.vy-confirmation-product-price {
-  font-size: 12px !important;
-}
-
-.vy-confirmation-total {
-  max-width: 360px !important;
-  margin: 10px 0 0 auto !important;
-}
-
-.vy-confirmation-total .vy-grand-total {
-  margin-top: 7px !important;
-  padding-top: 8px !important;
-  font-size: 15px !important;
-}
-
-.vy-confirmation-footer {
-  margin-top: 14px !important;
-  padding-top: 13px !important;
-  border-top: 1px solid #d8c49a !important;
-}
-
-.vy-confirmation-footer h3 {
-  margin: 0 0 5px !important;
-  font-size: 18px !important;
-}
-
-.vy-confirmation-footer p {
-  margin: 5px 0 !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-}
-
-.vy-whatsapp-button {
-  margin-top: 7px !important;
-  padding: 10px 17px !important;
-}
-
-@media (max-width: 600px) {
-  .vy-confirmation {
-    padding: 12px !important;
-    margin: 8px auto !important;
-  }
-
-  .vy-confirmation-grid {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-  }
-
-  .vy-confirmation-header h2 {
-    font-size: 21px !important;
-  }
-
-  .vy-confirmation-product img {
-    width: 48px !important;
-    height: 52px !important;
-  }
-}
-  </style>
-
-  <div class="vy-confirmation">
-    <div class="vy-confirmation-header">
-      <div class="vy-confirmation-brand">VEYORA</div>
-      <h2>Thank You for Your Order!</h2>
-      <div class="vy-status">Order Status: Confirmed</div>
-      <p>Your order has been received successfully.</p>
-      <p>We will process your order and prepare it for delivery.</p>
-
-      <div class="vy-tracking-box">
-        <div class="vy-tracking-label">Your Tracking Number</div>
-        <span class="vy-tracking-number">${escapeHTML(String(reference ?? ""))}</span>
-        <p class="vy-confirmation-note">
-          Please save your tracking number. Open the
-          <strong>Track Order</strong> option on our website and enter this
-          number to check future updates to your order status.
-        </p>
-      </div>
-    </div>
-
-    <div class="vy-confirmation-grid">
-      <div class="vy-confirmation-section">
-        <h3>Customer Details</h3>
-
-        <div class="vy-detail-row">
-          <span>Name</span>
-          <strong>${escapeHTML(String(customerName ?? ""))}</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Phone</span>
-          <strong>${escapeHTML(String(phone ?? ""))}</strong>
-        </div>
-
-        ${email ? `
-          <div class="vy-detail-row">
-            <span>Email</span>
-            <strong>${escapeHTML(String(email))}</strong>
-          </div>
-        ` : ""}
-
-        <div class="vy-detail-row">
-          <span>City</span>
-          <strong>${escapeHTML(String(city ?? ""))}</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Address</span>
-          <strong>${escapeHTML(String(address ?? ""))}</strong>
-        </div>
-      </div>
-
-      <div class="vy-confirmation-section">
-        <h3>Payment & Delivery</h3>
-
-        <div class="vy-detail-row">
-          <span>Payment Method</span>
-          <strong>Cash on Delivery</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Payment Status</span>
-          <strong>Pay on Delivery</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Delivery</span>
-          <strong>Pakistan</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Estimated Delivery</span>
-          <strong>3–5 Working Days</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="vy-confirmation-products">
-      <h3>Order Summary</h3>
-
-      ${checkoutCart.map(item => {
-        const productName = item.name || item.product_name || "Product";
-        const variantName = item.variant_name || item.variantName || "";
-        const quantity = Number(item.quantity || 1);
-        const unitPrice = Number(item.sale_price ?? item.price ?? item.unit_price ?? 0);
-        const imageUrl = item.image_url || item.image || item.imageUrl || "";
-        const lineTotal = unitPrice * quantity;
-
-        return `
-          <div class="vy-confirmation-product">
-            ${imageUrl ? `
-              <img
-                src="${escapeHTML(String(imageUrl))}"
-                alt="${escapeHTML(String(productName))}"
-                loading="lazy"
-              >
-            ` : ""}
-
-            <div class="vy-confirmation-product-info">
-              <strong>${escapeHTML(String(productName))}</strong>
-              ${variantName ? `
-                <p>Option: ${escapeHTML(String(variantName))}</p>
-              ` : ""}
-              <p>Quantity: ${quantity} × ${money(unitPrice)}</p>
+      <div class="vy-success-card">
+        <div class="vy-success-badge">✓</div>
+        <div class="vy-success-title">✦ ORDER SUBMITTED ✦</div>
+        <div class="vy-success-subtitle">Your order has been placed successfully!</div>
+        
+        <div class="vy-thankyou">Thank You! ♡</div>
+        <div class="vy-appreciation">We appreciate your trust in Veyora. Your order is now in process and will be delivered soon.</div>
+
+        <div class="vy-summary-box">
+          <div class="vy-summary-header">📦 Order Summary</div>
+          
+          <div class="vy-grid-2">
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">📦</span>
+              <div>
+                <div class="vy-grid-label">Subtotal</div>
+                <div class="vy-grid-val">${money(subtotal)}</div>
+              </div>
             </div>
-
-            <div class="vy-confirmation-product-price">
-              ${money(lineTotal)}
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">🚚</span>
+              <div>
+                <div class="vy-grid-label">Delivery charges</div>
+                <div class="vy-grid-val">${money(deliveryCharges)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">👛</span>
+              <div>
+                <div class="vy-grid-label">Total payable</div>
+                <div class="vy-grid-val">${money(total)}</div>
+              </div>
+            </div>
+            
+            <div class="vy-grid-item">
+              <span class="vy-grid-icon">👤</span>
+              <div>
+                <div class="vy-grid-label">Products saved</div>
+                <div class="vy-grid-val">${verifyRows.length}</div>
+              </div>
             </div>
           </div>
-        `;
-      }).join("")}
 
-      <div class="vy-confirmation-total">
-        <div class="vy-detail-row">
-          <span>Items</span>
-          <strong>${checkoutCart.reduce((sum, item) => sum + Number(item.quantity || 1), 0)}</strong>
+          <div class="vy-full-item">
+            <span class="vy-grid-icon">📦</span>
+            <div>
+              <div class="vy-grid-label">Delivery breakdown</div>
+              <div style="font-size:11px;color:#f0dba5;">${renderDeliveryBreakdown(checkoutCart)}</div>
+            </div>
+          </div>
+
+          <div class="vy-full-item">
+            <span class="vy-grid-icon">💳</span>
+            <div>
+              <div class="vy-grid-label">Payment</div>
+              <div style="font-size:11px;color:#f0dba5;">Cash on Delivery</div>
+            </div>
+          </div>
+
+          <div class="vy-full-item vy-track-highlight">
+            <span class="vy-grid-icon" style="font-size:20px;">📋</span>
+            <div>
+              <div class="vy-grid-label">Tracking Number</div>
+              <div style="font-size:15px;font-weight:bold;color:#fff8e9;letter-spacing:1px;">${escapeHTML(reference)}</div>
+            </div>
+          </div>
         </div>
 
-        <div class="vy-detail-row">
-          <span>Subtotal</span>
-          <strong>${money(subtotal)}</strong>
-        </div>
+        <div style="font-size:11px;color:#b6ad9a;margin-top:12px;">🚚 Order will be delivered soon!</div>
+        <div style="color:#c5a15b;font-size:10px;margin-top:3px;">♥</div>
 
-        <div class="vy-detail-row">
-          <span>Delivery Charges</span>
-          <strong>${money(deliveryCharges)}</strong>
-        </div>
-
-        <div class="vy-detail-row vy-grand-total">
-          <span>Total to Pay</span>
-          <strong>${money(total)}</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="vy-confirmation-footer">
-      <h3>Order Will Be Delivered Soon!</h3>
-      <p>
-        Thank you for choosing Veyora. Please keep your phone available
-        for delivery updates.
-      </p>
-
-      <a
-        class="vy-whatsapp-button"
-        href="https://wa.me/923713763119"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Contact Us on WhatsApp
-      </a>
-
-      <p style="margin-top:18px;letter-spacing:3px;font-weight:700;color:#a17b35;">
-        VEYORA
-      </p>
-      <p>Premium Shopping Experience</p>
-    </div>
-  </div>
-`;
+        <a class="gold-button" style="display:block;text-align:center;margin-top:15px;"
+           target="_blank" rel="noopener noreferrer"
+           href="https://wa.me/923713763119?text=${encodeURIComponent(
+             "Assalam-o-Alaikum VEYORA, please confirm my order " + reference +
+             ". Subtotal: " + money(subtotal) + ". Delivery: " + money(deliveryCharges) +
+             ". Total payable: " + money(total)
+           )}">CONFIRM VIA WHATSAPP</a>
+      </div>`;
 
     $("checkoutForm").reset();
     cart = [];
@@ -3033,7 +2356,7 @@ function renderVeyoraBanner() {
 
   const dots = document.getElementById("veyoraBannerDots");
   dots.innerHTML = veyoraBanners.map((item, index) =>
-    `<button type="button" class="veyora-banner-dot ${index === veyoraBannerIndex ? "active" : ""}" data-banner-index="${index}" aria-label="Show banner ${index + 1}"></button>`
+    <button type="button" class="veyora-banner-dot ${index === veyoraBannerIndex ? "active" : ""}" data-banner-index="${index}" aria-label="Show banner ${index + 1}"></button>
   ).join("");
 
   dots.querySelectorAll("[data-banner-index]").forEach(dot => {
