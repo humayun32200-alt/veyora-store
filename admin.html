@@ -446,18 +446,19 @@ function fillCategories(){
   parent.innerHTML =
    '<option value="">Main Category (No Parent)</option>' +
    categories.map(c =>
-    `<option value="${esc(c.id)}">${esc(c.name)}</option>`
+    `<option value="${esc(c.id)}">${c.parent_id ? '— ' : ''}${esc(c.name)}</option>`
    ).join('');
 
   parent.value = selected;
  }
 
  if(product){
-  product.innerHTML =
-   '<option value="">Select category</option>' +
-   categories.map(c =>
-    `<option value="${esc(c.id)}">${esc(c.name)}</option>`
-   ).join('');
+  product.innerHTML = '<option value="">Select category</option>' +
+   categories.map(c => {
+    const p = categories.find(x => String(x.id) === String(c.parent_id));
+    const label = p ? p.name + ' → ' + c.name : c.name;
+    return `<option value="${esc(c.id)}">${esc(label)}</option>`;
+   }).join('');
  }
 }
 
