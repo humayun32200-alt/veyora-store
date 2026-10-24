@@ -103,7 +103,7 @@ th{color:var(--gold)}
    <div class="stat"><small>Total Sessions</small><strong id="sSessions">0</strong></div>
    <div class="stat"><small>Page Views</small><strong id="sViews">0</strong></div>
    <div class="stat"><small>Total Sales</small><strong id="sSales">Rs 0</strong></div>
-   <div class="stat"><small>Conversion Rate</small><strong id="sConversion">0.00%</strong></div>
+   <div class="stat"><small>Conversion Rate</small><strong id="sConversion">0%</strong></div>
   </div>
 
   <p style="color:#999;font-size:11px;margin:12px 0">*Visitor figures depend on analytics events recorded by your storefront.</p>
@@ -141,7 +141,7 @@ th{color:var(--gold)}
   </div>
   <div class="panel" style="overflow:auto">
    <table>
-    <thead><tr><th>Image</th><th>Name</th><th>SKU / Product Code</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Image</th><th>Name</th><th>SKU</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
     <tbody id="productsBody"></tbody>
    </table>
   </div>
@@ -160,7 +160,7 @@ th{color:var(--gold)}
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
    <h2 class="cinzel">Orders & Tracking</h2><button class="btn2" id="refreshOrders">Refresh</button>
   </div>
-  <p style="color:#aaa;font-size:12px;margin-bottom:12px">Update the order status and tracking number.</p>
+  <p style="color:#aaa;font-size:12px;margin-bottom:12px">Update the order status and tracking number. The customer-facing order page must also read tracking details from Supabase.</p>
   <div class="panel" style="overflow:auto">
    <table>
     <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Tracking Number</th><th>Date</th><th>Action</th></tr></thead>
@@ -192,6 +192,12 @@ th{color:var(--gold)}
     <p style="color:#aaa;font-size:12px">Manage slider images, text and each banner's product link.</p>
    </div>
    <button class="btn" id="addBanner">+ Add Banner</button>
+  </div>
+
+  <div class="panel" style="margin-bottom:16px">
+   <p style="font-size:12px;color:#aaa;line-height:1.8">
+    Published banners can appear on your storefront. The Shop Now button opens the product selected for that specific banner. The storefront slider should rotate every 3 seconds.
+   </p>
   </div>
 
   <div class="panel" style="overflow:auto">
@@ -226,21 +232,19 @@ th{color:var(--gold)}
    <div class="grid2">
     <div><label class="label">Product Name *</label><input id="pName" class="field" required></div>
     <div><label class="label">Category *</label><select id="pCategory" class="field" required></select></div>
-    <div>
-      <label class="label">Unique Product Code (SKU)</label>
-      <input id="pSku" class="field" readonly style="background:#1a1c23;color:var(--gold);font-weight:bold;cursor:not-allowed;">
-      <p style="font-size:10px;color:#999;margin-top:4px">Auto-generated permanent code for admin tracking.</p>
-    </div>
+    <div><label class="label">SKU</label><input id="pSku" class="field"></div>
     <div><label class="label">Barcode</label><input id="pBarcode" class="field"></div>
 
     <div>
      <label class="label">Sale Price (Rs) *</label>
      <input id="pSale" type="number" min="0" step=".01" class="field" required>
+     <p style="font-size:10px;color:#999;margin-top:5px">Current price customers pay.</p>
     </div>
 
     <div>
      <label class="label">Compare-at Price (Rs) — Optional</label>
-     <input id="pCompare" type="number" min="0" step=".01" class="field">
+     <input id="pCompare" type="number" min="0" step=".01" class="field" placeholder="Original price">
+     <p style="font-size:10px;color:#999;margin-top:5px">Enter an original price higher than the Sale Price to show a discount.</p>
     </div>
 
     <div><label class="label">Main Product Stock</label><input id="pStock" type="number" min="0" value="0" class="field"></div>
@@ -251,6 +255,7 @@ th{color:var(--gold)}
      <label class="label" style="margin-top:10px">Upload Main Image</label>
      <input id="pImageFile" type="file" accept="image/*" class="field">
      <img id="pPreview" class="preview hidden">
+     <p style="color:#999;font-size:10px;margin-top:5px">A new uploaded image replaces the existing main image.</p>
     </div>
    </div>
 
@@ -264,13 +269,14 @@ th{color:var(--gold)}
 
    <div style="border-top:1px solid var(--border);padding-top:18px">
     <h3 style="color:var(--gold)">Custom Options / Variants</h3>
-    <p style="font-size:12px;color:#aaa;margin:6px 0 14px">All variants will share this product's unique code.</p>
+    <p style="font-size:12px;color:#aaa;margin:6px 0 14px">Example: Option Name = Design; Option Values = Design 1, Design 2, Design 3. Each value becomes its own variant.</p>
     <div class="grid2">
      <div><label class="label">Option Name</label><input id="vName" class="field" placeholder="Design / Colour / Size"></div>
      <div><label class="label">Option Values (comma separated)</label><input id="vValues" class="field" placeholder="Blue, Black, White"></div>
     </div>
     <button id="buildVariants" type="button" class="btn2" style="margin-top:12px">Generate Variants</button>
     <div id="variantsContainer"></div>
+    <p style="color:#999;font-size:11px;margin-top:10px">Each variant has its own stock and optional image. Variant prices use the product's Sale Price and Compare-at Price.</p>
    </div>
 
    <div style="display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border);padding-top:16px;margin-top:20px;flex-wrap:wrap">
@@ -312,41 +318,48 @@ th{color:var(--gold)}
    <div class="grid2">
     <div>
      <label class="label">Banner Title</label>
-     <input id="bTitle" class="field">
+     <input id="bTitle" class="field" maxlength="180" placeholder="Example: New Collection">
     </div>
 
     <div>
      <label class="label">Button Text</label>
-     <input id="bButtonText" class="field" value="Shop Now">
+     <input id="bButtonText" class="field" maxlength="60" value="Shop Now" placeholder="Shop Now">
     </div>
 
     <div>
      <label class="label">Banner Image URL</label>
-     <input id="bImageUrl" type="url" class="field">
+     <input id="bImageUrl" type="url" class="field" placeholder="https://...">
+     <p style="font-size:10px;color:#999;margin-top:5px">Use a public image URL or upload an image below.</p>
     </div>
 
     <div>
      <label class="label">Upload Banner Image</label>
      <input id="bImageFile" type="file" accept="image/*" class="field">
-     <img id="bPreview" class="banner-preview hidden">
+     <img id="bPreview" class="banner-preview hidden" alt="Banner preview">
+     <p style="font-size:10px;color:#999;margin-top:5px">Maximum image size: 5 MB.</p>
     </div>
 
     <div>
      <label class="label">Shop Now — Select Product *</label>
-     <select id="bProduct" class="field" required></select>
+     <select id="bProduct" class="field" required>
+      <option value="">Loading products...</option>
+     </select>
+     <p style="font-size:10px;color:#999;margin-top:5px">This banner button will open this selected product.</p>
     </div>
 
     <div>
      <label class="label">Display Order</label>
-     <input id="bSortOrder" type="number" value="0" class="field">
+     <input id="bSortOrder" type="number" min="0" step="1" value="0" class="field">
+     <p style="font-size:10px;color:#999;margin-top:5px">Lower numbers appear first.</p>
     </div>
    </div>
 
    <label class="label" style="margin-top:14px">Description</label>
-   <textarea id="bDescription" rows="3" class="field"></textarea>
+   <textarea id="bDescription" rows="3" maxlength="500" class="field" placeholder="Optional banner description"></textarea>
 
    <label style="display:block;margin-top:16px">
-    <input id="bPublished" type="checkbox" checked> Publish this banner
+    <input id="bPublished" type="checkbox" checked>
+    Publish this banner on the website
    </label>
 
    <div style="display:flex;justify-content:flex-end;gap:10px;border-top:1px solid var(--border);padding-top:16px;margin-top:20px;flex-wrap:wrap">
@@ -375,12 +388,6 @@ let bannerImageUrl=null;
 const RESET_KEY='veyora_stats_reset_at';
 function getResetTime(){return Number(localStorage.getItem(RESET_KEY))||0;}
 
-// Generate Unique Code only for new creation
-function generateMHYCode(){
-  const random7Digits = Math.floor(1000000 + Math.random() * 9000000);
-  return 'MHY' + random7Digits;
-}
-
 function note(s,bad=false){
  const n=$('notice');
  n.textContent=s;
@@ -391,7 +398,8 @@ function note(s,bad=false){
 function err(e){return e?.message||String(e||'Unknown error');}
 
 $('resetStats').addEventListener('click',async()=>{
- if(!confirm('Sessions, Views aur Total Sales reset karne hain?'))return;
+ const ok=confirm('Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.');
+ if(!ok)return;
  localStorage.setItem(RESET_KEY,String(Date.now()));
  $('sSessions').textContent='0';
  $('sViews').textContent='0';
@@ -401,8 +409,8 @@ $('resetStats').addEventListener('click',async()=>{
  try{
   await loadOrders();
   await loadAnalytics();
-  note('Stats reset successfully.');
- }catch(e){note('Stats reload failed: '+err(e),true);}
+  note('Stats reset successfully. Products and orders are safe.');
+ }catch(e){note('Stats reload nahi huay: '+err(e),true);}
 });
 
 function setTab(name){
@@ -480,12 +488,12 @@ function renderProducts(){
   const sale=p.sale_price==null?compare:Number(p.sale_price);
   const off=p.sale_price!=null?discountPercent(compare,sale):0;
   const priceHtml=off>0
-   ? `<del style="color:#999">Rs ${compare.toLocaleString()}</del><br><strong style="color:#6ee7b7">Rs ${sale.toLocaleString()}</strong>`
+   ? `<del style="color:#999">Rs ${compare.toLocaleString()}</del><br><strong style="color:#6ee7b7">Rs ${sale.toLocaleString()}</strong><br><span class="discount">${off}% OFF</span>`
    : `<strong>Rs ${sale.toLocaleString()}</strong>`;
   return `<tr>
    <td>${p._image?`<img src="${esc(p._image)}" style="width:45px;height:45px;object-fit:cover;border-radius:7px">`:'—'}</td>
    <td>${esc(p.name)}</td>
-   <td><strong style="color:var(--gold)">${esc(p.sku||'—')}</strong></td>
+   <td>${esc(p.sku||'—')}</td>
    <td>${esc(categories.find(c=>String(c.id)===String(p.category_id))?.name||'—')}</td>
    <td>${priceHtml}</td>
    <td>${Number(p.stock_quantity)||0}</td>
@@ -500,7 +508,6 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
- $('pSku').value=generateMHYCode(); // Generate new code ONLY for new product
  $('pStock').value='0';
  $('pActive').checked=true;
  $('pFeatured').checked=false;
@@ -523,6 +530,11 @@ $('cancelProduct').onclick=closeProduct;
 $('pImageFile').addEventListener('change',()=>{
  const f=$('pImageFile').files[0];
  if(!f)return;
+ if(!f.type.startsWith('image/')||f.size>5*1024*1024){
+  note('Choose an image under 5 MB.',true);
+  $('pImageFile').value='';
+  return;
+ }
  $('pPreview').src=URL.createObjectURL(f);
  $('pPreview').classList.remove('hidden');
 });
@@ -538,7 +550,7 @@ function makeVariantRow(value,stock=0,imageUrl=''){
  <div class="grid2" style="margin-top:10px">
   <div><label class="label">Value</label><input class="field variant-value" required></div>
   <div><label class="label">Stock</label><input class="field variant-stock" type="number" min="0" value="${Number(stock)||0}"></div>
-  <div><label class="label">Image URL (optional)</label><input class="field variant-url" type="url"></div>
+  <div><label class="label">Image URL (optional)</label><input class="field variant-url" type="url" placeholder="Existing or external image URL"></div>
   <div><label class="label">Upload Variant Image</label><input class="field variant-file" type="file" accept="image/*"><img class="preview variant-preview hidden"></div>
  </div>`;
  const inp=row.querySelector('.variant-value');
@@ -556,6 +568,11 @@ function makeVariantRow(value,stock=0,imageUrl=''){
  row.querySelector('.variant-file').addEventListener('change',()=>{
   const f=row.querySelector('.variant-file').files[0];
   if(!f)return;
+  if(!f.type.startsWith('image/')||f.size>5*1024*1024){
+   note('Choose an image under 5 MB.',true);
+   row.querySelector('.variant-file').value='';
+   return;
+  }
   const im=row.querySelector('.variant-preview');
   im.src=URL.createObjectURL(f);
   im.classList.remove('hidden');
@@ -569,8 +586,18 @@ $('buildVariants').onclick=()=>{
  if(!name){note('Enter an option name first.',true);return;}
  const values=[...new Set(raw.split(',').map(v=>v.trim()).filter(Boolean))];
  if(!values.length){note('Enter values separated by commas.',true);return;}
+ const old=[...$('variantsContainer').querySelectorAll('.variant')];
+ const previous={};
+ old.forEach(r=>{
+  const v=r.querySelector('.variant-value').value.trim();
+  if(v)previous[v]={
+   stock:r.querySelector('.variant-stock').value,
+   url:r.querySelector('.variant-url').value
+  };
+ });
  $('variantsContainer').innerHTML='';
- values.forEach(v=>makeVariantRow(v,0,''));
+ values.forEach(v=>makeVariantRow(v,previous[v]?.stock||0,previous[v]?.url||''));
+ note(values.length+' variants generated.');
 };
 
 async function saveMainImage(productId){
@@ -580,23 +607,27 @@ async function saveMainImage(productId){
  const {data,error}=await db.from('product_images').select('id').eq('product_id',productId).order('sort_order',{ascending:true}).limit(1);
  if(error)throw error;
  if(data&&data.length){
-  await db.from('product_images').update({image_url:url,alt_text:$('pName').value.trim(),sort_order:0}).eq('id',data[0].id);
+  const res=await db.from('product_images').update({image_url:url,alt_text:$('pName').value.trim(),sort_order:0}).eq('id',data[0].id);
+  if(res.error)throw res.error;
  }else{
-  await db.from('product_images').insert({product_id:productId,image_url:url,alt_text:$('pName').value.trim(),sort_order:0});
+  const res=await db.from('product_images').insert({product_id:productId,image_url:url,alt_text:$('pName').value.trim(),sort_order:0});
+  if(res.error)throw res.error;
  }
 }
 
 async function saveVariants(productId,comparePrice,salePrice){
  const rows=[...$('variantsContainer').querySelectorAll('.variant')];
- await db.from('product_variants').delete().eq('product_id',productId);
+ const {error:delError}=await db.from('product_variants').delete().eq('product_id',productId);
+ if(delError)throw delError;
  const name=$('vName').value.trim();
+ if(rows.length&&!name)throw Error('Enter Option Name for your variants.');
  for(let i=0;i<rows.length;i++){
   const r=rows[i];
   const value=r.querySelector('.variant-value').value.trim();
   if(!value)continue;
   const file=r.querySelector('.variant-file').files[0];
   let imageUrl=file?await uploadImage(file,'variants'):r.querySelector('.variant-url').value.trim()||null;
-  await db.from('product_variants').insert({
+  const record={
    product_id:productId,
    option_name:name,
    option_value:value,
@@ -605,15 +636,18 @@ async function saveVariants(productId,comparePrice,salePrice){
    retail_price:comparePrice,
    sale_price:salePrice,
    sort_order:i
-  });
+  };
+  const {error}=await db.from('product_variants').insert(record);
+  if(error)throw error;
  }
 }
 
 $('productForm').addEventListener('submit',async e=>{
  e.preventDefault();
- if(!db)return;
+ if(!db){note('Supabase is unavailable.',true);return;}
  const btn=$('saveProduct');
  btn.disabled=true;
+ btn.textContent='Saving…';
 
  try{
   const id=$('pId').value;
@@ -621,17 +655,25 @@ $('productForm').addEventListener('submit',async e=>{
   const compareRaw=$('pCompare').value.trim();
   const compare=compareRaw===''?null:parseFloat(compareRaw);
 
+  if(!Number.isFinite(sale)||sale<0)throw Error('Enter a valid Sale Price.');
+  if(compare!==null&&(!Number.isFinite(compare)||compare<=sale)){
+   throw Error('Compare-at Price must be greater than Sale Price.');
+  }
+
   const storedCompare=compare===null?sale:compare;
   const storedSale=compare===null?null:sale;
 
   const productName=$('pName').value.trim();
-  const productSlug=productName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')+'-'+Date.now().toString(36);
+  const productSlug=productName.toLowerCase().normalize('NFKD')
+   .replace(/[\u0300-\u036f]/g,'')
+   .replace(/[^a-z0-9]+/g,'-')
+   .replace(/^-+|-+$/g,'')+'-'+Date.now().toString(36);
 
   const payload={
    name:productName,
    slug:productSlug,
    category_id:$('pCategory').value,
-   sku:$('pSku').value, // Retains existing or newly created permanent code
+   sku:$('pSku').value.trim()||null,
    barcode:$('pBarcode').value.trim()||null,
    retail_price:storedCompare,
    sale_price:storedSale,
@@ -641,9 +683,12 @@ $('productForm').addEventListener('submit',async e=>{
    is_featured:$('pFeatured').checked
   };
 
+  if(!payload.category_id)throw Error('Please select a category.');
+
   let productId=id;
   if(id){
-   await db.from('products').update(payload).eq('id',id);
+   const {error}=await db.from('products').update(payload).eq('id',id);
+   if(error)throw error;
   }else{
    const {data,error}=await db.from('products').insert(payload).select('id').single();
    if(error)throw error;
@@ -654,11 +699,12 @@ $('productForm').addEventListener('submit',async e=>{
   await saveVariants(productId,storedCompare,storedSale);
   closeProduct();
   await loadProducts();
-  note('Product saved successfully.');
+  note('Product, prices, images and variants saved.');
  }catch(e){
   note('Save failed: '+err(e),true);
  }finally{
   btn.disabled=false;
+  btn.textContent='Save Product';
  }
 });
 
@@ -670,20 +716,20 @@ async function editProduct(id){
  $('pId').value=p.id;
  $('pName').value=p.name||'';
  $('pCategory').value=p.category_id||'';
- 
- // KEEP PERMANENT CODE ON EDIT
- $('pSku').value=p.sku || generateMHYCode();
-
+ $('pSku').value=p.sku||'';
  $('pBarcode').value=p.barcode||'';
+
  $('pSale').value=p.sale_price??p.retail_price??'';
  $('pCompare').value=p.sale_price!=null&&Number(p.retail_price)>Number(p.sale_price)?p.retail_price:'';
+
  $('pStock').value=p.stock_quantity??0;
  $('pDescription').value=p.description||'';
  $('pActive').checked=p.is_active!==false;
  $('pFeatured').checked=!!p.is_featured;
 
  try{
-  const {data}=await db.from('product_images').select('image_url').eq('product_id',id).order('sort_order',{ascending:true}).limit(1);
+  const {data,error}=await db.from('product_images').select('image_url').eq('product_id',id).order('sort_order',{ascending:true}).limit(1);
+  if(error)throw error;
   mainImageUrl=data?.[0]?.image_url||null;
   if(mainImageUrl){
    $('pImageUrl').value=mainImageUrl;
@@ -691,50 +737,66 @@ async function editProduct(id){
    $('pPreview').classList.remove('hidden');
   }
 
-  const {data:vs}=await db.from('product_variants').select('*').eq('product_id',id).order('sort_order',{ascending:true});
+  const {data:vs,error:ve}=await db.from('product_variants').select('*').eq('product_id',id).order('sort_order',{ascending:true});
+  if(ve)throw ve;
   if(vs?.length){
    $('vName').value=vs[0].option_name||'';
    $('vValues').value=vs.map(v=>v.option_value).join(', ');
    vs.forEach(v=>makeVariantRow(v.option_value,v.stock_quantity,v.image_url||''));
   }
- }catch(e){}
+ }catch(e){note('Could not load saved images/variants: '+err(e),true);}
  $('productModal').classList.remove('hidden');
 }
 
 async function deleteProduct(id){
  if(!confirm('Delete this product?'))return;
- await db.from('products').delete().eq('id',id);
- await loadProducts();
- note('Product deleted.');
+ try{
+  const {error}=await db.from('products').delete().eq('id',id);
+  if(error)throw error;
+  await loadProducts();
+  note('Product deleted.');
+ }catch(e){note('Delete failed: '+err(e),true);}
 }
 
 $('addCategory').onclick=()=>{
  $('categoryForm').reset();
  $('cId').value='';
+ $('cSort').value='0';
+ $('cActive').checked=true;
  $('categoryTitle').textContent='Add Category';
  $('categoryModal').classList.remove('hidden');
 };
 $('cancelCategory').onclick=()=>$('categoryModal').classList.add('hidden');
 
+$('cName').addEventListener('input',()=>{
+ if(!$('cId').value){
+  $('cSlug').value=$('cName').value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+ }
+});
+
 $('categoryForm').addEventListener('submit',async e=>{
  e.preventDefault();
- const id=$('cId').value;
- const payload={
-  name:$('cName').value.trim(),
-  slug:$('cSlug').value.trim()||$('cName').value.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
-  image_url:$('cImage').value.trim()||null,
-  sort_order:parseInt($('cSort').value,10)||0,
-  is_active:$('cActive').checked
- };
- if(id)await db.from('categories').update(payload).eq('id',id);
- else await db.from('categories').insert(payload);
- $('categoryModal').classList.add('hidden');
- await loadCategories();
+ try{
+  const id=$('cId').value;
+  const payload={
+   name:$('cName').value.trim(),
+   slug:$('cSlug').value.trim()||$('cName').value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
+   image_url:$('cImage').value.trim()||null,
+   sort_order:parseInt($('cSort').value,10)||0,
+   is_active:$('cActive').checked
+  };
+  const res=id?await db.from('categories').update(payload).eq('id',id):await db.from('categories').insert(payload);
+  if(res.error)throw res.error;
+  $('categoryModal').classList.add('hidden');
+  await loadCategories();
+  note('Category saved.');
+ }catch(e){note('Category save failed: '+err(e),true);}
 });
 
 function editCategory(id){
  const c=categories.find(x=>String(x.id)===String(id));
  if(!c)return;
+ $('categoryTitle').textContent='Edit Category';
  $('cId').value=c.id;
  $('cName').value=c.name||'';
  $('cSlug').value=c.slug||'';
@@ -745,58 +807,53 @@ function editCategory(id){
 }
 
 async function deleteCategory(id){
- if(!confirm('Delete category?'))return;
- await db.from('categories').delete().eq('id',id);
+ if(!confirm('Delete this category?'))return;
+ const {error}=await db.from('categories').delete().eq('id',id);
+ if(error){note('Category delete failed: '+err(error),true);return;}
  await loadCategories();
+ note('Category deleted.');
 }
 
-function orderTotal(o){return Number(o.total??o.total_amount??0)||0;}
+function orderTotal(o){return Number(o.total??o.total_amount??o.total_price??0)||0;}
 function orderStatus(o){return o.status||'Pending';}
 
 async function loadOrders(){
  if(!db)return;
- const {data}=await db.from('orders').select('*').order('created_at',{ascending:false});
+ const {data,error}=await db.from('orders').select('*').order('created_at',{ascending:false});
+ if(error){note('Orders: '+err(error),true);return;}
  orders=data||[];
  $('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
 
- const salesOrders=orders.filter(o=>!['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase()));
+ const resetAt=getResetTime();
+ const salesOrders=orders.filter(o=>
+  !['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())&&
+  (!resetAt||(o.created_at&&new Date(o.created_at).getTime()>=resetAt))
+ );
  $('sSales').textContent='Rs '+salesOrders.reduce((sum,o)=>sum+orderTotal(o),0).toLocaleString();
  renderOrders();
- updateConversionRate();
-}
-
-// Fixed Conversion Rate Logic
-function updateConversionRate(){
-  const validOrders = orders.filter(o => !['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())).length;
-  const sessionsCount = Number($('sSessions').textContent) || 0;
-  if(sessionsCount > 0){
-    const rate = ((validOrders / sessionsCount) * 100).toFixed(2);
-    $('sConversion').textContent = rate + '%';
-  } else {
-    $('sConversion').textContent = '0.00%';
-  }
 }
 
 function renderOrders(){
- $('ordersBody').innerHTML=orders.map(o=>`<tr>
+ const rows=orders.map(o=>`<tr>
  <td>#${esc(String(o.id||'').slice(0,8))}</td>
- <td>${esc(o.customer_name||'Guest')}</td>
+ <td>${esc(o.customer_name||o.full_name||o.name||'Guest')}</td>
  <td>${esc(o.item_count??'—')}</td>
  <td>Rs ${orderTotal(o).toLocaleString()}</td>
  <td>${esc(orderStatus(o))}</td>
  <td>${esc(o.tracking_number||'Not assigned')}</td>
  <td>${o.created_at?new Date(o.created_at).toLocaleDateString():'—'}</td>
  <td><button class="btn2" data-uporder="${esc(o.id)}">Update</button></td>
- </tr>`).join('')||'<tr><td colspan="8">No orders found.</td></tr>';
+ </tr>`).join('');
+ $('ordersBody').innerHTML=rows||'<tr><td colspan="8">No orders found.</td></tr>';
 
  $('recentOrders').innerHTML=orders.slice(0,5).map(o=>`<tr>
  <td>#${esc(String(o.id||'').slice(0,8))}</td>
- <td>${esc(o.customer_name||'Guest')}</td>
+ <td>${esc(o.customer_name||o.full_name||'Guest')}</td>
  <td>Rs ${orderTotal(o).toLocaleString()}</td>
  <td>${esc(orderStatus(o))}</td>
  <td>${esc(o.tracking_number||'Not assigned')}</td>
- </tr>`).join('');
+ </tr>`).join('')||'<tr><td colspan="5">No orders.</td></tr>';
 
  document.querySelectorAll('[data-uporder]').forEach(b=>b.onclick=()=>updateOrder(b.dataset.uporder));
 }
@@ -804,11 +861,19 @@ function renderOrders(){
 async function updateOrder(id){
  const o=orders.find(x=>String(x.id)===String(id));
  if(!o)return;
- const status=prompt('Status:',orderStatus(o));
- if(!status)return;
- const tracking=prompt('Tracking Number:',o.tracking_number||'');
- await db.from('orders').update({status:status.trim(),tracking_number:tracking?.trim()||null}).eq('id',id);
- await loadOrders();
+ const status=prompt('Status: Pending, Confirmed, Processing, Packed, Shipped, Delivered, Cancelled',orderStatus(o));
+ if(status===null)return;
+ const tracking=prompt('Enter courier tracking number (leave blank if not assigned)',o.tracking_number||'');
+ if(tracking===null)return;
+ const allowed=['pending','confirmed','processing','packed','shipped','delivered','cancelled'];
+ if(!allowed.includes(status.trim().toLowerCase())){note('Invalid order status.',true);return;}
+ try{
+  const finalStatus=status.trim()[0].toUpperCase()+status.trim().slice(1).toLowerCase();
+  const {error}=await db.from('orders').update({status:finalStatus,tracking_number:tracking.trim()||null}).eq('id',id);
+  if(error)throw error;
+  await loadOrders();
+  note('Order status and tracking number updated.');
+ }catch(e){note('Order update failed: '+err(e),true);}
 }
 $('refreshOrders').onclick=loadOrders;
 
@@ -816,22 +881,93 @@ async function loadAnalytics(){
  if(!db)return;
  const period=$('period').value;
  let q=db.from('analytics_events').select('session_id,event_type,created_at');
- if(period!=='all')q=q.gte('created_at',new Date(Date.now()-Number(period)*86400000).toISOString());
+ const resetAt=getResetTime();
+ let cutoff=resetAt;
+ if(period!=='all')cutoff=Math.max(cutoff,Date.now()-Number(period)*86400000);
+ if(cutoff)q=q.gte('created_at',new Date(cutoff).toISOString());
 
- const {data}=await q;
+ const {data,error}=await q;
+ if(error){
+  // If analytics table doesn't exist yet, keep values at 0 smoothly
+  $('sSessions').textContent='0';
+  $('sViews').textContent='0';
+  $('sLive').textContent='0';
+  $('sConversion').textContent='0.00%';
+  return;
+ }
  const ev=data||[];
  const sessions=new Set(ev.map(x=>x.session_id).filter(Boolean));
  $('sSessions').textContent=sessions.size;
  $('sViews').textContent=ev.filter(x=>x.event_type==='page_view'||!x.event_type).length;
 
- const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<1800000).map(x=>x.session_id).filter(Boolean));
+ const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
  $('sLive').textContent=live.size;
 
- updateConversionRate();
+ const purchases=ev.filter(x=>x.event_type==='purchase').length;
+ $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
+
+ const daily={};
+ ev.forEach(x=>{
+  if(!x.created_at||!x.session_id)return;
+  const d=new Date(x.created_at);
+  const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  if(!daily[key])daily[key]=new Set();
+  daily[key].add(x.session_id);
+ });
+
+ const labels=[];
+ const values=[];
+ let days=period==='all'?365:Number(period);
+ days=Math.max(1,Math.min(days,365));
+
+ for(let i=days-1;i>=0;i--){
+  const d=new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()-i);
+  const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  labels.push(d.toLocaleDateString());
+  values.push(daily[key]?.size||0);
+ }
+
+ if(chart)chart.destroy();
+ if(window.Chart&&$('chart')){
+  chart=new Chart($('chart'),{
+   type:'line',
+   data:{
+    labels,
+    datasets:[{
+     label:'Daily Sessions',
+     data:values,
+     borderColor:'#C9A45C',
+     backgroundColor:'rgba(201,164,92,.12)',
+     fill:true,
+     tension:.35,
+     borderWidth:2,
+     pointRadius:3,
+     pointHoverRadius:5
+    }]
+   },
+   options:{
+    responsive:true,
+    interaction:{intersect:false,mode:'index'},
+    plugins:{legend:{display:true,labels:{color:'#aaa'}}},
+    scales:{
+     x:{ticks:{color:'#aaa',maxTicksLimit:8}},
+     y:{beginAtZero:true,ticks:{color:'#aaa',precision:0}}
+    }
+   }
+  });
+ }
 }
 
-$('period').addEventListener('change',loadAnalytics);
-$('overviewPeriod').addEventListener('change',loadAnalytics);
+$('period').addEventListener('change',()=>{
+ $('overviewPeriod').value=$('period').value;
+ loadAnalytics();
+});
+$('overviewPeriod').addEventListener('change',()=>{
+ $('period').value=$('overviewPeriod').value;
+ loadAnalytics();
+});
 
 $('logoutBtn').onclick=async()=>{
  await db.auth.signOut();
@@ -840,6 +976,7 @@ $('logoutBtn').onclick=async()=>{
 
 $('loginForm').addEventListener('submit',async e=>{
  e.preventDefault();
+ $('loginError').textContent='';
  try{
   const {data,error}=await db.auth.signInWithPassword({
    email:$('loginEmail').value.trim(),
@@ -851,77 +988,309 @@ $('loginForm').addEventListener('submit',async e=>{
 });
 
 function fillBannerProducts(selectedId=''){
- $('bProduct').innerHTML='<option value="">Select a product</option>'+products.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
- if(selectedId)$('bProduct').value=String(selectedId);
+ const available=products.filter(p=>p.is_active!==false);
+ $('bProduct').innerHTML=
+  '<option value="">Select a product</option>'+
+  available.map(p=>
+   `<option value="${esc(p.id)}">${esc(p.name)}${p.stock_quantity!=null?' — Stock: '+Number(p.stock_quantity):''}</option>`
+  ).join('');
+
+ if(selectedId!=null&&selectedId!==''){
+  $('bProduct').value=String(selectedId);
+ }
 }
 
 async function loadBanners(){
  if(!db)return;
- const {data}=await db.from('banners').select('*').order('sort_order',{ascending:true});
- banners=data||[];
- renderBanners();
+ $('bannersBody').innerHTML='<tr><td colspan="6">Loading banners...</td></tr>';
+
+ try{
+  if(!products.length)await loadProducts();
+
+  const {data,error}=await db.from('banners')
+   .select('*')
+   .order('sort_order',{ascending:true})
+   .order('created_at',{ascending:false});
+
+  if(error)throw error;
+  banners=data||[];
+  renderBanners();
+ }catch(e){
+  $('bannersBody').innerHTML='<tr><td colspan="6">Could not load banners. Check banner table permissions.</td></tr>';
+  note('Banners: '+err(e),true);
+ }
 }
 
 function renderBanners(){
+ if(!banners.length){
+  $('bannersBody').innerHTML='<tr><td colspan="6">No banners yet. Click + Add Banner to create your first banner.</td></tr>';
+  return;
+ }
+
  $('bannersBody').innerHTML=banners.map(b=>{
   const product=products.find(p=>String(p.id)===String(b.target_product_id));
-  return `<tr>
-   <td>${b.image_url?`<img class="banner-thumb" src="${esc(b.image_url)}">`:'No image'}</td>
-   <td><strong>${esc(b.title||'Banner')}</strong></td>
-   <td>${product?esc(product.name):'—'}</td>
-   <td>${Number(b.sort_order)||0}</td>
-   <td>${b.is_published?'Published':'Unpublished'}</td>
-   <td><button class="btn2" data-delbanner="${esc(b.id)}">Delete</button></td>
-  </tr>`;
- }).join('')||'<tr><td colspan="6">No banners found.</td></tr>';
+  const published=b.is_published===true;
 
- document.querySelectorAll('[data-delbanner]').forEach(b=>b.onclick=()=>deleteBanner(b.dataset.delbanner));
+  return `<tr>
+   <td>${b.image_url
+    ?`<img class="banner-thumb" src="${esc(b.image_url)}" alt="Banner" loading="lazy">`
+    :'No image'}</td>
+   <td>
+    <strong>${esc(b.title||'Untitled banner')}</strong>
+    <div style="color:#999;margin-top:4px">${esc(b.description||'No description')}</div>
+    <div style="color:var(--gold);margin-top:4px">${esc(b.button_text||'Shop Now')}</div>
+   </td>
+   <td>${product?esc(product.name):'<span style="color:#f87171">Product not found</span>'}</td>
+   <td>${Number(b.sort_order)||0}</td>
+   <td><span class="${published?'status-published':'status-hidden'}">${published?'Published':'Unpublished'}</span></td>
+   <td>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+     <button type="button" class="btn2" data-editbanner="${esc(b.id)}">Edit</button>
+     <button type="button" class="btn2" data-togglebanner="${esc(b.id)}">${published?'Unpublish':'Publish'}</button>
+     <button type="button" class="btn2" data-deletebanner="${esc(b.id)}">Delete</button>
+    </div>
+   </td>
+  </tr>`;
+ }).join('');
+
+ document.querySelectorAll('[data-editbanner]').forEach(b=>{
+  b.onclick=()=>editBanner(b.dataset.editbanner);
+ });
+ document.querySelectorAll('[data-togglebanner]').forEach(b=>{
+  b.onclick=()=>toggleBanner(b.dataset.togglebanner);
+ });
+ document.querySelectorAll('[data-deletebanner]').forEach(b=>{
+  b.onclick=()=>deleteBanner(b.dataset.deletebanner);
+ });
 }
 
-$('addBanner').onclick=()=>{
+function openBanner(){
  $('bannerForm').reset();
  $('bId').value='';
+ $('bButtonText').value='Shop Now';
+ $('bSortOrder').value=String(banners.length);
+ $('bPublished').checked=true;
+ $('bImageUrl').value='';
+ $('bImageFile').value='';
+ $('bPreview').removeAttribute('src');
+ $('bPreview').classList.add('hidden');
+ bannerImageUrl=null;
+ $('bannerTitle').textContent='Add Banner';
  fillBannerProducts('');
+
+ if(!products.length){
+  note('Pehle Products section mein product add karo.',true);
+  return;
+ }
+
  $('bannerModal').classList.remove('hidden');
-};
-$('closeBanner').onclick=()=>$('bannerModal').classList.add('hidden');
-$('cancelBanner').onclick=()=>$('bannerModal').classList.add('hidden');
+}
+
+function closeBanner(){
+ $('bannerModal').classList.add('hidden');
+}
+
+$('addBanner').addEventListener('click',async()=>{
+ try{
+  if(!products.length)await loadProducts();
+  fillBannerProducts('');
+  openBanner();
+ }catch(e){
+  note('Could not load products: '+err(e),true);
+ }
+});
+
+$('closeBanner').addEventListener('click',closeBanner);
+$('cancelBanner').addEventListener('click',closeBanner);
+
+$('bImageFile').addEventListener('change',()=>{
+ const file=$('bImageFile').files[0];
+ if(!file)return;
+
+ if(!file.type.startsWith('image/')||file.size>5*1024*1024){
+  note('Choose an image under 5 MB.',true);
+  $('bImageFile').value='';
+  return;
+ }
+
+ $('bPreview').src=URL.createObjectURL(file);
+ $('bPreview').classList.remove('hidden');
+});
+
+$('bImageUrl').addEventListener('input',()=>{
+ const file=$('bImageFile').files[0];
+ if(file)return;
+
+ const url=$('bImageUrl').value.trim();
+ if(url){
+  $('bPreview').src=url;
+  $('bPreview').classList.remove('hidden');
+ }else{
+  $('bPreview').classList.add('hidden');
+ }
+});
+
+async function editBanner(id){
+ const banner=banners.find(b=>String(b.id)===String(id));
+ if(!banner)return;
+
+ try{
+  if(!products.length)await loadProducts();
+
+  $('bannerForm').reset();
+  $('bId').value=banner.id;
+  $('bTitle').value=banner.title||'';
+  $('bDescription').value=banner.description||'';
+  $('bButtonText').value=banner.button_text||'Shop Now';
+  $('bImageUrl').value=banner.image_url||'';
+  $('bImageFile').value='';
+  $('bSortOrder').value=Number(banner.sort_order)||0;
+  $('bPublished').checked=banner.is_published===true;
+  bannerImageUrl=banner.image_url||null;
+
+  fillBannerProducts(banner.target_product_id||'');
+
+  if(banner.image_url){
+   $('bPreview').src=banner.image_url;
+   $('bPreview').classList.remove('hidden');
+  }else{
+   $('bPreview').classList.add('hidden');
+  }
+
+  $('bannerTitle').textContent='Edit Banner';
+  $('bannerModal').classList.remove('hidden');
+ }catch(e){
+  note('Could not open banner: '+err(e),true);
+ }
+}
 
 $('bannerForm').addEventListener('submit',async e=>{
  e.preventDefault();
- const payload={
-  title:$('bTitle').value.trim(),
-  image_url:$('bImageUrl').value.trim(),
-  button_text:$('bButtonText').value.trim(),
-  target_product_id:$('bProduct').value,
-  is_published:$('bPublished').checked,
-  sort_order:parseInt($('bSortOrder').value,10)||0
- };
- await db.from('banners').insert(payload);
- $('bannerModal').classList.add('hidden');
- await loadBanners();
+
+ if(!db){
+  note('Supabase is unavailable.',true);
+  return;
+ }
+
+ const btn=$('saveBanner');
+ btn.disabled=true;
+ btn.textContent='Saving...';
+
+ try{
+  const id=$('bId').value;
+  const selectedProductId=$('bProduct').value;
+
+  if(!selectedProductId){
+   throw Error('Please select a product for this banner.');
+  }
+
+  const product=products.find(p=>String(p.id)===String(selectedProductId));
+  if(!product){
+   throw Error('Selected product was not found. Refresh products and try again.');
+  }
+
+  let imageUrl=bannerImageUrl;
+  const file=$('bImageFile').files[0];
+
+  if(file){
+   imageUrl=await uploadImage(file,'banners');
+  }else if($('bImageUrl').value.trim()){
+   imageUrl=$('bImageUrl').value.trim();
+  }
+
+  if(!imageUrl){
+   throw Error('Please upload a banner image or enter its image URL.');
+  }
+
+  const payload={
+   title:$('bTitle').value.trim()||null,
+   description:$('bDescription').value.trim()||null,
+   image_url:imageUrl,
+   button_text:$('bButtonText').value.trim()||'Shop Now',
+   target_product_id:String(selectedProductId),
+   is_published:$('bPublished').checked,
+   sort_order:Math.max(0,parseInt($('bSortOrder').value,10)||0),
+   updated_at:new Date().toISOString()
+  };
+
+  if(id){
+   const {error}=await db.from('banners').update(payload).eq('id',id);
+   if(error)throw error;
+  }else{
+   const {error}=await db.from('banners').insert(payload);
+   if(error)throw error;
+  }
+
+  closeBanner();
+  await loadBanners();
+  note(id?'Banner updated successfully.':'Banner added successfully.');
+ }catch(e){
+  note('Banner save failed: '+err(e),true);
+ }finally{
+  btn.disabled=false;
+  btn.textContent='Save Banner';
+ }
 });
 
+async function toggleBanner(id){
+ const banner=banners.find(b=>String(b.id)===String(id));
+ if(!banner)return;
+
+ const newStatus=banner.is_published!==true;
+ const action=newStatus?'publish':'unpublish';
+
+ if(!confirm((newStatus?'Publish':'Unpublish')+' this banner?'))return;
+
+ try{
+  const {error}=await db.from('banners').update({
+   is_published:newStatus,
+   updated_at:new Date().toISOString()
+  }).eq('id',id);
+
+  if(error)throw error;
+
+  await loadBanners();
+  note('Banner '+action+'ed successfully.');
+ }catch(e){
+  note('Could not update banner: '+err(e),true);
+ }
+}
+
 async function deleteBanner(id){
- if(!confirm('Delete banner?'))return;
- await db.from('banners').delete().eq('id',id);
- await loadBanners();
+ const banner=banners.find(b=>String(b.id)===String(id));
+ if(!banner)return;
+
+ if(!confirm('Delete this banner permanently?'))return;
+
+ try{
+  const {error}=await db.from('banners').delete().eq('id',id);
+  if(error)throw error;
+
+  await loadBanners();
+  note('Banner deleted successfully.');
+ }catch(e){
+  note('Banner delete failed: '+err(e),true);
+ }
 }
 
 async function enter(user){
  $('loginModal').classList.add('hidden');
  $('userBadge').textContent=user?.email||'Admin';
- await loadCategories();
- await loadProducts();
- await loadOrders();
- await loadAnalytics();
- await loadBanners();
+ try{
+  await loadCategories();
+  await loadProducts();
+  await loadOrders();
+  await loadAnalytics();
+  await loadBanners();
+  note('Dashboard data refreshed successfully.');
+ }catch(e){note('Dashboard refresh failed: '+err(e),true);}
 }
 
 (async()=>{
- if(!db)return;
- const {data}=await db.auth.getSession();
- if(data?.session)await enter(data.session.user);
+ if(!db){$('loginError').textContent='Supabase could not load. Refresh and try again.';return;}
+ const {data,error}=await db.auth.getSession();
+ if(error){$('loginError').textContent=err(error);return;}
+ if(data.session)await enter(data.session.user);
 })();
 })();
 </script>
