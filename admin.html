@@ -827,13 +827,30 @@ $('categoryForm').addEventListener('submit',async e=>{
   note('Category saved.');
  }catch(e){note('Category save failed: '+err(e),true);}
 });
+function prepareParentCategories(){
+ const parent = $('cParent');
+ if(!parent) return;
 
+ parent.innerHTML =
+  '<option value="">Main Category (No Parent)</option>';
+
+ categories
+  .filter(c => !$('cId').value || String(c.id) !== String($('cId').value))
+  .forEach(c => {
+   const option = document.createElement('option');
+   option.value = c.id;
+   option.textContent = c.name;
+   parent.appendChild(option);
+  });
+}
 function editCategory(id){
  const c=categories.find(x=>String(x.id)===String(id));
  if(!c)return;
 
  $('categoryTitle').textContent='Edit Category';
  $('cId').value=c.id;
+ prepareParentCategories();
+$('cParent').value=c.parent_id||'';
  $('cName').value=c.name||'';
  $('cParent').value=c.parent_id||'';
  $('cSlug').value=c.slug||'';
