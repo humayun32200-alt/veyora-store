@@ -76,10 +76,7 @@ th{color:var(--gold)}
  <button class="navbtn" data-tab="categories">Categories</button>
  <button class="navbtn" data-tab="orders">Orders & Tracking</button>
  <button class="navbtn" data-tab="analytics">Analytics</button>
-
- <!-- ADDED: Banner navigation -->
  <button class="navbtn" data-tab="banners">Banners</button>
-
  <button class="navbtn" id="logoutBtn" style="margin-top:24px">Sign Out</button>
 </aside>
 
@@ -188,7 +185,6 @@ th{color:var(--gold)}
   </div>
  </section>
 
- <!-- ADDED: Banner Management tab -->
  <section id="tab-banners" class="tab">
   <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
    <div>
@@ -309,7 +305,6 @@ th{color:var(--gold)}
  </div>
 </div>
 
-<!-- ADDED: Add/Edit Banner modal -->
 <div id="bannerModal" class="modal hidden">
  <div class="modalbox" style="max-width:720px">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px">
@@ -387,13 +382,10 @@ const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
-
-/* ADDED: Banner state */
 let banners=[];
 let bannerImageUrl=null;
 
 const RESET_KEY='veyora_stats_reset_at';
-
 function getResetTime(){return Number(localStorage.getItem(RESET_KEY))||0;}
 
 function note(s,bad=false){
@@ -401,6 +393,7 @@ function note(s,bad=false){
  n.textContent=s;
  n.style.borderColor=bad?'#ef4444':'var(--gold)';
  n.classList.remove('hidden');
+ setTimeout(()=>n.classList.add('hidden'), 5000);
 }
 function err(e){return e?.message||String(e||'Unknown error');}
 
@@ -426,7 +419,6 @@ function setTab(name){
  if(name==='products')loadProducts();
  if(name==='categories')loadCategories();
  if(name==='orders')loadOrders();
- /* ADDED */
  if(name==='banners')loadBanners();
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
@@ -895,11 +887,18 @@ async function loadAnalytics(){
  if(cutoff)q=q.gte('created_at',new Date(cutoff).toISOString());
 
  const {data,error}=await q;
- if(error){note('Analytics: '+err(error),true);return;}
+ if(error){
+  // If analytics table doesn't exist yet, keep values at 0 smoothly
+  $('sSessions').textContent='0';
+  $('sViews').textContent='0';
+  $('sLive').textContent='0';
+  $('sConversion').textContent='0.00%';
+  return;
+ }
  const ev=data||[];
  const sessions=new Set(ev.map(x=>x.session_id).filter(Boolean));
  $('sSessions').textContent=sessions.size;
- $('sViews').textContent=ev.filter(x=>x.event_type==='page_view').length;
+ $('sViews').textContent=ev.filter(x=>x.event_type==='page_view'||!x.event_type).length;
 
  const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
  $('sLive').textContent=live.size;
@@ -988,11 +987,6 @@ $('loginForm').addEventListener('submit',async e=>{
  }catch(e){$('loginError').textContent=err(e);}
 });
 
-/* =========================================================
-   ADDED: BANNER MANAGEMENT
-   Uses existing banners table and veyora-products storage.
-   ========================================================= */
-
 function fillBannerProducts(selectedId=''){
  const available=products.filter(p=>p.is_active!==false);
  $('bProduct').innerHTML=
@@ -1011,7 +1005,6 @@ async function loadBanners(){
  $('bannersBody').innerHTML='<tr><td colspan="6">Loading banners...</td></tr>';
 
  try{
-  // Load products first so every banner can show its selected product.
   if(!products.length)await loadProducts();
 
   const {data,error}=await db.from('banners')
@@ -1280,8 +1273,6 @@ async function deleteBanner(id){
  }
 }
 
-/* END ADDED BANNER MANAGEMENT */
-
 async function enter(user){
  $('loginModal').classList.add('hidden');
  $('userBadge').textContent=user?.email||'Admin';
@@ -1290,7 +1281,6 @@ async function enter(user){
   await loadProducts();
   await loadOrders();
   await loadAnalytics();
-  /* ADDED: load banners without changing other dashboard functions */
   await loadBanners();
   note('Dashboard data refreshed successfully.');
  }catch(e){note('Dashboard refresh failed: '+err(e),true);}
