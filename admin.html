@@ -392,58 +392,33 @@ let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
 let banners=[];
 let bannerImageUrl=null;
 
+const RESET_KEY='veyora_stats_reset_at';
 
-async function getResetTime(){
-  const {data,error} = await db
-    .from('store_stats_reset')
-    .select('reset_at')
-    .eq('id',1)
-    .single();
-
-  if(error) throw error;
-  return new Date(data.reset_at).getTime();
-}
+function getResetTime(){return Number(localStorage.getItem(RESET_KEY))||0;}
 
 function note(s,bad=false){
-  const n=$('notice');
-  n.textContent=s;
-  n.style.borderColor=bad?'#ef4444':'var(--gold)';
-  n.classList.remove('hidden');
+ const n=$('notice');
+ n.textContent=s;
+ n.style.borderColor=bad?'#ef4444':'var(--gold)';
+ n.classList.remove('hidden');
 }
-
-function err(e){
-  return e?.message||String(e||'Unknown error');
-}
+function err(e){return e?.message||String(e||'Unknown error');}
 
 $('resetStats').addEventListener('click',async()=>{
-  const ok=confirm(
-    'Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.'
-  );
-  if(!ok)return;
-
-  try{
-    const {error} = await db
-      .from('store_stats_reset')
-      .update({reset_at:new Date().toISOString()})
-      .eq('id',1);
-
-    if(error) throw error;
-
-    $('sSessions').textContent='0';
-    $('sViews').textContent='0';
-    $('sSales').textContent='Rs 0';
-    $('sLive').textContent='0';
-    $('sConversion').textContent='0.00%';
-
-    await loadOrders();
-    await loadAnalytics();
-
-    note('Stats reset successfully. Products and orders are safe.');
-  }catch(e){
-    note('Reset failed: '+err(e),true);
-  }
+ const ok=confirm('Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.');
+ if(!ok)return;
+ localStorage.setItem(RESET_KEY,String(Date.now()));
+ $('sSessions').textContent='0';
+ $('sViews').textContent='0';
+ $('sSales').textContent='Rs 0';
+ $('sLive').textContent='0';
+ $('sConversion').textContent='0.00%';
+ try{
+  await loadOrders();
+  await loadAnalytics();
+  note('Stats reset successfully. Products and orders are safe.');
+ }catch(e){note('Stats reload nahi huay: '+err(e),true);}
 });
-
 
 function setTab(name){
  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name));
@@ -858,7 +833,7 @@ async function loadOrders(){
  $('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
 
- const resetAt=await getResetTime();
+ const resetAt=getResetTime();
  const salesOrders=orders.filter(o=>
   !['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())&&
   (!resetAt||(o.created_at&&new Date(o.created_at).getTime()>=resetAt))
@@ -910,119 +885,80 @@ async function updateOrder(id){
 }
 $('refreshOrders').onclick=loadOrders;
 
-
 async function loadAnalytics(){
-  if(!db) return;
+ if(!db)return;
+ const period=$('period').value;
+ let q=db.from('analytics_events').select('session_id,event_type,created_at');
+ const resetAt=getResetTime();
+ let cutoff=resetAt;
+ if(period!=='all')cutoff=Math.max(cutoff,Date.now()-Number(period)*86400000);
+ if(cutoff)q=q.gte('created_at',new Date(cutoff).toISOString());
 
-  const period = $('period').value;
-  let q = db.from('analytics_events')
-    .select('session_id,event_type,created_at');
+ const {data,error}=await q;
+ if(error){note('Analytics: '+err(error),true);return;}
+ const ev=data||[];
+ const sessions=new Set(ev.map(x=>x.session_id).filter(Boolean));
+ $('sSessions').textContent=sessions.size;
+ $('sViews').textContent=ev.filter(x=>x.event_type==='page_view').length;
 
-  if(period !== 'all'){
-    const cutoff = Date.now() - Number(period) * 86400000;
-    q = q.gte('created_at', new Date(cutoff).toISOString());
-  }
+ const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
+ $('sLive').textContent=live.size;
 
-  const {data,error} = await q;
+ const purchases=ev.filter(x=>x.event_type==='purchase').length;
+ $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
 
-  if(error){
-    note('Analytics: ' + err(error),true);
-    return;
-  }
+ const daily={};
+ ev.forEach(x=>{
+  if(!x.created_at||!x.session_id)return;
+  const d=new Date(x.created_at);
+  const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  if(!daily[key])daily[key]=new Set();
+  daily[key].add(x.session_id);
+ });
 
-  const ev = data || [];
-  const sessions = new Set(
-    ev.map(x => x.session_id).filter(Boolean)
-  );
+ const labels=[];
+ const values=[];
+ let days=period==='all'?365:Number(period);
+ days=Math.max(1,Math.min(days,365));
 
-  $('sSessions').textContent = sessions.size;
-  $('sViews').textContent =
-    ev.filter(x => x.event_type === 'page_view').length;
+ for(let i=days-1;i>=0;i--){
+  const d=new Date();
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()-i);
+  const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  labels.push(d.toLocaleDateString());
+  values.push(daily[key]?.size||0);
+ }
 
-  const now = Date.now();
-  const live = new Set(
-    ev.filter(x => {
-      const t = new Date(x.created_at).getTime();
-      return t <= now && now - t < 300000;
-    }).map(x => x.session_id).filter(Boolean)
-  );
-
-  $('sLive').textContent = live.size;
-
-  const purchases = ev.filter(
-    x => x.event_type === 'purchase'
-  ).length;
-
-  $('sConversion').textContent =
-    (sessions.size ? 100 * purchases / sessions.size : 0)
-      .toFixed(2) + '%';
-
-  const daily = {};
-
-  ev.forEach(x => {
-    if(!x.created_at || !x.session_id) return;
-
-    const d = new Date(x.created_at);
-    const key = d.getFullYear() + '-' +
-      String(d.getMonth()+1).padStart(2,'0') + '-' +
-      String(d.getDate()).padStart(2,'0');
-
-    if(!daily[key]) daily[key] = new Set();
-    daily[key].add(x.session_id);
+ if(chart)chart.destroy();
+ if(window.Chart&&$('chart')){
+  chart=new Chart($('chart'),{
+   type:'line',
+   data:{
+    labels,
+    datasets:[{
+     label:'Daily Sessions',
+     data:values,
+     borderColor:'#C9A45C',
+     backgroundColor:'rgba(201,164,92,.12)',
+     fill:true,
+     tension:.35,
+     borderWidth:2,
+     pointRadius:3,
+     pointHoverRadius:5
+    }]
+   },
+   options:{
+    responsive:true,
+    interaction:{intersect:false,mode:'index'},
+    plugins:{legend:{display:true,labels:{color:'#aaa'}}},
+    scales:{
+     x:{ticks:{color:'#aaa',maxTicksLimit:8}},
+     y:{beginAtZero:true,ticks:{color:'#aaa',precision:0}}
+    }
+   }
   });
-
-  const labels = [];
-  const values = [];
-  const days = Math.max(
-    1,
-    Math.min(period === 'all' ? 365 : Number(period),365)
-  );
-
-  for(let i = days-1; i >= 0; i--){
-    const d = new Date();
-    d.setHours(0,0,0,0);
-    d.setDate(d.getDate()-i);
-
-    const key = d.getFullYear() + '-' +
-      String(d.getMonth()+1).padStart(2,'0') + '-' +
-      String(d.getDate()).padStart(2,'0');
-
-    labels.push(d.toLocaleDateString());
-    values.push(daily[key]?.size || 0);
-  }
-
-  if(chart) chart.destroy();
-
-  if(window.Chart && $('chart')){
-    chart = new Chart($('chart'),{
-      type:'line',
-      data:{
-        labels,
-        datasets:[{
-          label:'Daily Sessions',
-          data:values,
-          borderColor:'#C9A45C',
-          backgroundColor:'rgba(201,164,92,.12)',
-          fill:true,
-          tension:.35,
-          borderWidth:2,
-          pointRadius:3,
-          pointHoverRadius:5
-        }]
-      },
-      options:{
-        responsive:true,
-        interaction:{intersect:false,mode:'index'},
-        plugins:{
-          legend:{display:true,labels:{color:'#aaa'}}
-        },
-        scales:{
-          x:{ticks:{color:'#aaa',maxTicksLimit:8}},
-          y:{beginAtZero:true,ticks:{color:'#aaa',precision:0}}
-        }
-      }
-    });
-  }
+ }
 }
 
 $('period').addEventListener('change',()=>{
