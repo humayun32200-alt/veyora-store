@@ -296,7 +296,12 @@ th{color:var(--gold)}
   <h2 id="categoryTitle" class="cinzel" style="margin-bottom:16px">Add Category</h2>
   <form id="categoryForm">
    <input id="cId" type="hidden">
-   <label class="label">Name *</label><input id="cName" required class="field">
+   <label class="label">Name *</label>
+   <input id="cName" required class="field">
+   <label class="label" style="margin-top:12px">Parent Category</label>
+<select id="cParent" class="field">
+  <option value="">Main Category</option>
+</select>
    <label class="label" style="margin-top:12px">Slug</label><input id="cSlug" class="field">
    <label class="label" style="margin-top:12px">Image URL</label><input id="cImage" type="url" class="field">
    <label class="label" style="margin-top:12px">Sort Order</label><input id="cSort" type="number" value="0" class="field">
@@ -432,7 +437,28 @@ function setTab(name){
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
 
 function fillCategories(){
- $('pCategory').innerHTML='<option value="">Select category</option>'+categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+ const parent = $('cParent');
+ const product = $('pCategory');
+
+ if(parent){
+  const selected = parent.value;
+
+  parent.innerHTML =
+   '<option value="">Main Category (No Parent)</option>' +
+   categories.map(c =>
+    `<option value="${esc(c.id)}">${esc(c.name)}</option>`
+   ).join('');
+
+  parent.value = selected;
+ }
+
+ if(product){
+  product.innerHTML =
+   '<option value="">Select category</option>' +
+   categories.map(c =>
+    `<option value="${esc(c.id)}">${esc(c.name)}</option>`
+   ).join('');
+ }
 }
 
 async function uploadImage(file,folder){
@@ -788,6 +814,7 @@ $('categoryForm').addEventListener('submit',async e=>{
   const id=$('cId').value;
   const payload={
    name:$('cName').value.trim(),
+   parent_id:$('cParent').value || null,
    slug:$('cSlug').value.trim()||$('cName').value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),
    image_url:$('cImage').value.trim()||null,
    sort_order:parseInt($('cSort').value,10)||0,
@@ -804,13 +831,16 @@ $('categoryForm').addEventListener('submit',async e=>{
 function editCategory(id){
  const c=categories.find(x=>String(x.id)===String(id));
  if(!c)return;
+
  $('categoryTitle').textContent='Edit Category';
  $('cId').value=c.id;
  $('cName').value=c.name||'';
+ $('cParent').value=c.parent_id||'';
  $('cSlug').value=c.slug||'';
  $('cImage').value=c.image_url||'';
  $('cSort').value=c.sort_order||0;
  $('cActive').checked=c.is_active!==false;
+
  $('categoryModal').classList.remove('hidden');
 }
 
