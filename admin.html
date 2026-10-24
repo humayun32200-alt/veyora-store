@@ -144,7 +144,7 @@ th{color:var(--gold)}
   </div>
   <div class="panel" style="overflow:auto">
    <table>
-    <thead><tr><th>Image</th><th>Name</th><th>Product Code</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Image</th><th>Name</th><th>SKU</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
     <tbody id="productsBody"></tbody>
    </table>
   </div>
@@ -236,10 +236,7 @@ th{color:var(--gold)}
    <div class="grid2">
     <div><label class="label">Product Name *</label><input id="pName" class="field" required></div>
     <div><label class="label">Category *</label><select id="pCategory" class="field" required></select></div>
-    <div>
- <label class="label">Product Code (Admin Only)</label>
- <input id="pSku" class="field" readonly placeholder="Auto-generated">
-</div>
+    <div><label class="label">SKU</label><input id="pSku" class="field"></div>
     <div><label class="label">Barcode</label><input id="pBarcode" class="field"></div>
 
     <div>
@@ -390,29 +387,6 @@ const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
- async function generateProductCode() {
-  const { data, error } = await db
-    .from('products')
-    .select('sku')
-    .not('sku', 'is', null);
-
-  if (error) throw error;
-
-  const used = new Set(
-    (data || []).map(p => String(p.sku || '').trim())
-  );
-
-  for (let i = 0; i < 100; i++) {
-    const code = 'VYR' + Math.floor(
-      1000000 + Math.random() * 9000000
-    );
-
-    if (!used.has(code)) return code;
-  }
-
-  throw new Error('Product code generate nahi ho saka.');
-}
- 
 
 /* ADDED: Banner state */
 let banners=[];
@@ -458,7 +432,7 @@ function setTab(name){
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
 
 function fillCategories(){
- $('pCategory').innerHTML='<option value="">Select category</option>'+categories.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');
+ $('pCategory').innerHTML='<option value="">Select category</option>'+categories.map(c=><option value="${esc(c.id)}">${esc(c.name)}</option>).join('');
 }
 
 async function uploadImage(file,folder){
@@ -492,7 +466,7 @@ async function loadCategories(){
 }
 
 function renderCategories(){
- $('categoriesBody').innerHTML=categories.length?categories.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.slug||'')}</td><td>${c.is_active===false?'No':'Yes'}</td><td><button class="btn2" data-editcat="${esc(c.id)}">Edit</button> <button class="btn2" data-delcat="${esc(c.id)}">Delete</button></td></tr>`).join(''):'<tr><td colspan="4">No categories yet.</td></tr>';
+ $('categoriesBody').innerHTML=categories.length?categories.map(c=><tr><td>${esc(c.name)}</td><td>${esc(c.slug||'')}</td><td>${c.is_active===false?'No':'Yes'}</td><td><button class="btn2" data-editcat="${esc(c.id)}">Edit</button> <button class="btn2" data-delcat="${esc(c.id)}">Delete</button></td></tr>).join(''):'<tr><td colspan="4">No categories yet.</td></tr>';
  document.querySelectorAll('[data-editcat]').forEach(b=>b.onclick=()=>editCategory(b.dataset.editcat));
  document.querySelectorAll('[data-delcat]').forEach(b=>b.onclick=()=>deleteCategory(b.dataset.delcat));
 }
@@ -522,10 +496,10 @@ function renderProducts(){
   const sale=p.sale_price==null?compare:Number(p.sale_price);
   const off=p.sale_price!=null?discountPercent(compare,sale):0;
   const priceHtml=off>0
-   ? `<del style="color:#999">Rs ${compare.toLocaleString()}</del><br><strong style="color:#6ee7b7">Rs ${sale.toLocaleString()}</strong><br><span class="discount">${off}% OFF</span>`
-   : `<strong>Rs ${sale.toLocaleString()}</strong>`;
+   ? <del style="color:#999">Rs ${compare.toLocaleString()}</del><br><strong style="color:#6ee7b7">Rs ${sale.toLocaleString()}</strong><br><span class="discount">${off}% OFF</span>
+   : <strong>Rs ${sale.toLocaleString()}</strong>;
   return `<tr>
-   <td>${p._image?`<img src="${esc(p._image)}" style="width:45px;height:45px;object-fit:cover;border-radius:7px">`:'—'}</td>
+   <td>${p._image?<img src="${esc(p._image)}" style="width:45px;height:45px;object-fit:cover;border-radius:7px">:'—'}</td>
    <td>${esc(p.name)}</td>
    <td>${esc(p.sku||'—')}</td>
    <td>${esc(categories.find(c=>String(c.id)===String(p.category_id))?.name||'—')}</td>
@@ -540,43 +514,21 @@ function renderProducts(){
 }
 
 function openProduct(){
-  $('productForm').reset();
-
-  $('pId').value = '';
-  $('pSku').value = '';
-  $('pSku').placeholder = 'Generating code...';
-
-  $('pStock').value = '0';
-  $('pActive').checked = true;
-  $('pFeatured').checked = false;
-
-  $('pImageUrl').value = '';
-  $('pImageFile').value = '';
-  $('pPreview').classList.add('hidden');
-
-  $('variantsContainer').innerHTML = '';
-  $('vName').value = '';
-  $('vValues').value = '';
-
-  mainImageUrl = null;
-
-  $('productTitle').textContent = 'Add Product';
-  fillCategories();
-  $('productModal').classList.remove('hidden');
-
-  generateProductCode()
-    .then(code => {
-      if (
-        !$('pId').value &&
-        !$('productModal').classList.contains('hidden')
-      ) {
-        $('pSku').value = code;
-      }
-    })
-    .catch(error => {
-      console.error('Product code error:', error);
-      note('Product code generate nahi hua: ' + err(error), true);
-    });
+ $('productForm').reset();
+ $('pId').value='';
+ $('pStock').value='0';
+ $('pActive').checked=true;
+ $('pFeatured').checked=false;
+ $('pImageUrl').value='';
+ $('pImageFile').value='';
+ $('pPreview').classList.add('hidden');
+ $('variantsContainer').innerHTML='';
+ $('vName').value='';
+ $('vValues').value='';
+ mainImageUrl=null;
+ $('productTitle').textContent='Add Product';
+ fillCategories();
+ $('productModal').classList.remove('hidden');
 }
 function closeProduct(){$('productModal').classList.add('hidden');}
 $('addProduct').onclick=openProduct;
@@ -707,9 +659,6 @@ $('productForm').addEventListener('submit',async e=>{
 
  try{
   const id=$('pId').value;
-  if(!$('pSku').value.trim()){
- $('pSku').value=await generateProductCode();
-}
   const sale=parseFloat($('pSale').value);
   const compareRaw=$('pCompare').value.trim();
   const compare=compareRaw===''?null:parseFloat(compareRaw);
@@ -1049,7 +998,7 @@ function fillBannerProducts(selectedId=''){
  $('bProduct').innerHTML=
   '<option value="">Select a product</option>'+
   available.map(p=>
-   `<option value="${esc(p.id)}">${esc(p.name)}${p.stock_quantity!=null?' — Stock: '+Number(p.stock_quantity):''}</option>`
+   <option value="${esc(p.id)}">${esc(p.name)}${p.stock_quantity!=null?' — Stock: '+Number(p.stock_quantity):''}</option>
   ).join('');
 
  if(selectedId!=null&&selectedId!==''){
@@ -1091,7 +1040,7 @@ function renderBanners(){
 
   return `<tr>
    <td>${b.image_url
-    ?`<img class="banner-thumb" src="${esc(b.image_url)}" alt="Banner" loading="lazy">`
+    ?<img class="banner-thumb" src="${esc(b.image_url)}" alt="Banner" loading="lazy">
     :'No image'}</td>
    <td>
     <strong>${esc(b.title||'Untitled banner')}</strong>
