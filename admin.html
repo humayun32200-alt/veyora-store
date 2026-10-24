@@ -392,33 +392,58 @@ let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
 let banners=[];
 let bannerImageUrl=null;
 
-const RESET_KEY='veyora_stats_reset_at';
 
-function getResetTime(){return Number(localStorage.getItem(RESET_KEY))||0;}
+async function getResetTime(){
+  const {data,error} = await db
+    .from('store_stats_reset')
+    .select('reset_at')
+    .eq('id',1)
+    .single();
+
+  if(error) throw error;
+  return new Date(data.reset_at).getTime();
+}
 
 function note(s,bad=false){
- const n=$('notice');
- n.textContent=s;
- n.style.borderColor=bad?'#ef4444':'var(--gold)';
- n.classList.remove('hidden');
+  const n=$('notice');
+  n.textContent=s;
+  n.style.borderColor=bad?'#ef4444':'var(--gold)';
+  n.classList.remove('hidden');
 }
-function err(e){return e?.message||String(e||'Unknown error');}
+
+function err(e){
+  return e?.message||String(e||'Unknown error');
+}
 
 $('resetStats').addEventListener('click',async()=>{
- const ok=confirm('Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.');
- if(!ok)return;
- localStorage.setItem(RESET_KEY,String(Date.now()));
- $('sSessions').textContent='0';
- $('sViews').textContent='0';
- $('sSales').textContent='Rs 0';
- $('sLive').textContent='0';
- $('sConversion').textContent='0.00%';
- try{
-  await loadOrders();
-  await loadAnalytics();
-  note('Stats reset successfully. Products and orders are safe.');
- }catch(e){note('Stats reload nahi huay: '+err(e),true);}
+  const ok=confirm(
+    'Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.'
+  );
+  if(!ok)return;
+
+  try{
+    const {error} = await db
+      .from('store_stats_reset')
+      .update({reset_at:new Date().toISOString()})
+      .eq('id',1);
+
+    if(error) throw error;
+
+    $('sSessions').textContent='0';
+    $('sViews').textContent='0';
+    $('sSales').textContent='Rs 0';
+    $('sLive').textContent='0';
+    $('sConversion').textContent='0.00%';
+
+    await loadOrders();
+    await loadAnalytics();
+
+    note('Stats reset successfully. Products and orders are safe.');
+  }catch(e){
+    note('Reset failed: '+err(e),true);
+  }
 });
+
 
 function setTab(name){
  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id==='tab-'+name));
