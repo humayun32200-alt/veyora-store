@@ -233,20 +233,30 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 .tracking-refresh{width:100%;margin-top:12px}
 .delivery-breakdown{margin-top:10px;padding:11px;background:#17150f;border:1px solid #57472b;font-size:12px;line-height:1.9;color:#f0e5ce}
 
-/* EXACT MATCH IMAGE STYLES FOR ORDER SUCCESS */
-.vy-success-card {
+/* LUXURY 2-COLUMN ORDER CONFIRMATION STYLES (MATCHING IMAGE REFERENCE) */
+.vy-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 20px auto;
+  text-align: left;
+}
+.vy-card-box {
+  background: radial-gradient(circle at top, #14120c 0%, #080807 100%);
   border: 1px solid #c5a15b;
   border-radius: 16px;
-  background: radial-gradient(circle at top, #1a160d 0%, #080807 100%);
-  padding: 30px 22px;
-  text-align: center;
-  box-shadow: 0 0 40px rgba(197, 161, 91, 0.15);
+  padding: 24px;
+  box-shadow: 0 0 30px rgba(197, 161, 91, 0.12);
   color: #f7f0df;
-  margin-top: 15px;
 }
-.vy-success-badge {
-  width: 48px;
-  height: 48px;
+.vy-success-top {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.vy-success-icon {
+  width: 52px;
+  height: 52px;
   background: #2e7d32;
   color: #fff;
   border-radius: 50%;
@@ -255,777 +265,188 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   justify-content: center;
   font-size: 24px;
   margin-bottom: 12px;
-  box-shadow: 0 0 15px rgba(46, 125, 50, 0.5);
   border: 1px solid #4caf50;
+  box-shadow: 0 0 15px rgba(46, 125, 50, 0.4);
 }
-.vy-success-title {
+.vy-submit-title {
   font-family: Georgia, serif;
   font-size: 22px;
   letter-spacing: 3px;
   color: #f0dba5;
-  margin: 6px 0;
-  text-transform: uppercase;
+  margin: 5px 0;
 }
-.vy-success-subtitle {
+.vy-submit-sub {
   font-size: 12px;
-  color: #d1c7b3;
-  margin-bottom: 15px;
-}
-.vy-thankyou {
-  font-family: Georgia, serif;
-  font-style: italic;
-  font-size: 26px;
-  color: #f0dba5;
-  margin: 10px 0 4px;
-}
-.vy-appreciation {
-  font-size: 11px;
   color: #b6ad9a;
-  line-height: 1.6;
-  max-width: 400px;
-  margin: 0 auto 20px;
 }
-.vy-summary-box {
-  border: 1px solid #59482b;
-  border-radius: 12px;
-  background: #11110e;
-  padding: 16px;
-  text-align: left;
-}
-.vy-summary-header {
+.vy-section-title {
   font-family: Georgia, serif;
-  font-size: 14px;
+  font-size: 16px;
   color: #f0dba5;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   align-items: center;
   gap: 8px;
   letter-spacing: 1px;
 }
-.vy-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.vy-grid-item {
-  border: 1px solid #423620;
-  background: #15130e;
-  border-radius: 8px;
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.vy-grid-icon {
-  color: #c5a15b;
-  font-size: 18px;
-}
-.vy-grid-label {
-  font-size: 9px;
-  color: #b6ad9a;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.vy-grid-val {
-  font-size: 13px;
-  font-weight: bold;
-  color: #f0dba5;
-  margin-top: 2px;
-}
-.vy-full-item {
-  border: 1px solid #423620;
-  background: #15130e;
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.vy-track-highlight {
-  border: 1px solid #c5a15b;
-  background: linear-gradient(135deg, #241d11, #12100c);
-  box-shadow: 0 0 15px rgba(197, 161, 91, 0.25);
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-/* COLLECTION CONTROLS */
-.collection-controls {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin: 24px 0;
-}
-.collection-control {
-  position: relative;
-  min-width: 0;
-}
-.collection-control-btn {
-  width: 100%;
-  min-height: 76px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 17px;
-  text-align: left;
-  color: var(--ink, #f7f0df);
-  background: linear-gradient(135deg, #15140f, #090908);
-  border: 1px solid #59482b;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: border-color .2s, background .2s;
-}
-.collection-control-btn:hover {
-  border-color: #c5a15b;
-  background: #1b1912;
-}
-.control-icon {
-  color: #c5a15b;
-  font-size: 25px;
-  min-width: 25px;
-  text-align: center;
-}
-.control-copy {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 5px;
-}
-.control-copy strong {
-  font-size: 12px;
-  letter-spacing: 2px;
-  font-weight: 600;
-}
-.control-copy small {
-  color: #b6ad9a;
-  font-size: 11px;
-}
-.control-chevron {
-  color: #c5a15b;
-  font-size: 19px;
-}
-.control-dropdown {
-  position: absolute;
-  z-index: 20;
-  top: calc(100% + 7px);
-  left: 0;
-  right: 0;
-  padding: 7px;
+.vy-inner-box {
   background: #11110e;
   border: 1px solid #59482b;
   border-radius: 10px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .45);
+  padding: 14px;
+  margin-bottom: 14px;
 }
-.control-dropdown[hidden] {
-  display: none !important;
+.vy-order-num-box {
+  font-size: 20px;
+  font-weight: bold;
+  color: #f0dba5;
+  letter-spacing: 2px;
+  margin: 6px 0;
 }
-.control-dropdown button {
-  width: 100%;
+.vy-status-grid {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 10px;
-  color: #f7f0df;
-  background: transparent;
-  border: 0;
-  border-radius: 6px;
-  text-align: left;
-  font-size: 13px;
-  cursor: pointer;
+  margin: 16px 0;
+  position: relative;
 }
-.control-dropdown button:hover,
-.control-dropdown button.selected {
+.vy-status-step {
+  text-align: center;
+  font-size: 10px;
+  color: #b6ad9a;
+  z-index: 2;
+}
+.vy-status-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #59482b;
+  background: #15130e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 6px;
+  font-size: 12px;
+  color: #b6ad9a;
+}
+.vy-status-step.active .vy-status-circle {
+  background: var(--gold-light);
+  color: #111;
+  border-color: var(--gold-light);
+  box-shadow: 0 0 10px rgba(240, 219, 165, 0.4);
+}
+.vy-status-step.active {
   color: #f0dba5;
-  background: #292317;
+  font-weight: bold;
+}
+.vy-status-line {
+  position: absolute;
+  top: 17px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #59482b;
+  z-index: 1;
+}
+.vy-delivery-note-box {
+  background: linear-gradient(135deg, #1b1710, #11110e);
+  border: 1px solid #c5a15b;
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+.vy-delivery-note-box strong {
+  color: #f0dba5;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+.vy-whatsapp-card {
+  background: #11110e;
+  border: 1px solid #59482b;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.vy-wa-num {
+  font-size: 16px;
+  font-weight: bold;
+  color: #f0dba5;
+  margin-top: 4px;
+}
+.vy-wa-btn {
+  background: #c5a15b;
+  color: #111;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.vy-summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin: 8px 0;
+  color: #d1c7b3;
+}
+.vy-summary-total {
+  border-top: 1px solid #59482b;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #f0dba5;
+  display: flex;
+  justify-content: space-between;
+}
+.vy-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #15130e;
+  border: 1px solid #423620;
+  border-radius: 8px;
+  padding: 10px;
+}
+.vy-item-img {
+  width: 50px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #222;
+}
+.vy-footer-thank {
+  text-align: center;
+  margin-top: 20px;
+  font-family: Georgia, serif;
+  color: #f0dba5;
+  font-size: 20px;
 }
 
 @media(max-width:900px){
-  .header-main{grid-template-columns:200px minmax(130px,1fr) 110px;gap:12px}
-  .brand-name{font-size:23px}
-  nav{gap:22px}
-  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-  .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .footer-col:nth-child(2){border-right:0}
-}
-@media(max-width:600px){
-  .announcement{font-size:8px;letter-spacing:1px;padding:8px 3px}
-  .header-main{padding:9px 3%;grid-template-columns:1fr auto;gap:9px}
-  .brand{gap:6px}
-  .logo-placeholder{width:40px;height:40px}
-  .brand-name{font-size:19px;letter-spacing:2px}
-  .brand-sub{font-size:7px;letter-spacing:2px}
-  .search{grid-column:1/-1;grid-row:2;max-width:none}
-  .search input{padding:9px 40px 9px 11px;font-size:12px}
-  .header-actions{gap:6px}
-  .icon-button{min-width:39px;font-size:22px}
-  .icon-label{font-size:8px}
-  nav{gap:15px;padding:10px 5px}
-  nav a,nav button{font-size:8px;letter-spacing:.3px}
-  .section{padding:22px 3%}
-  .section-heading h2{font-size:25px}
-  .category-showcase{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  .category-tile{height:130px;padding:10px;background-position:center}
-  .category-tile small{font-size:12px}
-  .category-tile strong{font-size:20px}
-  .category-tile span{font-size:8px;margin-top:9px}
-  .category-list{gap:6px}
-  .category-button{min-width:0;padding:9px 12px;font-size:9px}
-  .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-  .product-image,.image-placeholder{aspect-ratio:4/4.5}
-  .product-info{padding:9px}
-  .product-name{font-size:12px;min-height:36px}
-  .sale-price{font-size:12px}
-  .old-price{font-size:10px}
-  .small-button{font-size:8px;padding:9px 2px}
-  .social-showcase{padding:4px 3% 18px}
-  .social-showcase-inner{grid-template-columns:1fr;gap:10px;padding:24px 12px}
-  .social-showcase-brand{border-right:0;border-bottom:1px solid var(--gold);padding:10px}
-  .social-showcase-brand strong{font-size:27px}
-  .social-showcase-content h2{font-size:20px}
-  .social-showcase-content p{font-size:11px}
-  .socials{gap:12px}
-  .socials a{min-width:48px;font-size:9px}
-  .socials a span{width:38px;height:38px}
-  .footer-grid{padding:25px 4%;grid-template-columns:1fr 1fr;gap:23px 13px}
-  .footer-col{padding-right:9px}
-  .footer-col:nth-child(2){border-right:0}
-  .footer-col:nth-child(3){border-right:0}
-  .footer-col:last-child{grid-column:1/-1}
-  .footer-brand{font-size:21px;letter-spacing:2px}
-  .footer-description,.footer-links a,.footer-policy summary{font-size:10px}
-  .thank-you{font-size:13px}
-  .copyright{font-size:9px;padding:14px 4%}
-  .modal{padding:21px 17px}
-  .tracking-card{padding:14px 8px}
-  .tracking-step{font-size:7px}
-  .tracking-arrow{font-size:12px}
-}
-
-/* VEYORA BANNER STYLE */
-.veyora-banner {
-  position: relative;
-  min-height: 390px;
-  overflow: hidden;
-  background: #171510;
-  color: #fff5dc;
-}
-.veyora-banner[hidden] {
-  display: none !important;
-}
-.veyora-banner-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: opacity 0.5s ease-in-out;
-}
-.veyora-banner-overlay {
-  position: relative;
-  z-index: 1;
-  box-sizing: border-box;
-  min-height: 390px;
-  padding: 60px 8%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  background: linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.35), transparent);
-}
-.veyora-banner-label {
-  color: #d8b56a;
-  letter-spacing: 3px;
-  font-size: 10px;
-}
-.veyora-banner-overlay h1 {
-  max-width: 650px;
-  margin: 10px 0;
-  font-size: clamp(28px, 5vw, 54px);
-}
-.veyora-banner-overlay p:not(.veyora-banner-label) {
-  max-width: 500px;
-  line-height: 1.7;
-}
-#veyoraBannerButton {
-  margin-top: 18px;
-  padding: 14px 25px;
-  border: 1px solid #d8b56a;
-  background: #d8b56a;
-  color: #171510;
-  font-weight: bold;
-  cursor: pointer;
-}
-.veyora-banner-dots {
-  display: flex;
-  gap: 8px;
-  margin-top: 24px;
-}
-.veyora-banner-dot {
-  width: 22px;
-  height: 3px;
-  padding: 0;
-  border: 0;
-  background: #817968;
-  cursor: pointer;
-}
-.veyora-banner-dot.active {
-  background: #e0bd73;
-}
-@media (max-width: 600px) {
-  .veyora-banner,
-  .veyora-banner-overlay {
-    min-height: 320px;
-  }
-  .veyora-banner-overlay {
-    padding: 38px 22px;
+  .vy-dashboard-grid {
+    grid-template-columns: 1fr;
   }
 }
-
-/* VEYORA LUXURY TRACKING PAGE */
-.tracking-page-modal {
-  width: min(760px, 100%);
-  max-height: 92vh;
-  overflow-y: auto;
-  padding: 38px 5%;
-  box-sizing: border-box;
-  background:
-    radial-gradient(ellipse at bottom right, #30230e 0%, transparent 42%),
-    #080807;
-  border: 1px solid #b99a5a;
-  box-shadow: 0 0 35px #b99a5a18;
-}
-
-.tracking-page-decoration {
-  text-align: center;
-  color: #e5c77f;
-  font-size: 25px;
-}
-
-.tracking-page-title {
-  text-align: center;
-  font-size: clamp(34px, 6vw, 60px) !important;
-  margin: 20px 0 12px !important;
-}
-
-.tracking-page-subtitle {
-  text-align: center;
-  color: #ded5c4;
-  font-size: 15px;
-  line-height: 1.7;
-}
-
-.tracking-divider {
-  text-align: center;
-  color: #d8b56a;
-  margin: 20px 0 28px;
-  letter-spacing: 3px;
-}
-
-.tracking-page-form label {
-  display: block;
-  letter-spacing: 3px;
-  font-size: 11px;
-  color: #e3d1a5;
-}
-
-.tracking-page-form input {
-  min-height: 58px;
-  border: 1px solid #d0b778;
-  border-radius: 10px;
-  background: #090908;
-  color: #fff2d4;
-  font-size: 18px;
-  padding: 14px 18px;
-  box-sizing: border-box;
-}
-
-.tracking-page-form .gold-button {
-  min-height: 58px;
-  border-radius: 10px;
-  margin-top: 8px;
-  background: linear-gradient(110deg, #b78b3d, #f4dfa0, #c49a4c);
-  color: #100d07;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-.tracking-page-modal .tracking-card {
-  margin-top: 36px;
-  padding: 28px 22px;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #0c0c0a, #17130b);
-  border: 1px solid #b99a5a;
-}
-
-.tracking-page-modal .tracking-heading {
-  font-size: clamp(24px, 4vw, 38px);
-  line-height: 1.3;
-  margin-bottom: 24px;
-}
-
-.tracking-page-modal .tracking-number {
-  font-size: 16px;
-  line-height: 1.8;
-}
-
-.tracking-page-modal .tracking-current {
-  border: 1px solid #c6a052;
-  border-radius: 8px;
-  background: #211a0c;
-  color: #f0d99b;
-  padding: 12px 16px;
-  margin: 22px 0;
-}
-
-.tracking-page-modal .tracking-steps {
-  justify-content: space-between;
-  gap: 8px;
-  margin: 28px 0;
-}
-
-.tracking-page-modal .tracking-step {
-  width: 68px;
-  max-width: 68px;
-  aspect-ratio: 1;
-  border: 1px solid #b99a5a;
-  border-radius: 50%;
-  font-size: 10px;
-  flex-shrink: 1;
-}
-
-.tracking-page-modal .tracking-meta {
-  font-size: 13px;
-}
-
-.tracking-thankyou {
-  text-align: center;
-  margin-top: 30px;
-  color: #e5d3a8;
-  letter-spacing: 2px;
-  font-size: 10px;
-}
-
-.tracking-thankyou em {
-  display: block;
-  margin-top: 10px;
-  font-family: Georgia, serif;
-  font-size: 15px;
-  letter-spacing: 0;
-}
-
-/* USER ORDERS LIST IN ACCOUNT MODAL */
-.user-order-item {
-  background: #14130f;
-  border: 1px solid #423620;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 10px;
-  font-size: 12px;
-}
-.user-order-header {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px dashed #332918;
-  padding-bottom: 6px;
-  margin-bottom: 8px;
-  color: #f0dba5;
-}
-  /* VEYORA Premium Gold Account Buttons */
-#accountModal button,
-#accountModal input[type="button"],
-#accountModal input[type="submit"],
-#accountModal button.sign-out,
-#accountModal .sign-out-btn {
-  background: #C9A45C !important;
-  color: #17140D !important;
-  border: 1px solid #C9A45C !important;
-  border-radius: 7px !important;
-  font-weight: 700 !important;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-#accountModal button:hover,
-#accountModal input[type="button"]:hover,
-#accountModal input[type="submit"]:hover,
-#accountModal button.sign-out:hover,
-#accountModal .sign-out-btn:hover {
-  background: #B18B43 !important;
-  color: #000000 !important;
-  border-color: #E0BE78 !important;
-}
-
-#accountModal button:focus-visible,
-#accountModal input:focus-visible {
-  outline: 2px solid #E0BE78;
-  outline-offset: 3px;
-}
-  
-/* VEYORA — Premium Gold Buttons */
-
-/* Account, cart, checkout and order buttons */
-#accountModal button,
-#accountModal input[type="button"],
-#accountModal input[type="submit"],
-#cartModal button,
-#cartModal input[type="button"],
-#cartModal input[type="submit"],
-#checkoutModal button,
-#checkoutModal input[type="button"],
-#checkoutModal input[type="submit"],
-button.add-to-cart,
-button.checkout-btn,
-button.place-order-btn,
-.add-to-cart-btn,
-.checkout-button,
-.place-cod-order {
-  background: #C9A45C !important;
-  color: #17140D !important;
-  border: 1px solid #C9A45C !important;
-  border-radius: 7px !important;
-  font-weight: 700 !important;
-  transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-/* Hover effect */
-#accountModal button:hover,
-#cartModal button:hover,
-#checkoutModal button:hover,
-button.add-to-cart:hover,
-button.checkout-btn:hover,
-button.place-order-btn:hover,
-.add-to-cart-btn:hover,
-.checkout-button:hover,
-.place-cod-order:hover {
-  background: #B18B43 !important;
-  color: #000000 !important;
-  border-color: #E0BE78 !important;
-}
-
-/* Disabled buttons */
-button:disabled,
-input[type="submit"]:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-/* Fix Veyora logo size */
-.veyora-header .brand img {
-  width: 45px !important;
-  height: 45px !important;
-  max-width: 45px !important;
-  max-height: 45px !important;
-  object-fit: contain !important;
-  flex-shrink: 0 !important;
-}
-
-.veyora-header .brand {
-  flex-shrink: 0 !important;
-}
-
-.veyora-header .brand-name {
-  font-size: 25px !important;
-  line-height: 1.1 !important;
-}
-
-.veyora-header .brand-sub {
-  font-size: 9px !important;
-}
-
-/* EMERGENCY FIX — Stop logo from filling screen */
-header.veyora-header .header-main > a.brand img,
-.veyora-header .brand img {
-  display: block !important;
-  width: 45px !important;
-  height: 45px !important;
-  min-width: 45px !important;
-  min-height: 45px !important;
-  max-width: 45px !important;
-  max-height: 45px !important;
-  object-fit: contain !important;
-  position: static !important;
-  flex: 0 0 45px !important;
-}
-
-
-/* VEYORA — Balanced Premium Header */
-header.veyora-header .header-main {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 12px 4%;
-  display: grid !important;
-  grid-template-columns: minmax(200px, 1fr) minmax(220px, 1.4fr) minmax(150px, 1fr) !important;
-  align-items: center;
-  gap: 24px;
-}
-
-header.veyora-header .brand {
-  display: flex !important;
-  align-items: center;
-  justify-self: start;
-  min-width: 0;
-  flex: none !important;
-  gap: 10px;
-}
-
-header.veyora-header .brand img {
-  display: block;
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  max-width: 48px !important;
-  max-height: 48px !important;
-  object-fit: contain;
-  flex: 0 0 48px !important;
-}
-
-header.veyora-header .brand-text {
-  min-width: 0;
-}
-
-header.veyora-header .brand-name {
-  font-size: 25px !important;
-  line-height: 1.1;
-  letter-spacing: 3px;
-}
-
-header.veyora-header .brand-sub {
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-align: center;
-}
-
-header.veyora-header .search {
-  width: 100%;
-  max-width: 440px;
-  justify-self: center;
-  min-width: 0;
-}
-
-header.veyora-header .header-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
-  justify-self: end;
-}
-
-header.veyora-header .icon-button {
-  min-width: 48px;
-  font-size: 23px;
-}
-
-header.veyora-header .icon-label {
-  font-size: 10px;
-  margin-top: 4px;
-}
-
-@media (max-width: 900px) {
-  header.veyora-header .header-main {
-    grid-template-columns: minmax(160px, 1fr) minmax(180px, 1.2fr) minmax(110px, 1fr) !important;
-    gap: 12px;
-    padding: 12px 3%;
-  }
-
-  header.veyora-header .brand img {
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    max-width: 40px !important;
-    max-height: 40px !important;
-    flex-basis: 40px !important;
-  }
-
-  header.veyora-header .brand-name {
-    font-size: 20px !important;
-    letter-spacing: 2px;
-  }
-
-  header.veyora-header .header-actions {
-    gap: 5px;
-  }
-
-  header.veyora-header .icon-button {
-    min-width: 40px;
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  header.veyora-header .header-main {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    gap: 9px;
-    padding: 9px 3%;
-  }
-
-  header.veyora-header .brand {
-    gap: 6px;
-  }
-
-  header.veyora-header .brand img {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    flex-basis: 36px !important;
-  }
-
-  header.veyora-header .brand-name {
-    font-size: 18px !important;
-    letter-spacing: 2px;
-  }
-
-  header.veyora-header .brand-sub {
-    font-size: 7px;
-    letter-spacing: 1.5px;
-  }
-
-  header.veyora-header .search {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    max-width: none;
-  }
-
-  header.veyora-header .header-actions {
-    grid-column: 2;
-    grid-row: 1;
-    gap: 5px;
-  }
-
-  header.veyora-header .icon-button {
-    min-width: 36px;
-    padding: 2px;
-    font-size: 19px;
-  }
-
-  header.veyora-header .icon-label {
-    font-size: 8px;
-  }
-}
-
-
 </style>
 </head>
 
 <body>
-<div class="announcement">✦  WELCOME TO VEYORA  ·  CASH ON DELIVERY IN PAKISTAN  ✦</div>
+<div class="announcement">✦ WELCOME TO VEYORA · CASH ON DELIVERY IN PAKISTAN ✦</div>
 
 <header class="veyora-header">
   <div class="header-main">
-
     <a href="index.html" class="brand" aria-label="VEYORA Home">
-      <img
-        src="./WhatsApp%20Image%202026-10-12%20at%2011.22.27%20PM.jpeg"
-        alt="VEYORA Logo"
-      >
+      <img src="./WhatsApp%20Image%202026-10-12%20at%2011.22.27%20PM.jpeg" alt="VEYORA Logo" style="width:48px;height:48px;object-fit:contain;">
       <div class="brand-text">
         <div class="brand-name">VEYORA</div>
         <div class="brand-sub">MAYU WORLD</div>
@@ -1033,28 +454,19 @@ header.veyora-header .icon-label {
     </a>
 
     <div class="search">
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="Search products..."
-        aria-label="Search products"
-      >
+      <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products">
       <button id="searchButton" type="button" aria-label="Search">⌕</button>
     </div>
 
     <div class="header-actions">
       <button class="icon-button" id="accountButton" type="button" aria-label="My Account">
-        ♙
-        <span class="icon-label">Account</span>
+        ♙<span class="icon-label">Account</span>
       </button>
-
       <button class="icon-button" id="cartButton" type="button" aria-label="Shopping Cart">
-        🛒
-        <span class="cart-count" id="cartCount">0</span>
+        🛒<span class="cart-count" id="cartCount">0</span>
         <span class="icon-label">Cart</span>
       </button>
     </div>
-
   </div>
 
   <nav aria-label="Main navigation">
@@ -1066,9 +478,7 @@ header.veyora-header .icon-label {
 </header>
 
 <main>
-
-<main>
-  <!-- DYNAMIC BANNER SECTION -->
+  <!-- BANNER SECTION -->
   <section id="veyoraBanner" class="veyora-banner" hidden>
     <img id="veyoraBannerImage" class="veyora-banner-image" alt="VEYORA collection">
     <div class="veyora-banner-overlay">
@@ -1080,6 +490,7 @@ header.veyora-header .icon-label {
     </div>
   </section>
 
+  <!-- CATEGORIES SECTION -->
   <section class="section" id="categories">
     <div class="section-heading">
       <h2>Shop By Category</h2>
@@ -1100,12 +511,9 @@ header.veyora-header .icon-label {
         <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
       </a>
     </div>
-
-    <div class="category-list" id="categoryList">
-      <button class="category-button active" data-category="all">All</button>
-    </div>
   </section>
 
+  <!-- PRODUCTS SECTION -->
   <section class="section" id="products">
     <div class="section-heading">
       <h2>Our Collection</h2>
@@ -1146,42 +554,10 @@ header.veyora-header .icon-label {
       </div>
     </div>
 
-    <!-- SEE MORE / SHOW LESS WRAPPER -->
     <div id="seeMoreWrapper" style="text-align: center; margin-bottom: 20px;"></div>
 
     <div class="product-grid" id="productGrid">
       <div class="empty-state">Loading VEYORA collection...</div>
-    </div>
-  </section>
-
-  <section class="social-showcase" id="veyora-social">
-    <div class="social-showcase-inner">
-      <div class="social-showcase-brand">
-        <strong>VEYORA</strong>
-        <span>MAYU WORLD</span>
-      </div>
-      <div class="social-showcase-content">
-        <div class="eyebrow">CONNECT WITH US</div>
-        <h2>Premium Products for Everyday Living</h2>
-        <p>Fashion, home essentials aur everyday favourites — all in one place.</p>
-        <div class="socials">
-          <a href="https://www.instagram.com/veyora_.pk/" target="_blank" rel="noopener noreferrer">
-            <span><i class="fa-brands fa-instagram"></i></span>Instagram
-          </a>
-          <a href="https://www.tiktok.com/@veyora.pk" target="_blank" rel="noopener noreferrer">
-            <span><i class="fa-brands fa-tiktok"></i></span>TikTok
-          </a>
-          <a href="https://www.facebook.com/share/1WFCVZ9tsD/" target="_blank" rel="noopener noreferrer">
-            <span><i class="fa-brands fa-facebook-f"></i></span>Facebook
-          </a>
-          <a href="https://www.youtube.com/@VeyoraStore-c8h" target="_blank" rel="noopener noreferrer">
-            <span><i class="fa-brands fa-youtube"></i></span>YouTube
-          </a>
-          <a href="https://wa.me/923713763119" target="_blank" rel="noopener noreferrer">
-            <span><i class="fa-brands fa-whatsapp"></i></span>WhatsApp
-          </a>
-        </div>
-      </div>
     </div>
   </section>
 </main>
@@ -1207,34 +583,13 @@ header.veyora-header .icon-label {
 
     <div class="footer-col footer-policy">
       <h3>✦ POLICIES</h3>
-      <details>
-        <summary>About Us</summary>
-        <p>VEYORA brings together fashion, home essentials and everyday favourites, with a focus on quality and value.</p>
-      </details>
-      <details>
-        <summary>FAQs</summary>
-        <p>For product details, availability and order assistance, contact our team through WhatsApp.</p>
-      </details>
-      <details>
-        <summary>Shipping & Delivery</summary>
-        <p>Delivery time and charges depend on your order and delivery location. Please confirm details when ordering.</p>
-      </details>
-      <details>
-        <summary>Returns & Refunds</summary>
-        <p>Contact us about an incorrect or damaged order so we can review the issue and explain the available options.</p>
-      </details>
-      <details>
-        <summary>Privacy Policy</summary>
-        <p>Customer information is used to process orders, arrange delivery and provide customer support.</p>
-      </details>
-      <details>
-        <summary>Terms of Service</summary>
-        <p>Product availability, prices and delivery details may change. Please confirm your order information before checkout.</p>
-      </details>
+      <details><summary>About Us</summary><p>VEYORA brings together fashion, home essentials and everyday favourites.</p></details>
+      <details><summary>FAQs</summary><p>For product details and order assistance, contact our team through WhatsApp.</p></details>
+      <details><summary>Shipping & Delivery</summary><p>Delivery time and charges depend on your location.</p></details>
     </div>
 
     <div class="footer-col">
-      <a class="admin-footer-button" href="./admin.html">♙  ADMIN LOGIN →</a>
+      <a class="admin-footer-button" href="./admin.html">♙ ADMIN LOGIN →</a>
       <div class="admin-tagline">Shop Smart ✦ Live Better</div>
     </div>
   </div>
@@ -1245,39 +600,28 @@ header.veyora-header .icon-label {
   </div>
 </footer>
 
-<!-- ORDER TRACKING -->
-<div class="overlay" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
+<!-- ORDER TRACKING MODAL -->
+<div class="overlay" id="trackModal" role="dialog" aria-modal="true">
   <div class="modal tracking-page-modal">
-    <button class="close" data-close="trackModal" type="button" aria-label="Close">×</button>
-
+    <button class="close" data-close="trackModal" type="button">×</button>
     <div class="tracking-page-decoration">✦</div>
-
-    <h2 id="trackTitle" class="tracking-page-title">Track Your Order</h2>
+    <h2 class="tracking-page-title">Track Your Order</h2>
     <p class="tracking-page-subtitle">Enter the tracking number provided by VEYORA.</p>
-
     <div class="tracking-divider">────── ✦ ──────</div>
-
     <form id="trackForm" class="tracking-page-form">
       <label for="trackingNumber">TRACKING NUMBER</label>
       <input id="trackingNumber" required placeholder="Enter your tracking number" autocomplete="off">
       <button class="gold-button" type="submit">CHECK STATUS →</button>
     </form>
-
-    <div class="result" id="trackResult" aria-live="polite"></div>
-
-    <div class="tracking-thankyou">
-      <div class="tracking-divider">────── ✦ ──────</div>
-      <p>THANK YOU FOR SHOPPING WITH VEYORA</p>
-      <em>Your trust inspires us.</em>
-    </div>
+    <div class="result" id="trackResult"></div>
   </div>
 </div>
 
-<!-- CART -->
-<div class="overlay" id="cartModal" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+<!-- CART MODAL -->
+<div class="overlay" id="cartModal" role="dialog" aria-modal="true">
   <div class="modal">
-    <button class="close" data-close="cartModal" type="button" aria-label="Close">×</button>
-    <h2 id="cartTitle">Your Cart</h2>
+    <button class="close" data-close="cartModal" type="button">×</button>
+    <h2>Your Cart</h2>
     <div id="cartItems"></div>
     <div id="cartTotal" style="margin-top:15px;font-weight:bold"></div>
     <button class="gold-button" id="checkoutButton" type="button">PROCEED TO CHECKOUT</button>
@@ -1285,28 +629,23 @@ header.veyora-header .icon-label {
   </div>
 </div>
 
-<!-- COD CHECKOUT -->
-<div class="overlay" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+<!-- COD CHECKOUT MODAL -->
+<div class="overlay" id="checkoutModal" role="dialog" aria-modal="true">
   <div class="modal">
-    <button class="close" data-close="checkoutModal" type="button" aria-label="Close">×</button>
-    <h2 id="checkoutTitle">Checkout</h2>
+    <button class="close" data-close="checkoutModal" type="button">×</button>
+    <h2>Checkout</h2>
     <p class="notice">Enter your delivery details. Payment method: Cash on Delivery.</p>
     <form id="checkoutForm">
       <label for="customerName">Full name *</label>
-      <input id="customerName" required maxlength="120" autocomplete="name">
-
+      <input id="customerName" required maxlength="120">
       <label for="customerPhone">Phone number *</label>
-      <input id="customerPhone" type="tel" required maxlength="20" autocomplete="tel" placeholder="03XXXXXXXXX">
-
+      <input id="customerPhone" type="tel" required maxlength="20" placeholder="03XXXXXXXXX">
       <label for="customerEmail">Email (optional)</label>
-      <input id="customerEmail" type="email" maxlength="254" autocomplete="email">
-
+      <input id="customerEmail" type="email" maxlength="254">
       <label for="customerAddress">Complete address *</label>
-      <textarea id="customerAddress" required maxlength="500" autocomplete="street-address" rows="3" placeholder="House number, street, area"></textarea>
-
+      <textarea id="customerAddress" required maxlength="500" rows="3" placeholder="House number, street, area"></textarea>
       <label for="customerCity">City *</label>
-      <input id="customerCity" required maxlength="100" autocomplete="address-level2">
-
+      <input id="customerCity" required maxlength="100">
       <div id="checkoutSummary" class="result"></div>
       <button class="gold-button" id="placeOrderButton" type="submit">PLACE COD ORDER</button>
     </form>
@@ -1314,47 +653,39 @@ header.veyora-header .icon-label {
   </div>
 </div>
 
-<!-- PRODUCT DETAILS AND VARIANTS -->
-<div class="overlay" id="productModal" role="dialog" aria-modal="true" aria-label="Product details">
+<!-- PRODUCT DETAILS MODAL -->
+<div class="overlay" id="productModal" role="dialog" aria-modal="true">
   <div class="modal">
-    <button class="close" data-close="productModal" type="button" aria-label="Close">×</button>
+    <button class="close" data-close="productModal" type="button">×</button>
     <div id="productDetails"></div>
   </div>
 </div>
 
-<!-- CUSTOMER ACCOUNT & ORDER HISTORY -->
-<div class="overlay" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+<!-- ACCOUNT MODAL -->
+<div class="overlay" id="accountModal" role="dialog" aria-modal="true">
   <div class="modal">
-    <button class="close" data-close="accountModal" type="button" aria-label="Close">×</button>
-    <h2 id="accountTitle">My VEYORA Account</h2>
-
+    <button class="close" data-close="accountModal" type="button">×</button>
+    <h2>My VEYORA Account</h2>
     <div id="accountSignedIn" hidden>
       <p id="accountUserEmail" class="notice" style="color:#f0dba5;font-weight:bold;"></p>
-      
       <div style="margin:20px 0;">
         <h3 style="font-family:Georgia,serif;color:#f0dfb6;border-bottom:1px solid #5a482b;padding-bottom:5px;">My Orders</h3>
         <div id="userOrdersList" class="notice">Loading orders...</div>
       </div>
-
       <button class="gold-button" id="accountSignOut" type="button">SIGN OUT</button>
     </div>
-
     <div id="accountAuthForm">
-      <p class="notice">Please sign in or create an account to proceed with your order.</p>
-
-      <label for="accountName">Full name (for signup)</label>
-      <input id="accountName" maxlength="120" placeholder="Your full name" autocomplete="name">
-
+      <p class="notice">Please sign in or create an account to proceed.</p>
+      <label for="accountName">Full name</label>
+      <input id="accountName" maxlength="120" placeholder="Your full name">
       <label for="accountEmail">Email address</label>
-      <input id="accountEmail" type="email" required autocomplete="email" placeholder="you@example.com">
-<label for="accountPassword">Password</label>
-      <input id="accountPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="At least 6 characters">
-
+      <input id="accountEmail" type="email" required placeholder="you@example.com">
+      <label for="accountPassword">Password</label>
+      <input id="accountPassword" type="password" required minlength="6" placeholder="At least 6 characters">
       <button class="gold-button" id="accountSignIn" type="button">SIGN IN</button>
       <button class="small-button" id="accountSignUp" type="button" style="width:100%;margin-top:10px">CREATE ACCOUNT</button>
-      <button class="small-button" id="accountReset" type="button" style="width:100%;margin-top:10px">RESET PASSWORD</button>
     </div>
-    <div id="accountMessage" class="result" aria-live="polite"></div>
+    <div id="accountMessage" class="result"></div>
   </div>
 </div>
 
@@ -1391,14 +722,8 @@ let currentUser = null;
 
 $("year").textContent = new Date().getFullYear();
 
-function openModal(id) {
-  const modal = $(id);
-  if (modal) modal.classList.add("open");
-}
-function closeModal(id) {
-  const modal = $(id);
-  if (modal) modal.classList.remove("open");
-}
+function openModal(id) { $(id)?.classList.add("open"); }
+function closeModal(id) { $(id)?.classList.remove("open"); }
 
 document.querySelectorAll("[data-close]").forEach(button => {
   button.addEventListener("click", () => closeModal(button.dataset.close));
@@ -1408,221 +733,20 @@ document.querySelectorAll(".overlay").forEach(overlay => {
     if (event.target === overlay) overlay.classList.remove("open");
   });
 });
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    document.querySelectorAll(".overlay.open").forEach(el => el.classList.remove("open"));
-  }
-});
 
-$("trackButton").addEventListener("click", () => {
-  $("trackResult").textContent = "";
-  openModal("trackModal");
-});
-$("footerTrack").addEventListener("click", event => {
-  event.preventDefault();
-  $("trackResult").textContent = "";
-  openModal("trackModal");
-});
-$("accountButton").addEventListener("click", () => {
-  $("accountMessage").textContent = "";
-  openModal("accountModal");
-  refreshAccountSession();
-});
-$("cartButton").addEventListener("click", () => {
-  renderCart();
-  openModal("cartModal");
-});
+$("trackButton").addEventListener("click", () => { $("trackResult").textContent = ""; openModal("trackModal"); });
+$("footerTrack").addEventListener("click", event => { event.preventDefault(); $("trackResult").textContent = ""; openModal("trackModal"); });
+$("accountButton").addEventListener("click", () => { $("accountMessage").textContent = ""; openModal("accountModal"); refreshAccountSession(); });
+$("cartButton").addEventListener("click", () => { renderCart(); openModal("cartModal"); });
 $("searchButton").addEventListener("click", () => { showAllProducts = false; renderProducts(); });
 $("searchInput").addEventListener("input", () => { showAllProducts = false; renderProducts(); });
 
 $("shopAllLink").addEventListener("click", () => {
-  activeCategory = "all";
-  saleCategory = "";
-  activeSort = "";
-  showAllProducts = false;
-
+  activeCategory = "all"; saleCategory = ""; activeSort = ""; showAllProducts = false;
   $("searchInput").value = "";
-
-  $("priceOptions").querySelectorAll("[data-sort]").forEach(button => {
-    button.classList.remove("selected");
-  });
-
-  $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
-    button.classList.remove("selected");
-  });
-
-  closeCollectionMenus();
   renderCategories();
   renderProducts();
 });
-
-function closeCollectionMenus() {
-  $("priceOptions").hidden = true;
-  $("saleOptions").hidden = true;
-
-  $("priceToggle").setAttribute("aria-expanded", "false");
-  $("saleToggle").setAttribute("aria-expanded", "false");
-
-  document.querySelectorAll(".control-chevron").forEach(el => {
-    el.textContent = "⌄";
-  });
-}
-
-$("priceToggle").addEventListener("click", () => {
-  const shouldOpen = $("priceOptions").hidden;
-  closeCollectionMenus();
-
-  if (shouldOpen) {
-    $("priceOptions").hidden = false;
-    $("priceToggle").setAttribute("aria-expanded", "true");
-    $("priceToggle").querySelector(".control-chevron").textContent = "⌃";
-  }
-});
-
-$("saleToggle").addEventListener("click", () => {
-  const shouldOpen = $("saleOptions").hidden;
-  closeCollectionMenus();
-
-  if (shouldOpen) {
-    $("saleOptions").hidden = false;
-    $("saleToggle").setAttribute("aria-expanded", "true");
-    $("saleToggle").querySelector(".control-chevron").textContent = "⌃";
-  }
-});
-
-$("priceOptions").querySelectorAll("[data-sort]").forEach(button => {
-  button.addEventListener("click", () => {
-    activeSort = button.dataset.sort;
-    showAllProducts = false;
-
-    $("priceOptions").querySelectorAll("[data-sort]").forEach(option => {
-      option.classList.toggle("selected", option === button);
-    });
-
-    closeCollectionMenus();
-    renderProducts();
-  });
-});
-
-$("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
-  button.addEventListener("click", () => {
-    const key = button.dataset.saleCategory;
-
-    const match = categories.find(category => {
-      const name = String(category.name || "").trim().toLowerCase();
-
-      if (key === "men") return name.includes("men") && !name.includes("women");
-      if (key === "women") return name.includes("women");
-      if (key === "bedding") {
-        return name.includes("bedsheet") ||
-          name.includes("bedding") ||
-          name.includes("bed");
-      }
-      if (key === "home") {
-        return name.includes("home") || name.includes("accessor");
-      }
-
-      return false;
-    });
-
-    if (!match) {
-      alert("Is category ko Admin Panel mein check karo.");
-      return;
-    }
-
-    activeCategory = String(match.id);
-    saleCategory = key;
-    showAllProducts = false;
-
-    $("searchInput").value = "";
-
-    $("saleOptions").querySelectorAll("[data-sale-category]").forEach(option => {
-      option.classList.toggle("selected", option === button);
-    });
-
-    closeCollectionMenus();
-    renderCategories();
-    renderProducts();
-
-    $("products").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  });
-});
-
-document.querySelectorAll("[data-showcase-category]").forEach(tile => {
-  tile.addEventListener("click", event => {
-    event.preventDefault();
-
-    const key = tile.dataset.showcaseCategory.toLowerCase();
-
-    const match = categories.find(category => {
-      const name = String(category.name || "").trim().toLowerCase();
-
-      if (key === "men") {
-        return name.includes("men") && !name.includes("women");
-      }
-
-      if (key === "women") {
-        return name.includes("women");
-      }
-
-      if (key === "bedding") {
-        return name.includes("bedsheet") ||
-               name.includes("bedding") ||
-               name.includes("bed");
-      }
-
-      if (key === "home") {
-        return name.includes("home") ||
-               name.includes("accessor");
-      }
-
-      return false;
-    });
-
-    if (!match) {
-      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
-      return;
-    }
-
-    activeCategory = String(match.id);
-    saleCategory = "";
-    showAllProducts = false;
-    $("searchInput").value = "";
-
-    renderCategories();
-    renderProducts();
-
-    document.getElementById("products").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  });
-});
-
-
-function renderCategories() {
-  const visible = categories.filter(category => category.is_active !== false);
-
-  $("categoryList").innerHTML =
-    `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
-    visible.map(category =>
-      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
-    ).join("");
-
-  $("categoryList").querySelectorAll("[data-category]").forEach(button => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.category;
-      saleCategory = "";
-      showAllProducts = false;
-      renderCategories();
-      renderProducts();
-    });
-  });
-}
-
 
 function getProductImage(product) {
   const found = productImages.find(image => String(image.product_id) === String(product.id));
@@ -1634,7 +758,7 @@ function getProductCategory(product) {
 }
 function getDeliveryCategoryKey(item) {
   const product = products.find(p => String(p.id) === String(item.id));
-  if (product && product.category_id !== null && product.category_id !== undefined && product.category_id !== "") {
+  if (product && product.category_id !== null && product.category_id !== undefined) {
     return "category-id:" + String(product.category_id);
   }
   return "category-name:" + String(product ? getProductCategory(product) : "Collection").trim().toLowerCase();
@@ -1671,13 +795,10 @@ function getDeliveryBreakdown(items = cart) {
 function renderDeliveryBreakdown(items = cart) {
   const rows = getDeliveryBreakdown(items);
   if (!rows.length) return "No delivery charges";
-  return rows.map(row =>
-    escapeHTML(row.name) + ": " + row.quantity + " unit(s) — " + money(row.charge)
-  ).join("<br>");
+  return rows.map(row => escapeHTML(row.name) + ": " + row.quantity + " unit(s) — " + money(row.charge)).join("<br>");
 }
 function isOnSale(product) {
-  return Number(product.sale_price) > 0 &&
-         Number(product.retail_price) > Number(product.sale_price);
+  return Number(product.sale_price) > 0 && Number(product.retail_price) > Number(product.sale_price);
 }
 function discountPercent(product) {
   return isOnSale(product) ? Math.round((1 - Number(product.sale_price) / Number(product.retail_price)) * 100) : 0;
@@ -1689,89 +810,38 @@ function productIsActive(product) {
   return product.is_active === true || product.is_active === undefined;
 }
 
+function renderCategories() {
+  const visible = categories.filter(category => category.is_active !== false);
+  const catList = $("categoryList");
+  if (!catList) return;
+  catList.innerHTML = `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
+    visible.map(cat => `<button class="category-button ${String(activeCategory) === String(cat.id) ? "active" : ""}" data-category="${escapeHTML(cat.id)}">${escapeHTML(cat.name)}</button>`).join("");
+}
+
 function renderProducts() {
   const query = $("searchInput").value.trim().toLowerCase();
-
   let filtered = products.filter(product => {
     if (!productIsActive(product)) return false;
-
-    const categoryMatches = activeCategory === "all" ||
-      String(product.category_id) === String(activeCategory);
-
-    const saleMatches = !saleCategory || isOnSale(product);
-
-    const searchMatches = !query ||
-      String(product.name || "").toLowerCase().includes(query) ||
-      String(product.description || "").toLowerCase().includes(query) ||
-      getProductCategory(product).toLowerCase().includes(query);
-
-    return categoryMatches && saleMatches && searchMatches;
+    const categoryMatches = activeCategory === "all" || String(product.category_id) === String(activeCategory);
+    const searchMatches = !query || String(product.name || "").toLowerCase().includes(query) || String(product.description || "").toLowerCase().includes(query);
+    return categoryMatches && searchMatches;
   });
 
-  if (activeSort === "low") {
-    filtered.sort((a, b) => currentPrice(a) - currentPrice(b));
-  } else if (activeSort === "high") {
-    filtered.sort((a, b) => currentPrice(b) - currentPrice(a));
-  }
-
   const INITIAL_LIMIT = 8;
-  const hasMore = filtered.length > INITIAL_LIMIT;
   const productsToDisplay = showAllProducts ? filtered : filtered.slice(0, INITIAL_LIMIT);
-
-  const seeMoreWrapper = $("seeMoreWrapper");
-  if (seeMoreWrapper) {
-    if (hasMore && !showAllProducts) {
-      seeMoreWrapper.innerHTML = `
-        <button type="button" id="seeMoreBtn" style="background:none; border:1px solid var(--gold); color:var(--gold-light); padding:10px 24px; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; border-radius:2px; transition:.2s;">
-          SEE MORE (${filtered.length - INITIAL_LIMIT} MORE PRODUCTS) ↓
-        </button>
-      `;
-      $("seeMoreBtn").addEventListener("click", () => {
-        showAllProducts = true;
-        renderProducts();
-      });
-    } else if (showAllProducts && filtered.length > INITIAL_LIMIT) {
-      seeMoreWrapper.innerHTML = `
-        <button type="button" id="seeLessBtn" style="background:none; border:1px solid #59482b; color:var(--muted); padding:8px 18px; font-size:9px; letter-spacing:1.2px; text-transform:uppercase; cursor:pointer; border-radius:2px;">
-          SHOW LESS ↑
-        </button>
-      `;
-      $("seeLessBtn").addEventListener("click", () => {
-        showAllProducts = false;
-        renderProducts();
-        $("products").scrollIntoView({ behavior: "smooth", block: "start" });
-      });
-    } else {
-      seeMoreWrapper.innerHTML = "";
-    }
-  }
-
-  if (!filtered.length) {
-    if (seeMoreWrapper) seeMoreWrapper.innerHTML = "";
-    $("productGrid").innerHTML =
-      `<div class="empty-state">${products.length
-        ? "No products found. Try another search or category."
-        : "Your products will appear here after you add them in the admin panel."}</div>`;
-    return;
-  }
 
   $("productGrid").innerHTML = productsToDisplay.map(product => {
     const image = getProductImage(product);
     const sale = isOnSale(product);
     const name = escapeHTML(product.name || "VEYORA product");
-    const imageHTML = image
-  ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><div class="image-placeholder" style="display:none">VEYORA</div>`
-  : `<div class="image-placeholder">VEYORA</div>`;
+    const imageHTML = image ? `<img class="product-image" src="${escapeHTML(image)}" alt="${name}" loading="lazy">` : `<div class="image-placeholder">VEYORA</div>`;
 
     return `<article class="product-card">
       <div class="image-wrap">${imageHTML}${sale ? `<span class="sale-badge">${discountPercent(product)}% OFF</span>` : ""}</div>
       <div class="product-info">
         <div class="product-category">${escapeHTML(getProductCategory(product))}</div>
         <div class="product-name">${name}</div>
-        <div class="prices">
-          <span class="sale-price">${money(currentPrice(product))}</span>
-        ${sale ? `<span class="old-price">${money(product.retail_price)}</span>` : ""}
-        </div>
+        <div class="prices"><span class="sale-price">${money(currentPrice(product))}</span>${sale ? `<span class="old-price">${money(product.retail_price)}</span>` : ""}</div>
         <div class="product-actions">
           <button class="small-button" data-details="${escapeHTML(product.id)}" type="button">QUICK VIEW</button>
           <button class="small-button primary" data-add="${escapeHTML(product.id)}" type="button">ADD TO CART</button>
@@ -1780,31 +850,20 @@ function renderProducts() {
     </article>`;
   }).join("");
 
-  $("productGrid").querySelectorAll("[data-add]").forEach(button => {
-    button.addEventListener("click", () => quickAdd(button.dataset.add));
-  });
-  $("productGrid").querySelectorAll("[data-details]").forEach(button => {
-    button.addEventListener("click", () => showProductDetails(button.dataset.details));
-  });
+  $("productGrid").querySelectorAll("[data-add]").forEach(btn => btn.addEventListener("click", () => quickAdd(btn.dataset.add)));
+  $("productGrid").querySelectorAll("[data-details]").forEach(btn => btn.addEventListener("click", () => showProductDetails(btn.dataset.details)));
 }
 
-function productVariants(id) {
-  return variants.filter(variant => String(variant.product_id) === String(id));
-}
+function productVariants(id) { return variants.filter(v => String(v.product_id) === String(id)); }
 function variantPrice(variant, product) {
   if (!variant) return currentPrice(product);
-  if (Number(variant.sale_price) > 0 && Number(variant.retail_price) > Number(variant.sale_price)) {
-    return Number(variant.sale_price);
-  }
+  if (Number(variant.sale_price) > 0 && Number(variant.retail_price) > Number(variant.sale_price)) return Number(variant.sale_price);
   return Number(variant.retail_price || currentPrice(product));
 }
 function quickAdd(id) {
   const product = products.find(item => String(item.id) === String(id));
   if (!product) return;
-  if (productVariants(id).length) {
-    showProductDetails(id);
-    return;
-  }
+  if (productVariants(id).length) { showProductDetails(id); return; }
   addToCart(product, null);
   renderCart();
   openModal("cartModal");
@@ -1822,7 +881,6 @@ function addToCart(product, variant) {
     variant_name: variant ? String(variant.option_name || "Design") + ": " + String(variant.option_value || "") : "",
     image, price, quantity: 1
   });
-
   $("cartCount").textContent = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
 }
 function renderCart() {
@@ -1832,19 +890,17 @@ function renderCart() {
     $("checkoutButton").disabled = true;
     return;
   }
-
   $("checkoutButton").disabled = false;
   $("cartItems").innerHTML = cart.map(item => `
     <div class="cart-item">
-       ${item.image ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover" onerror="this.style.display='none'">` : ""}
+       ${item.image ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" style="width:55px;height:60px;object-fit:cover">` : ""}
       <span style="flex:1">
         <strong>${escapeHTML(item.name)}</strong>
         ${item.variant_name ? `<br><small>${escapeHTML(item.variant_name)}</small>` : ""}
-        <br>Qty: ${Number(item.quantity)}
-        <br>${money(item.price)} each
+        <br>Qty: ${Number(item.quantity)} | ${money(item.price)} each
       </span>
       <span>${money(Number(item.price) * Number(item.quantity))}
-        <button type="button" data-remove="${escapeHTML(item.key)}" aria-label="Remove item">×</button>
+        <button type="button" data-remove="${escapeHTML(item.key)}">×</button>
       </span>
     </div>`).join("");
 
@@ -1868,408 +924,66 @@ function renderCart() {
 function showProductDetails(id) {
   const product = products.find(item => String(item.id) === String(id));
   if (!product) return;
-
   const mainImage = getProductImage(product);
-  const productVariantList = productVariants(id).slice().sort((a, b) => Number(a.sort_order || 0) - Number(b.sort_order || 0));
+  const productVariantList = productVariants(id);
   const firstVariant = productVariantList[0] || null;
   const firstImage = firstVariant?.image_url || mainImage;
 
-  const imageHTML = firstImage
-  ? `<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`
-  : `<div class="image-placeholder" id="detailImagePlaceholder">VEYORA</div>`;
-
-  const variantsHTML = productVariantList.length
-    ? `<label class="variant-label">Choose design / variant</label>
-       <div class="design-options" id="designOptions">
-       ${productVariantList.map((variant, index) =>
-         `<button type="button" class="design-option ${index === 0 ? "active" : ""}" data-variant="${escapeHTML(variant.id)}" aria-pressed="${index === 0 ? "true" : "false"}">${escapeHTML(variant.option_value || variant.name || ("Design " + (index + 1)))}</button>`
-       ).join("")}
-       </div>
-       <div class="design-image-label" id="selectedDesignName"></div>
-       <div class="variant-stock" id="variantStock"></div>`
-    : "";
-
   $("productDetails").innerHTML = `
-    ${imageHTML}
+    ${firstImage ? `<img class="detail-image" id="detailProductImage" src="${escapeHTML(firstImage)}" alt="${escapeHTML(product.name)}">` : ""}
     <p class="product-category">${escapeHTML(getProductCategory(product))}</p>
     <h2>${escapeHTML(product.name)}</h2>
     <p id="detailPrice"><strong>${money(variantPrice(firstVariant, product))}</strong></p>
-    ${variantsHTML}
-    <p class="notice">${escapeHTML(product.description || "Product details will be updated soon.")}</p>
+    ${productVariantList.length ? `<label class="variant-label">Choose design</label><div class="design-options" id="designOptions">${productVariantList.map((v, i) => `<button type="button" class="design-option ${i === 0 ? "active" : ""}" data-variant="${escapeHTML(v.id)}">${escapeHTML(v.option_value || v.name)}</button>`).join("")}</div>` : ""}
     <button class="gold-button" id="detailAdd" type="button">ADD TO CART</button>`;
+  openModal("productModal");
 
   let selectedVariant = firstVariant;
-
-  function updateVariant(variant) {
-    selectedVariant = variant;
-    const imageURL = variant?.image_url || mainImage;
-    let image = $("detailProductImage");
-
-    if (image) {
-      image.style.display = imageURL ? "block" : "none";
-      if (imageURL) image.src = imageURL;
-        } else if (imageURL) {
-      const placeholder = $("detailImagePlaceholder");
-      if (placeholder) {
-        placeholder.outerHTML =
-          `<img class="detail-image" id="detailProductImage" src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}" onerror="this.style.display='none'">`;
-      }
-    }
-
-    $("detailPrice").innerHTML = "<strong>" + money(variantPrice(variant, product)) + "</strong>";
-
-    const selectedName = $("selectedDesignName");
-    if (selectedName) selectedName.textContent = variant
-      ? "Selected: " + (variant.option_name || "Design") + " " + (variant.option_value || "")
-      : "";
-
-    const stock = $("variantStock");
-    if (stock) stock.textContent = !variant ? "" :
-      Number(variant.stock_quantity) === 0 ? "Currently out of stock" :
-      Number(variant.stock_quantity) > 0 ? "Available stock: " + variant.stock_quantity :
-      "Stock availability not specified";
-
-    document.querySelectorAll(".design-option").forEach(button => {
-      const active = String(button.dataset.variant) === String(variant?.id);
-      button.classList.toggle("active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
-
-    $("detailAdd").disabled = !!variant && Number(variant.stock_quantity) === 0;
-    $("detailAdd").textContent = variant && Number(variant.stock_quantity) === 0 ? "OUT OF STOCK" : "ADD TO CART";
-  }
-
-  document.querySelectorAll(".design-option").forEach(button => {
-    button.addEventListener("click", () => {
-      const variant = productVariantList.find(item => String(item.id) === String(button.dataset.variant));
-      if (variant) updateVariant(variant);
+  document.querySelectorAll(".design-option").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".design-option").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedVariant = productVariantList.find(v => String(v.id) === String(btn.dataset.variant)) || null;
+      $("detailPrice").innerHTML = "<strong>" + money(variantPrice(selectedVariant, product)) + "</strong>";
+      if (selectedVariant?.image_url) $("detailProductImage").src = selectedVariant.image_url;
     });
   });
 
-  updateVariant(selectedVariant);
-
-  $("detailAdd").addEventListener("click", () => {
-    if (selectedVariant && Number(selectedVariant.stock_quantity) === 0) {
-      alert("This variant is currently out of stock.");
-      return;
-    }
+  $("detailAdd").onclick = () => {
     addToCart(product, selectedVariant);
     closeModal("productModal");
     renderCart();
     openModal("cartModal");
-  });
-
-  openModal("productModal");
+  };
 }
 
-/* ACCOUNT & USER ORDER HISTORY */
-let accountBusy = false;
-
-function showAccountMessage(message) {
-  $("accountMessage").textContent = message;
-}
-
-async function loadUserOrders(userId) {
-  const container = $("userOrdersList");
-  if (!container || !db) return;
-
-  container.textContent = "Fetching your orders...";
-
-  try {
-    const { data: orders, error } = await db
-      .from("orders")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    if (!orders || orders.length === 0) {
-      container.innerHTML = "<p>No orders found for your account.</p>";
-      return;
-    }
-
-    container.innerHTML = orders.map(ord => `
-      <div class="user-order-item">
-        <div class="user-order-header">
-          <span>Tracking: <strong>${escapeHTML(ord.tracking_number)}</strong></span>
-          <span>Status: <strong>${escapeHTML(ord.status || 'Confirmed')}</strong></span>
-        </div>
-        <div>Total Amount: <strong>${money(ord.total)}</strong></div>
-        <div style="font-size:10px;color:#a39882;margin-top:4px;">Date: ${new Date(ord.created_at).toLocaleDateString()}</div>
-      </div>
-    `).join("");
-
-  } catch (err) {
-    console.error("Error loading user orders:", err);
-    container.textContent = "Could not load orders.";
-  }
-}
-
-function showAccountSession(session) {
-  currentUser = session?.user || null;
-  const loggedIn = !!currentUser;
-  
-  if ($("accountSignedIn")) $("accountSignedIn").hidden = !loggedIn;
-  if ($("accountAuthForm")) $("accountAuthForm").hidden = loggedIn;
-
-  if (loggedIn) {
-    if ($("accountUserEmail")) $("accountUserEmail").textContent = "Signed in as: " + (currentUser.email || "Customer");
-    if (currentUser.email && $("customerEmail")) {
-      $("customerEmail").value = currentUser.email;
-    }
-    loadUserOrders(currentUser.id);
-  } else {
-    if ($("accountUserEmail")) $("accountUserEmail").textContent = "";
-  }
-}
-
-async function refreshAccountSession() {
-  if (!db) {
-    showAccountMessage("Account service unavailable.");
-    return;
-  }
-  try {
-    const {data, error} = await db.auth.getSession();
-    if (error) throw error;
-    showAccountSession(data.session);
-  } catch (error) {
-    console.error("Account session error:", error);
-    showAccountMessage("Could not load your account session.");
-  }
-}
-
-async function runAccountAction(action) {
-  if (accountBusy) return;
-  if (!db) {
-    showAccountMessage("Account service is unavailable.");
-    return;
-  }
-
-  const email = $("accountEmail").value.trim();
-  const password = $("accountPassword").value;
-  const name = $("accountName").value.trim();
-
-  if (!email) {
-    showAccountMessage("Please enter your email address.");
-    return;
-  }
-  if (action !== "reset" && !password) {
-    showAccountMessage("Please enter your password.");
-    return;
-  }
-
-  accountBusy = true;
-  ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => {
-    if ($(id)) $(id).disabled = true;
-  });
-  showAccountMessage("Please wait...");
-
-  try {
-    let response;
-
-    if (action === "signin") {
-      response = await db.auth.signInWithPassword({email, password});
-    } else if (action === "signup") {
-      response = await db.auth.signUp({
-        email,
-        password,
-        options: {data: {full_name: name}}
-      });
-    } else {
-      response = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: location.origin + location.pathname
-      });
-    }
-
-    if (response.error) throw response.error;
-
-    if (action === "signin") {
-      showAccountSession(response.data.session);
-      showAccountMessage("Welcome back to VEYORA!");
-      closeModal("accountModal");
-    } else if (action === "signup") {
-      if (response.data.session) {
-        showAccountSession(response.data.session);
-        showAccountMessage("Your account has been created.");
-        closeModal("accountModal");
-      } else {
-        showAccountMessage("Signup submitted. Please check your email.");
-      }
-    } else {
-      showAccountMessage("Password reset email sent.");
-    }
-  } catch (error) {
-    console.error("Account error:", error);
-    showAccountMessage(error.message || "Account action failed.");
-  } finally {
-    accountBusy = false;
-    ["accountSignIn", "accountSignUp", "accountReset"].forEach(id => {
-      if ($(id)) $(id).disabled = false;
-    });
-  }
-}
-
-if ($("accountSignIn")) $("accountSignIn").addEventListener("click", () => runAccountAction("signin"));
-if ($("accountSignUp")) $("accountSignUp").addEventListener("click", () => runAccountAction("signup"));
-if ($("accountReset")) $("accountReset").addEventListener("click", () => runAccountAction("reset"));
-if ($("accountSignOut")) $("accountSignOut").addEventListener("click", async () => {
-  if (!db) return;
-  const {error} = await db.auth.signOut();
-  if (error) {
-    showAccountMessage(error.message);
-    return;
-  }
-  showAccountSession(null);
-  showAccountMessage("You have signed out.");
-});
-
-if (db) {
-  db.auth.onAuthStateChange((_event, session) => showAccountSession(session));
-}
-
-/* ORDER TRACKING */
-const trackingSteps = ["Confirmed", "Packed", "Shipped", "Delivered"];
-
-const statusDescriptions = {
-  Confirmed: "Your order has been confirmed by VEYORA.",
-  Packed: "Your order has been packed and is being prepared.",
-  Shipped: "Your order has been shipped and is on its way.",
-  Delivered: "Your order has been delivered."
-};
-
-function renderTracking(order, searchedNumber) {
-  const status = String(order.status || order.order_status || "Processing").trim();
-  const currentIndex = trackingSteps.findIndex(step => step.toLowerCase() === status.toLowerCase());
-  const displayStatus = currentIndex >= 0 ? trackingSteps[currentIndex] : status;
-
-  const stepsHTML = trackingSteps.map((step, index) => {
-    let className = "tracking-step";
-    let symbol = "○";
-    if (currentIndex >= 0 && index < currentIndex) {
-      className += " done";
-      symbol = "✓";
-    } else if (index === currentIndex) {
-      className += " current";
-      symbol = "✓";
-    }
-    return `${index > 0 ? '<span class="tracking-arrow">›</span>' : ""}
-      <div class="${className}"><span>${symbol}</span>${escapeHTML(step)}</div>`;
-  }).join("");
-
-  const updatedAt = order.last_updated || order.updated_at || order.created_at;
-  const formattedDate = updatedAt && !Number.isNaN(new Date(updatedAt).getTime())
-    ? new Date(updatedAt).toLocaleString() : "Not available";
-
-  $("trackResult").innerHTML = `
-    <div class="tracking-card">
-      <div class="tracking-heading">VEYORA Order Tracking</div>
-      <div class="tracking-number">Tracking No: <strong>${escapeHTML(order.tracking_number || searchedNumber)}</strong></div>
-      <div class="tracking-current">✓ Current Status: ${escapeHTML(displayStatus)}</div>
-      <div class="tracking-steps">${stepsHTML}</div>
-      <div class="tracking-meta">
-        <strong>Order update:</strong><br>
-        ${escapeHTML(statusDescriptions[displayStatus] || ("Current order status: " + displayStatus))}
-        <br><strong>Last updated:</strong> ${escapeHTML(formattedDate)}
-      </div>
-      <button class="gold-button tracking-refresh" id="refreshTracking" type="button">↻ REFRESH STATUS</button>
-    </div>`;
-
-  $("refreshTracking").addEventListener("click", () => $("trackForm").requestSubmit());
-}
-
-$("trackForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  const trackingNumber = $("trackingNumber").value.trim();
-  const result = $("trackResult");
-  const button = $("trackForm").querySelector('button[type="submit"]');
-
-  if (!trackingNumber) {
-    result.textContent = "Please enter your tracking number.";
-    return;
-  }
-  if (!db) {
-    result.textContent = "Tracking connection is unavailable.";
-    return;
-  }
-
-  button.disabled = true;
-  result.textContent = "Fetching your latest order status...";
-
-  try {
-    const {data, error} = await db.rpc("track_order", {p_tracking_number: trackingNumber});
-    if (error) throw error;
-    const order = Array.isArray(data) ? data[0] : data;
-    if (!order) {
-      result.textContent = "No order found. Please check your tracking number.";
-      return;
-    }
-    renderTracking(order, trackingNumber);
-  } catch (error) {
-    console.error("Order tracking error:", error);
-    result.textContent = "Could not load tracking information. Please contact VEYORA on WhatsApp.";
-  } finally {
-    button.disabled = false;
-  }
-});
-
-/* COD CHECKOUT WITH LOGIN REQUIREMENT & IMAGE UI TEMPLATE */
 $("checkoutButton").addEventListener("click", () => {
   if (!cart.length) return;
-
-  // CHECK LOGIN STATUS FIRST
   if (!currentUser) {
     closeModal("cartModal");
-    showAccountMessage("Please login or create your account first to place an order.");
+    $("accountMessage").textContent = "Please login or create your account first to place an order.";
     openModal("accountModal");
     return;
   }
-
   $("checkoutResult").textContent = "";
   $("placeOrderButton").style.display = "block";
-  $("placeOrderButton").disabled = false;
-
   const subtotal = getCartSubtotal();
   const delivery = calculateDeliveryCharges(cart);
-
-  $("checkoutSummary").innerHTML = `
-    <strong>Order summary</strong><br>
-    Subtotal: ${money(subtotal)}
-    <div class="delivery-breakdown"><strong>Delivery breakdown</strong><br>${renderDeliveryBreakdown(cart)}</div>
-    Delivery charges: ${money(delivery)}<br>
-    <strong>Total payable: ${money(subtotal + delivery)}</strong>`;
-
+  $("checkoutSummary").innerHTML = `Subtotal: ${money(subtotal)}<br>Delivery: ${money(delivery)}<br><strong>Total: ${money(subtotal + delivery)}</strong>`;
   closeModal("cartModal");
   openModal("checkoutModal");
 });
 
+// COD CHECKOUT FORM SUBMISSION WITH EXACT MATCH LUXURY 2-COLUMN ORDER CONFIRMATION
 $("checkoutForm").addEventListener("submit", async event => {
   event.preventDefault();
+  if (!currentUser) { closeModal("checkoutModal"); openModal("accountModal"); return; }
+  if (!db || !cart.length) return;
 
-  if (!currentUser) {
-    closeModal("checkoutModal");
-    showAccountMessage("Please login or create your account first to place an order.");
-    openModal("accountModal");
-    return;
-  }
-
-  if (!db) {
-    $("checkoutResult").textContent = "Store connection is unavailable.";
-    return;
-  }
-  if (!cart.length) {
-    $("checkoutResult").textContent = "Your cart is empty.";
-    return;
-  }
-
-  const button = $("placeOrderButton");
+  const btn = $("placeOrderButton");
   const result = $("checkoutResult");
-  button.disabled = true;
-  button.textContent = "SUBMITTING ORDER...";
-  result.textContent = "Submitting your order. Please wait.";
-
-  let createdOrder = null;
-  let itemsSaved = false;
+  btn.disabled = true;
+  btn.textContent = "SUBMITTING ORDER...";
 
   try {
     const customerName = $("customerName").value.trim();
@@ -2278,881 +992,219 @@ $("checkoutForm").addEventListener("submit", async event => {
     const address = $("customerAddress").value.trim();
     const city = $("customerCity").value.trim();
 
-    if (!customerName || !phone || !address || !city) {
-      throw new Error("Please complete all required fields.");
-    }
-
     const checkoutCart = cart.map(item => ({...item}));
     const subtotal = getCartSubtotal(checkoutCart);
     const deliveryCharges = calculateDeliveryCharges(checkoutCart);
     const total = subtotal + deliveryCharges;
-    const trackingNumber = "VYR" + Date.now().toString().slice(-9);
+    const reference = "VYR" + Date.now().toString().slice(-9);
 
     const orderPayload = {
-      tracking_number: trackingNumber,
+      tracking_number: reference,
       customer_name: customerName,
-      phone,
-      email,
-      address,
-      city,
-      subtotal,
-      delivery_charges: deliveryCharges,
-      total,
-      payment_method: "COD",
-      status: "Confirmed",
-      user_id: currentUser.id
+      phone, email, address, city,
+      subtotal, delivery_charges: deliveryCharges, total,
+      payment_method: "COD", status: "Confirmed", user_id: currentUser.id
     };
 
-    const {data: order, error: orderError} = await db
-      .from("orders").insert(orderPayload).select("id,tracking_number").single();
-
-    if (orderError) throw orderError;
-    if (!order || !order.id) throw new Error("The database did not return an order ID.");
-    createdOrder = order;
+    const {data: order, error} = await db.from("orders").insert(orderPayload).select("id,tracking_number").single();
+    if (error) throw error;
 
     const itemRows = checkoutCart.map(item => ({
-      order_id: order.id,
-      product_id: item.id,
-      variant_id: item.variant_id || null,
-      product_name: String(item.name || "Product"),
-      variant_name: item.variant_name || null,
-      product_image: item.image || null,
-      quantity: Number(item.quantity) || 1,
-      unit_price: Number(item.price) || 0,
-      line_total: (Number(item.price) || 0) * (Number(item.quantity) || 1)
+      order_id: order.id, product_id: item.id, variant_id: item.variant_id || null,
+      product_name: String(item.name), variant_name: item.variant_name || null,
+      product_image: item.image || null, quantity: Number(item.quantity) || 1,
+      unit_price: Number(item.price) || 0, line_total: Number(item.price) * Number(item.quantity)
     }));
-
-    const {error: itemError} = await db.from("order_items").insert(itemRows);
-    if (itemError) throw new Error("Order was created, but its products could not be saved: " + itemError.message);
-
-    const {data: verifyRows, error: verifyError} = await db
-      .from("order_items").select("id,order_id").eq("order_id", order.id);
-
-    if (verifyError) throw new Error("Could not verify saved order items. Check the order in your admin panel before retrying.");
-    if (!verifyRows || verifyRows.length !== itemRows.length) {
-      throw new Error("Saved product count did not match the checkout. Please contact VEYORA before retrying.");
-    }
-
-    itemsSaved = true;
-    const reference = order.tracking_number || trackingNumber;
-
-   
-   // MATCHING IMAGE UI PATTERN CARD (WITHOUT TRACK NOW BUTTON & ORDER/PACKAGE ICON INSTEAD OF LOCATION)
-   result.innerHTML = `
-  <style>
-    .vy-confirmation {
-      max-width: 900px;
-      margin: 24px auto;
-      padding: 24px;
-      background: #fffdf8;
-      color: #25231e;
-      border: 1px solid #d6bd83;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.08);
-      font-family: Arial, sans-serif;
-    }
-
-    .vy-confirmation * {
-      box-sizing: border-box;
-    }
-
-    .vy-confirmation-header {
-      text-align: center;
-      padding: 10px 0 22px;
-      border-bottom: 1px solid #e8dfcc;
-    }
-
-    .vy-confirmation-brand {
-      color: #a17b35;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 4px;
-      margin-bottom: 12px;
-    }
-
-    .vy-confirmation-header h2 {
-      margin: 0 0 10px;
-      font-size: 27px;
-      color: #24221d;
-    }
-
-    .vy-confirmation-header p {
-      color: #716b60;
-      font-size: 14px;
-      line-height: 1.7;
-      margin: 6px 0;
-    }
-
-    .vy-status {
-      display: inline-block;
-      background: #e7f5e9;
-      color: #216b34;
-      padding: 7px 15px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 700;
-      margin: 8px 0;
-    }
-
-    .vy-tracking-box {
-      margin-top: 18px;
-      padding: 16px;
-      background: #f5efe1;
-      border: 1px dashed #b49352;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .vy-tracking-label {
-      font-size: 12px;
-      color: #75684e;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .vy-tracking-number {
-      display: block;
-      margin: 8px 0;
-      font-size: 22px;
-      font-weight: 700;
-      color: #9a742e;
-      overflow-wrap: anywhere;
-    }
-
-    .vy-confirmation-note {
-      font-size: 13px;
-      line-height: 1.6;
-      color: #655d50;
-      margin: 8px 0 0;
-    }
-
-    .vy-confirmation-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .vy-confirmation-section {
-      min-width: 0;
-      padding: 17px;
-      border: 1px solid #eee6d7;
-      border-radius: 12px;
-      background: #fff;
-    }
-
-    .vy-confirmation-section h3 {
-      margin: 0 0 14px;
-      font-size: 15px;
-      color: #9a742e;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee6d7;
-    }
-
-    .vy-detail-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 10px 0;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .vy-detail-row span:first-child {
-      color: #777064;
-      flex-shrink: 0;
-    }
-
-    .vy-detail-row strong {
-      text-align: right;
-      overflow-wrap: anywhere;
-    }
-
-    .vy-confirmation-products {
-      margin-top: 20px;
-      padding: 17px;
-      border: 1px solid #eee6d7;
-      border-radius: 12px;
-      background: #fff;
-    }
-
-    .vy-confirmation-products h3 {
-      margin: 0 0 15px;
-      font-size: 16px;
-      color: #9a742e;
-    }
-
-    .vy-confirmation-product {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 13px 0;
-      border-bottom: 1px solid #f0eadf;
-    }
-
-    .vy-confirmation-product:last-child {
-      border-bottom: 0;
-    }
-
-    .vy-confirmation-product img {
-      width: 70px;
-      height: 78px;
-      object-fit: cover;
-      border-radius: 8px;
-      background: #f5f0e6;
-      flex-shrink: 0;
-    }
-
-    .vy-confirmation-product-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .vy-confirmation-product-info strong {
-      display: block;
-      font-size: 14px;
-      overflow-wrap: anywhere;
-    }
-
-    .vy-confirmation-product-info p {
-      margin: 5px 0 0;
-      color: #777064;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .vy-confirmation-product-price {
-      text-align: right;
-      font-size: 13px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .vy-confirmation-total {
-      max-width: 390px;
-      margin: 18px 0 0 auto;
-    }
-
-    .vy-confirmation-total .vy-grand-total {
-      margin-top: 12px;
-      padding-top: 13px;
-      border-top: 1px solid #d8c49a;
-      font-size: 18px;
-      color: #9a742e;
-      font-weight: 700;
-    }
-
-    .vy-confirmation-footer {
-      text-align: center;
-      padding-top: 22px;
-    }
-
-    .vy-confirmation-footer h3 {
-      font-size: 20px;
-      margin: 0 0 8px;
-    }
-
-    .vy-confirmation-footer p {
-      font-size: 13px;
-      line-height: 1.7;
-      color: #716b60;
-    }
-
-    .vy-whatsapp-button {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 13px 22px;
-      border-radius: 8px;
-      background: #171713;
-      color: #f4dfad !important;
-      text-decoration: none !important;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    @media(max-width:600px) {
-      .vy-confirmation {
-        padding: 15px;
-        margin: 12px auto;
-      }
-
-      .vy-confirmation-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .vy-confirmation-header h2 {
-        font-size: 23px;
-      }
-
-      .vy-confirmation-product img {
-        width: 58px;
-        height: 66px;
-      }
-
-      .vy-confirmation-product {
-        gap: 9px;
-      }
-
-      .vy-confirmation-product-price {
-        font-size: 12px;
-      }
-
-      .vy-tracking-number {
-        font-size: 19px;
-      }
-    }
-    
-/* VEYORA — Compact Premium Order Confirmation */
-
-.vy-confirmation {
-  max-width: 850px !important;
-  margin: 12px auto !important;
-  padding: 18px !important;
-  background: #f5efdf !important;
-  color: #211e18 !important;
-  border: 1px solid #c9a45c !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,.18) !important;
-}
-
-.vy-confirmation-header {
-  padding: 4px 0 14px !important;
-}
-
-.vy-confirmation-header h2 {
-  font-size: 23px !important;
-  margin: 0 0 6px !important;
-}
-
-.vy-confirmation-header p {
-  margin: 4px 0 !important;
-  line-height: 1.45 !important;
-}
-
-.vy-tracking-box {
-  margin-top: 12px !important;
-  padding: 11px !important;
-  background: #eae0c9 !important;
-}
-
-.vy-tracking-number {
-  margin: 5px 0 !important;
-  font-size: 19px !important;
-}
-
-.vy-confirmation-note {
-  margin: 5px 0 0 !important;
-  line-height: 1.45 !important;
-}
-
-.vy-confirmation-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 12px !important;
-  margin-top: 14px !important;
-  align-items: start !important;
-}
-
-.vy-confirmation-section {
-  padding: 12px !important;
-  background: #211f1a !important;
-  color: #f5efdf !important;
-  border: 1px solid #b89650 !important;
-  border-radius: 9px !important;
-}
-
-.vy-confirmation-section h3,
-.vy-confirmation-products h3 {
-  margin: 0 0 9px !important;
-  padding-bottom: 7px !important;
-  font-size: 14px !important;
-}
-
-.vy-confirmation-section h3 {
-  color: #d5b46b !important;
-  border-bottom-color: #51452f !important;
-}
-
-.vy-detail-row {
-  margin: 6px 0 !important;
-  gap: 8px !important;
-  font-size: 12px !important;
-  line-height: 1.4 !important;
-}
-
-.vy-confirmation-section .vy-detail-row span:first-child {
-  color: #d2c8b3 !important;
-}
-
-.vy-confirmation-section .vy-detail-row strong {
-  color: #fff8e9 !important;
-}
-
-.vy-confirmation-products {
-  margin-top: 12px !important;
-  padding: 12px !important;
-  background: #fffaf0 !important;
-  border: 1px solid #d8c49a !important;
-  border-radius: 9px !important;
-}
-
-.vy-confirmation-products h3 {
-  color: #9a742e !important;
-}
-
-.vy-confirmation-product {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 8px 0 !important;
-  min-height: 0 !important;
-  border-bottom: 1px solid #e9dfcc !important;
-}
-
-.vy-confirmation-product img {
-  width: 54px !important;
-  height: 58px !important;
-  object-fit: cover !important;
-  border-radius: 6px !important;
-}
-
-.vy-confirmation-product-info {
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-.vy-confirmation-product-info strong {
-  font-size: 12px !important;
-  line-height: 1.4 !important;
-}
-
-.vy-confirmation-product-info p {
-  margin: 3px 0 0 !important;
-  font-size: 11px !important;
-  line-height: 1.4 !important;
-}
-
-.vy-confirmation-product-price {
-  font-size: 12px !important;
-}
-
-.vy-confirmation-total {
-  max-width: 360px !important;
-  margin: 10px 0 0 auto !important;
-}
-
-.vy-confirmation-total .vy-grand-total {
-  margin-top: 7px !important;
-  padding-top: 8px !important;
-  font-size: 15px !important;
-}
-
-.vy-confirmation-footer {
-  margin-top: 14px !important;
-  padding-top: 13px !important;
-  border-top: 1px solid #d8c49a !important;
-}
-
-.vy-confirmation-footer h3 {
-  margin: 0 0 5px !important;
-  font-size: 18px !important;
-}
-
-.vy-confirmation-footer p {
-  margin: 5px 0 !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-}
-
-.vy-whatsapp-button {
-  margin-top: 7px !important;
-  padding: 10px 17px !important;
-}
-
-@media (max-width: 600px) {
-  .vy-confirmation {
-    padding: 12px !important;
-    margin: 8px auto !important;
-  }
-
-  .vy-confirmation-grid {
-    grid-template-columns: 1fr !important;
-    gap: 10px !important;
-  }
-
-  .vy-confirmation-header h2 {
-    font-size: 21px !important;
-  }
-
-  .vy-confirmation-product img {
-    width: 48px !important;
-    height: 52px !important;
-  }
-}
-
-  </style>
-
-  <div class="vy-confirmation">
-    <div class="vy-confirmation-header">
-      <div class="vy-confirmation-brand">VEYORA</div>
-      <h2>Thank You for Your Order!</h2>
-      <div class="vy-status">Order Status: Confirmed</div>
-      <p>Your order has been received successfully.</p>
-      <p>We will process your order and prepare it for delivery.</p>
-
-      <div class="vy-tracking-box">
-        <div class="vy-tracking-label">Your Tracking Number</div>
-        <span class="vy-tracking-number">${escapeHTML(String(reference ?? ""))}</span>
-        <p class="vy-confirmation-note">
-          Please save your tracking number. Open the
-          <strong>Track Order</strong> option on our website and enter this
-          number to check future updates to your order status.
-        </p>
-      </div>
-    </div>
-
-    <div class="vy-confirmation-grid">
-      <div class="vy-confirmation-section">
-        <h3>Customer Details</h3>
-
-        <div class="vy-detail-row">
-          <span>Name</span>
-          <strong>${escapeHTML(String(customerName ?? ""))}</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Phone</span>
-          <strong>${escapeHTML(String(phone ?? ""))}</strong>
-        </div>
-
-        ${email ? `
-          <div class="vy-detail-row">
-            <span>Email</span>
-            <strong>${escapeHTML(String(email))}</strong>
+    await db.from("order_items").insert(itemRows);
+
+    // EXACT 2-COLUMN LUXURY CONFIRMATION DESIGN MATCHING IMAGE
+    result.innerHTML = `
+      <div class="vy-dashboard-grid">
+        <!-- LEFT COLUMN -->
+        <div class="vy-card-box">
+          <div class="vy-success-top">
+            <div class="vy-success-icon">✓</div>
+            <div class="vy-submit-title">ORDER SUBMITTED</div>
+            <div class="vy-submit-sub">Your order has been placed successfully!</div>
           </div>
-        ` : ""}
 
-        <div class="vy-detail-row">
-          <span>City</span>
-          <strong>${escapeHTML(String(city ?? ""))}</strong>
-        </div>
+          <div class="vy-inner-box">
+            <div style="font-size:10px;color:#b6ad9a;letter-spacing:1px;text-transform:uppercase;">Order Number</div>
+            <div class="vy-order-num-box">${escapeHTML(reference)}</div>
+            <div style="font-size:11px;color:#d1c7b3;">Keep this number to track your order status.</div>
+          </div>
 
-        <div class="vy-detail-row">
-          <span>Address</span>
-          <strong>${escapeHTML(String(address ?? ""))}</strong>
-        </div>
-      </div>
-
-      <div class="vy-confirmation-section">
-        <h3>Payment & Delivery</h3>
-
-        <div class="vy-detail-row">
-          <span>Payment Method</span>
-          <strong>Cash on Delivery</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Payment Status</span>
-          <strong>Pay on Delivery</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Delivery</span>
-          <strong>Pakistan</strong>
-        </div>
-
-        <div class="vy-detail-row">
-          <span>Estimated Delivery</span>
-          <strong>3–5 Working Days</strong>
-        </div>
-      </div>
-    </div>
-
-    <div class="vy-confirmation-products">
-      <h3>Order Summary</h3>
-
-      ${checkoutCart.map(item => {
-        const productName = item.name || item.product_name || "Product";
-        const variantName = item.variant_name || item.variantName || "";
-        const quantity = Number(item.quantity || 1);
-        const unitPrice = Number(item.sale_price ?? item.price ?? item.unit_price ?? 0);
-        const imageUrl = item.image_url || item.image || item.imageUrl || "";
-        const lineTotal = unitPrice * quantity;
-
-        return `
-          <div class="vy-confirmation-product">
-            ${imageUrl ? `
-              <img
-                src="${escapeHTML(String(imageUrl))}"
-                alt="${escapeHTML(String(productName))}"
-                loading="lazy"
-              >
-            ` : ""}
-
-            <div class="vy-confirmation-product-info">
-              <strong>${escapeHTML(String(productName))}</strong>
-              ${variantName ? `
-                <p>Option: ${escapeHTML(String(variantName))}</p>
-              ` : ""}
-              <p>Quantity: ${quantity} × ${money(unitPrice)}</p>
-            </div>
-
-            <div class="vy-confirmation-product-price">
-              ${money(lineTotal)}
+          <div class="vy-inner-box">
+            <div class="vy-section-title"><i class="fa-solid fa-box"></i> Order Status</div>
+            <div style="font-size:11px;color:#b6ad9a;margin-bottom:12px;">You can track your order through this number.</div>
+            
+            <div class="vy-status-grid">
+              <div class="vy-status-line"></div>
+              <div class="vy-status-step active">
+                <div class="vy-status-circle">✓</div>
+                Confirmed<br><span style="font-size:9px;color:#b6ad9a;">Order received</span>
+              </div>
+              <div class="vy-status-step">
+                <div class="vy-status-circle">📦</div>
+                Packed<br><span style="font-size:9px;color:#b6ad9a;">Preparing</span>
+              </div>
+              <div class="vy-status-step">
+                <div class="vy-status-circle">🚚</div>
+                Shipped<br><span style="font-size:9px;color:#b6ad9a;">On the way</span>
+              </div>
+              <div class="vy-status-step">
+                <div class="vy-status-circle">✓</div>
+                Delivered<br><span style="font-size:9px;color:#b6ad9a;">Completed</span>
+              </div>
             </div>
           </div>
-        `;
-      }).join("")}
 
-      <div class="vy-confirmation-total">
-        <div class="vy-detail-row">
-          <span>Items</span>
-          <strong>${checkoutCart.reduce((sum, item) => sum + Number(item.quantity || 1), 0)}</strong>
+          <div class="vy-delivery-note-box">
+            <strong>Order Will Be Delivered Soon!</strong>
+            <span style="font-size:11px;color:#b6ad9a;">We're working hard to get your order to you as soon as possible.</span>
+          </div>
+
+          <div class="vy-whatsapp-card">
+            <div>
+              <div style="font-size:10px;color:#b6ad9a;text-transform:uppercase;letter-spacing:1px;">Confirm Via WhatsApp</div>
+              <div class="vy-wa-num">0371 3763119</div>
+            </div>
+            <a href="https://wa.me/923713763119?text=Hello%20VEYORA,%20I%20have%20placed%20order%20no:%20${reference}" class="vy-wa-btn" target="_blank">
+              <i class="fa-brands fa-whatsapp" style="font-size:14px;"></i> Chat on WhatsApp
+            </a>
+          </div>
         </div>
 
-        <div class="vy-detail-row">
-          <span>Subtotal</span>
-          <strong>${money(subtotal)}</strong>
-        </div>
+        <!-- RIGHT COLUMN -->
+        <div class="vy-card-box">
+          <div class="vy-section-title"><i class="fa-solid fa-receipt"></i> Order Summary</div>
+          <div class="vy-inner-box">
+            <div class="vy-summary-row"><span>Subtotal</span><span>${money(subtotal)}</span></div>
+            <div class="vy-summary-row"><span>Delivery Charges</span><span>${money(deliveryCharges)}</span></div>
+            <div class="vy-summary-total"><span>Total Payable</span><span>${money(total)}</span></div>
+          </div>
 
-        <div class="vy-detail-row">
-          <span>Delivery Charges</span>
-          <strong>${money(deliveryCharges)}</strong>
-        </div>
+          <div class="vy-section-title"><i class="fa-solid fa-bag-shopping"></i> Order Items (${checkoutCart.reduce((sum, i) => sum + Number(i.quantity), 0)})</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+            ${checkoutCart.map(item => `
+              <div class="vy-item-row">
+                ${item.image ? `<img src="${escapeHTML(item.image)}" class="vy-item-img">` : ""}
+                <div style="flex:1;min-width:0;">
+                  <strong style="font-size:13px;display:block;">${escapeHTML(item.name)}</strong>
+                  <span style="font-size:11px;color:#b6ad9a;">Qty: ${item.quantity}</span>
+                </div>
+                <div style="font-weight:bold;color:#f0dba5;font-size:13px;">${money(item.price * item.quantity)}</div>
+              </div>
+            `).join("")}
+          </div>
 
-        <div class="vy-detail-row vy-grand-total">
-          <span>Total to Pay</span>
-          <strong>${money(total)}</strong>
+          <div class="vy-section-title"><i class="fa-solid fa-location-dot"></i> Delivery Address</div>
+          <div class="vy-inner-box" style="font-size:12px;line-height:1.6;color:#d1c7b3;">
+            <strong style="color:#f0dba5;display:block;margin-bottom:3px;">${escapeHTML(customerName)}</strong>
+            ${escapeHTML(address)}, ${escapeHTML(city)}<br>Phone: ${escapeHTML(phone)}
+          </div>
+
+          <div class="vy-section-title"><i class="fa-solid fa-credit-card"></i> Payment Method</div>
+          <div class="vy-inner-box" style="font-size:12px;color:#d1c7b3;">
+            <strong style="color:#f0dba5;display:block;margin-bottom:2px;">Cash on Delivery</strong>
+            You will pay when your order arrives at your doorstep.
+          </div>
+
+          <div class="vy-footer-thank">Thank You! ♥</div>
+          <div style="text-align:center;font-size:11px;color:#b6ad9a;margin-top:4px;">Your trust means everything to us.</div>
+          <div style="text-align:center;font-size:9px;letter-spacing:2px;color:#c5a15b;margin-top:12px;text-transform:uppercase;">— Stay Styled With Veyora —</div>
         </div>
       </div>
-    </div>
+    `;
 
-    <div class="vy-confirmation-footer">
-      <h3>Order Will Be Delivered Soon!</h3>
-      
-<p style="
-  color: #8B1E2D;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.9;
-  letter-spacing: 0.4px;
-  background: #F5E9D2;
-  border: 1px solid #C9A45C;
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin: 18px 0;
-  text-align: center;
-  box-shadow: 0 4px 14px rgba(139,30,45,0.12);
-">
-  Thank you for choosing Veyora. Please keep your phone available
-  for delivery updates.
-</p>
-
-
-      <a
-        class="vy-whatsapp-button"
-        href="https://wa.me/923713763119"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Contact Us on WhatsApp
-      </a>
-
-      <p style="margin-top:18px;letter-spacing:3px;font-weight:700;color:#a17b35;">
-        VEYORA
-      </p>
-      <p>Premium Shopping Experience</p>
-    </div>
-  </div>
-`;
-
-    $("checkoutForm").reset();
     cart = [];
     $("cartCount").textContent = "0";
-    renderCart();
-    button.style.display = "none";
+    $("checkoutForm").reset();
+    btn.style.display = "none";
+    if (currentUser) loadUserOrders(currentUser.id);
 
-  } catch (error) {
-    console.error("Checkout error:", error);
-
-    if (createdOrder && !itemsSaved) {
-      result.innerHTML = "<strong>Order requires attention.</strong><br>Order reference: " +
-        escapeHTML(createdOrder.tracking_number || createdOrder.id) + "<br>" +
-        escapeHTML(error.message || "Product details could not be saved.") +
-        "<br><br>Please contact VEYORA support before placing the same order again.";
-    } else {
-      result.textContent = "Order could not be submitted. " +
-        (error.message || "Please try again later.") +
-        " If the error mentions permissions or policy, check Supabase database permissions.";
-    }
-  } finally {
-    button.disabled = false;
-    button.textContent = "PLACE COD ORDER";
+  } catch (err) {
+    result.textContent = "Error: " + (err.message || err);
+    btn.disabled = false;
+    btn.textContent = "PLACE COD ORDER";
   }
 });
 
-/* LOAD STORE */
-async function loadStore() {
-  if (!db) {
-    $("productGrid").innerHTML = '<div class="empty-state">Store connection unavailable. Check Supabase configuration.</div>';
-    return;
+// ACCOUNT & AUTH HELPERS
+async function refreshAccountSession() {
+  if (!db) return;
+  const { data: { session } } = await db.auth.getSession();
+  currentUser = session?.user || null;
+  if (currentUser) {
+    $("accountAuthForm").hidden = true;
+    $("accountSignedIn").hidden = false;
+    $("accountUserEmail").textContent = "Signed in as: " + currentUser.email;
+    loadUserOrders(currentUser.id);
+  } else {
+    $("accountAuthForm").hidden = false;
+    $("accountSignedIn").hidden = true;
   }
+}
 
+async function loadUserOrders(userId) {
+  const container = $("userOrdersList");
+  if (!container || !db) return;
   try {
-    const [productResult, categoryResult, imageResult, variantResult] = await Promise.all([
-      db.from("products").select("*").eq("is_active", true).order("created_at", {ascending:false}),
+    const { data: orders } = await db.from("orders").select("*").eq("user_id", userId).order("created_at", { ascending: false });
+    if (!orders || !orders.length) { container.innerHTML = '<p class="notice">No orders found.</p>'; return; }
+    container.innerHTML = orders.map(ord => `
+      <div style="background:#14130f;border:1px solid #423620;padding:10px;border-radius:6px;margin-bottom:8px;font-size:12px;">
+        <div>Tracking: <strong>${escapeHTML(ord.tracking_number)}</strong> | Status: ${escapeHTML(ord.status)}</div>
+        <div>Total: ${money(ord.total)}</div>
+      </div>
+    `).join("");
+  } catch (e) { container.textContent = "Could not load orders."; }
+}
+
+$("accountSignIn").addEventListener("click", async () => {
+  const email = $("accountEmail").value.trim();
+  const password = $("accountPassword").value.trim();
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  if (error) $("accountMessage").textContent = error.message;
+  else { $("accountMessage").textContent = "Signed in!"; refreshAccountSession(); }
+});
+
+$("accountSignUp").addEventListener("click", async () => {
+  const email = $("accountEmail").value.trim();
+  const password = $("accountPassword").value.trim();
+  const name = $("accountName").value.trim();
+  const { error } = await db.auth.signUp({ email, password, options: { data: { full_name: name } } });
+  if (error) $("accountMessage").textContent = error.message;
+  else { $("accountMessage").textContent = "Account created!"; refreshAccountSession(); }
+});
+
+$("accountSignOut").addEventListener("click", async () => {
+  await db.auth.signOut();
+  refreshAccountSession();
+  $("accountMessage").textContent = "Signed out.";
+});
+
+// INITIAL LOAD
+async function loadStore() {
+  if (!db) return;
+  try {
+    const [pRes, cRes, iRes, vRes] = await Promise.all([
+      db.from("products").select("*").eq("is_active", true),
       db.from("categories").select("*"),
       db.from("product_images").select("*"),
       db.from("product_variants").select("*")
     ]);
-
-    if (productResult.error) throw productResult.error;
-
-    products = productResult.data || [];
-    categories = categoryResult.error ? [] : (categoryResult.data || []);
-    productImages = imageResult.error ? [] : (imageResult.data || []);
-    variants = variantResult.error ? [] : (variantResult.data || []);
-
+    products = pRes.data || [];
+    categories = cRes.data || [];
+    productImages = iRes.data || [];
+    variants = vRes.data || [];
     renderCategories();
     renderProducts();
-  } catch (error) {
-    console.error("Store loading error:", error);
-    $("productGrid").innerHTML =
-      '<div class="empty-state">Products could not be loaded. Check Supabase table names, permissions and public read policies.</div>';
-  }
+  } catch (e) { console.error(e); }
 }
 
-/* VEYORA HOMEPAGE BANNERS */
-let veyoraBanners = [];
-let veyoraBannerIndex = 0;
-let veyoraBannerTimer = null;
-
-function renderVeyoraBanner() {
-  const section = document.getElementById("veyoraBanner");
-  if (!section) return;
-
-  if (!veyoraBanners.length) {
-    section.hidden = true;
-    if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
-    veyoraBannerTimer = null;
-    return;
-  }
-
-  section.hidden = false;
-
-  const banner = veyoraBanners[veyoraBannerIndex];
-  const image = document.getElementById("veyoraBannerImage");
-
-  image.src = banner.image_url || "";
-  image.alt = banner.title || "VEYORA collection";
-  image.style.display = banner.image_url ? "block" : "none";
-
-  document.getElementById("veyoraBannerTitle").textContent = banner.title || "";
-  document.getElementById("veyoraBannerDescription").textContent =
-    banner.description || "";
-
-  const button = document.getElementById("veyoraBannerButton");
-  button.textContent = banner.button_text || "SHOP NOW";
-  button.style.display = "inline-block";
-
-  const dots = document.getElementById("veyoraBannerDots");
-  dots.innerHTML = veyoraBanners.map((item, index) =>
-    `<button type="button" class="veyora-banner-dot ${index === veyoraBannerIndex ? "active" : ""}" data-banner-index="${index}" aria-label="Show banner ${index + 1}"></button>`
-  ).join("");
-
-  dots.querySelectorAll("[data-banner-index]").forEach(dot => {
-    dot.addEventListener("click", () => {
-      veyoraBannerIndex = Number(dot.dataset.bannerIndex);
-      renderVeyoraBanner();
-      restartVeyoraBannerTimer();
-    });
-  });
-
-  button.onclick = () => {
-    const productId = banner.target_product_id;
-
-    if (!productId) {
-      document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
-      return;
-    }
-
-    const product = products.find(p => String(p.id) === String(productId));
-
-    if (product) {
-      showProductDetails(product.id);
-    } else {
-      alert("This banner's selected product is unavailable.");
-    }
-  };
-}
-
-function restartVeyoraBannerTimer() {
-  if (veyoraBannerTimer) clearInterval(veyoraBannerTimer);
-
-  if (veyoraBanners.length > 1) {
-    veyoraBannerTimer = setInterval(() => {
-      veyoraBannerIndex = (veyoraBannerIndex + 1) % veyoraBanners.length;
-      renderVeyoraBanner();
-    }, 4000);
-  }
-}
-
-async function loadVeyoraBanners() {
-  const section = document.getElementById("veyoraBanner");
-  if (!section || !db) return;
-
-  try {
-    const { data, error } = await db
-      .from("banners")
-      .select("id,title,description,image_url,button_text,target_product_id,is_published,sort_order")
-      .eq("is_published", true)
-      .order("sort_order", { ascending: true });
-
-    if (error) throw error;
-
-    veyoraBanners = data || [];
-    veyoraBannerIndex = 0;
-    renderVeyoraBanner();
-    restartVeyoraBannerTimer();
-  } catch (error) {
-    console.error("VEYORA banner loading error:", error);
-    if (section) section.hidden = true;
-  }
-}
-
-loadVeyoraBanners();
 loadStore();
 refreshAccountSession();
-
-/* PAGE VIEW ANALYTICS */
-(function(){
-  try {
-    let sessionId = sessionStorage.getItem("veyora_session_id");
-    if (!sessionId) {
-      sessionId = crypto.randomUUID();
-      sessionStorage.setItem("veyora_session_id", sessionId);
-    }
-
-    fetch(SUPABASE_URL + "/rest/v1/analytics_events", {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "apikey":SUPABASE_PUBLISHABLE_KEY,
-        "Authorization":"Bearer " + SUPABASE_PUBLISHABLE_KEY,
-        "Prefer":"return=minimal"
-      },
-      body:JSON.stringify({
-        session_id:sessionId,
-        event_type:"page_view",
-        page_path:location.pathname,
-        product_id:null
-      })
-    }).catch(error => console.error("Analytics error:", error));
-  } catch(error) {
-    console.error("Analytics setup error:", error);
-  }
-})();
 </script>
 </body>
 </html>
