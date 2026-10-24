@@ -540,40 +540,43 @@ function renderProducts(){
 }
 
 function openProduct(){
- $('productForm').reset();
- $('pId').value='';
- $('pSku').value='Generating...';
+  $('productForm').reset();
 
-generateProductCode()
-  .then(code => {
-    $('pSku').value = code;
-  })
-  .catch(error => {
-    console.error(error);
-    $('pSku').value = '';
-    note('Product code generate nahi hua. Dobara try karo.', true);
-  });
- $('pSku').value='';
-$('pSku').placeholder='Generating code...';
+  $('pId').value = '';
+  $('pSku').value = '';
+  $('pSku').placeholder = 'Generating code...';
 
-generateProductCode().then(code=>{
- if(!$('pId').value && !$('productModal').classList.contains('hidden')){
-  $('pSku').value=code;
- }
-}).catch(e=>note('Product code error: '+err(e),true));
- $('pStock').value='0';
- $('pActive').checked=true;
- $('pFeatured').checked=false;
- $('pImageUrl').value='';
- $('pImageFile').value='';
- $('pPreview').classList.add('hidden');
- $('variantsContainer').innerHTML='';
- $('vName').value='';
- $('vValues').value='';
- mainImageUrl=null;
- $('productTitle').textContent='Add Product';
- fillCategories();
- $('productModal').classList.remove('hidden');
+  $('pStock').value = '0';
+  $('pActive').checked = true;
+  $('pFeatured').checked = false;
+
+  $('pImageUrl').value = '';
+  $('pImageFile').value = '';
+  $('pPreview').classList.add('hidden');
+
+  $('variantsContainer').innerHTML = '';
+  $('vName').value = '';
+  $('vValues').value = '';
+
+  mainImageUrl = null;
+
+  $('productTitle').textContent = 'Add Product';
+  fillCategories();
+  $('productModal').classList.remove('hidden');
+
+  generateProductCode()
+    .then(code => {
+      if (
+        !$('pId').value &&
+        !$('productModal').classList.contains('hidden')
+      ) {
+        $('pSku').value = code;
+      }
+    })
+    .catch(error => {
+      console.error('Product code error:', error);
+      note('Product code generate nahi hua: ' + err(error), true);
+    });
 }
 function closeProduct(){$('productModal').classList.add('hidden');}
 $('addProduct').onclick=openProduct;
