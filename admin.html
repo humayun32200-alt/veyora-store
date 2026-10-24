@@ -431,9 +431,15 @@ function setTab(name){
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
 
+
 function fillCategories(){
- $('pCategory').innerHTML='<option value="">Select category</option>'+categories.map(c=><option value="${esc(c.id)}">${esc(c.name)}</option>).join('');
+  $('pCategory').innerHTML =
+    '<option value="">Select category</option>' +
+    categories.map(c =>
+      `<option value="${esc(c.id)}">${esc(c.name)}</option>`
+    ).join('');
 }
+
 
 async function uploadImage(file,folder){
  if(!file)return null;
