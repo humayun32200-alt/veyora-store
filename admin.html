@@ -390,24 +390,27 @@ const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
- async function generateProductCode(){
- const {data,error}=await db
-  .from('products')
-  .select('sku')
-  .like('sku','VYR%');
+ async function generateProductCode() {
+  const { data, error } = await db
+    .from('products')
+    .select('sku')
+    .not('sku', 'is', null);
 
- if(error)throw error;
+  if (error) throw error;
 
- const used=new Set((data||[]).map(p=>p.sku).filter(Boolean));
-
- for(let i=0;i<100;i++){
-  const code='VYR'+String(
-   Math.floor(1000000+Math.random()*9000000)
+  const used = new Set(
+    (data || []).map(p => String(p.sku || '').trim())
   );
-  if(!used.has(code))return code;
- }
 
- throw Error('Unique product code generate nahi ho saka. Dobara try karo.');
+  for (let i = 0; i < 100; i++) {
+    const code = 'VYR' + Math.floor(
+      1000000 + Math.random() * 9000000
+    );
+
+    if (!used.has(code)) return code;
+  }
+
+  throw new Error('Product code generate nahi ho saka.');
 }
  
 
