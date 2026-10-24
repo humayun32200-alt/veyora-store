@@ -1,0 +1,15 @@
+{
+  "name": "VEYORA | Mayu World",
+  "short_name": "VEYORA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080807",
+  "theme_color": "#080807",
+  "icons": [
+    {
+      "src": "./Luxury%20Gold%20Veyora%20Emblem.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
