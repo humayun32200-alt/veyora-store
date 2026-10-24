@@ -144,7 +144,7 @@ th{color:var(--gold)}
   </div>
   <div class="panel" style="overflow:auto">
    <table>
-    <thead><tr><th>Image</th><th>Name</th><th>SKU</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Image</th><th>Name</th><th>Product Code</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
     <tbody id="productsBody"></tbody>
    </table>
   </div>
@@ -236,7 +236,10 @@ th{color:var(--gold)}
    <div class="grid2">
     <div><label class="label">Product Name *</label><input id="pName" class="field" required></div>
     <div><label class="label">Category *</label><select id="pCategory" class="field" required></select></div>
-    <div><label class="label">SKU</label><input id="pSku" class="field"></div>
+    <div>
+ <label class="label">Product Code (Admin Only)</label>
+ <input id="pSku" class="field" readonly placeholder="Auto-generated">
+</div>
     <div><label class="label">Barcode</label><input id="pBarcode" class="field"></div>
 
     <div>
@@ -387,6 +390,26 @@ const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
+ async function generateProductCode(){
+ const {data,error}=await db
+  .from('products')
+  .select('sku')
+  .like('sku','VYR%');
+
+ if(error)throw error;
+
+ const used=new Set((data||[]).map(p=>p.sku).filter(Boolean));
+
+ for(let i=0;i<100;i++){
+  const code='VYR'+String(
+   Math.floor(1000000+Math.random()*9000000)
+  );
+  if(!used.has(code))return code;
+ }
+
+ throw Error('Unique product code generate nahi ho saka. Dobara try karo.');
+}
+ 
 
 /* ADDED: Banner state */
 let banners=[];
@@ -516,6 +539,14 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
+ $('pSku').value='';
+$('pSku').placeholder='Generating code...';
+
+generateProductCode().then(code=>{
+ if(!$('pId').value && !$('productModal').classList.contains('hidden')){
+  $('pSku').value=code;
+ }
+}).catch(e=>note('Product code error: '+err(e),true));
  $('pStock').value='0';
  $('pActive').checked=true;
  $('pFeatured').checked=false;
@@ -659,6 +690,9 @@ $('productForm').addEventListener('submit',async e=>{
 
  try{
   const id=$('pId').value;
+  if(!$('pSku').value.trim()){
+ $('pSku').value=await generateProductCode();
+}
   const sale=parseFloat($('pSale').value);
   const compareRaw=$('pCompare').value.trim();
   const compare=compareRaw===''?null:parseFloat(compareRaw);
