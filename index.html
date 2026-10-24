@@ -109,12 +109,7 @@ nav a:hover,nav button:hover{color:var(--gold-light)}
 .category-tile.men{background-image:url('./WhatsApp%20Image%202026-10-21%20at%206.21.58%20PM.jpeg')}
 .category-tile.bedding{background-image:url('https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1000&q=85')}
 .category-tile.home{background-image:url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85')}
-.category-list{
-  display:flex !important;
-  flex-wrap:wrap;
-  gap:8px;
-  align-items:center;
-}
+.category-list{display:none !important}
 .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:19px}
 .product-card{background:#0d0d0b;min-width:0;border:1px solid #51432a;overflow:hidden;transition:.2s}
 .product-card:hover{transform:translateY(-3px);border-color:var(--gold)}
@@ -1023,6 +1018,44 @@ header.veyora-header .icon-label {
   }
 }
 
+.category-tile-wrap {
+  min-width: 0;
+}
+
+.tile-subcategories[hidden] {
+  display: none !important;
+}
+
+.tile-subcategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  margin-top: 6px;
+  background: #0d0d0b;
+  border: 1px solid #51432a;
+  border-radius: 8px;
+}
+
+.tile-subcategory-button {
+  background: #1b1913;
+  color: #f6ecd5;
+  border: 1px solid #51432a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.tile-subcategory-button:hover {
+  border-color: #c9a45c;
+  color: #c9a45c;
+}
+
+.tile-subcategory-empty {
+  color: #c9a45c;
+  font-size: 13px;
+}
+
 
 </style>
 </head>
@@ -1098,25 +1131,43 @@ header.veyora-header .icon-label {
       <p>Discover fashion and essentials for everyday living.</p>
     </div>
 
-    <div class="category-showcase">
-      <a href="#products" class="category-tile women" data-showcase-category="women">
-        <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
-      </a>
-      <a href="#products" class="category-tile men" data-showcase-category="men">
-        <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
-      </a>
-      <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
-        <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
-      </a>
-      <a href="#products" class="category-tile home" data-showcase-category="home">
-        <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
-      </a>
-    </div>
+    
+<div class="category-showcase">
 
-    <div class="category-list" id="categoryList">
-      <button class="category-button active" data-category="all">All</button>
-    </div>
-  </section>
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile women" data-showcase-category="women">
+      <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-women" hidden></div>
+  </div>
+
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile men" data-showcase-category="men">
+      <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-men" hidden></div>
+  </div>
+
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
+      <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-bedding" hidden></div>
+  </div>
+
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile home" data-showcase-category="home">
+      <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-home" hidden></div>
+  </div>
+
+</div>
+
+<div class="category-list" id="categoryList">
+  <button class="category-button active" data-category="all">All</button>
+</div>
+
 
   <section class="section" id="products">
     <div class="section-heading">
@@ -1566,6 +1617,7 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
   });
 });
 
+
 document.querySelectorAll("[data-showcase-category]").forEach(tile => {
   tile.addEventListener("click", event => {
     event.preventDefault();
@@ -1576,11 +1628,13 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
       const name = String(category.name || "").trim().toLowerCase();
 
       if (key === "men") {
-        return name.includes("men") && !name.includes("women");
+        return (name === "men" || name === "men's" || name === "mens");
       }
 
       if (key === "women") {
-        return name.includes("women");
+        return name === "women" ||
+               name === "women's" ||
+               name === "womens";
       }
 
       if (key === "bedding") {
@@ -1598,26 +1652,68 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
     });
 
     if (!match) {
-      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
+      alert("Admin mein parent category ka naam check karo.");
       return;
     }
 
-    activeCategory = String(match.id);
-    saleCategory = "";
-    selectedParentCategory = String(match.id);
-    showAllProducts = false;
-    $("searchInput").value = "";
+    const parentId = String(match.id);
+    const subBox = document.getElementById("subcategories-" + key);
 
-    renderCategories();
-    renderProducts();
+    if (!subBox) return;
 
-    document.getElementById("products").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
+    const isAlreadyOpen = !subBox.hidden;
+
+    document.querySelectorAll(".tile-subcategories").forEach(box => {
+      box.hidden = true;
+      box.innerHTML = "";
+    });
+
+    if (isAlreadyOpen) return;
+
+    const children = categories.filter(category =>
+      String(category.parent_id || "") === parentId &&
+      category.is_active !== false
+    );
+
+    if (children.length === 0) {
+      subBox.innerHTML =
+        '<div class="tile-subcategory-empty">Abhi koi subcategory nahi hai.</div>';
+    } else {
+      subBox.innerHTML = children.map(category => `
+        <button type="button"
+          class="tile-subcategory-button"
+          data-tile-subcategory="${String(category.id)}">
+          ${String(category.name || "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          })[char])}
+        </button>
+      `).join("");
+    }
+
+    subBox.hidden = false;
+
+    subBox.querySelectorAll("[data-tile-subcategory]").forEach(button => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.tileSubcategory;
+        selectedParentCategory = parentId;
+        saleCategory = "";
+        showAllProducts = false;
+        $("searchInput").value = "";
+
+        renderProducts();
+
+        document.getElementById("products").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
     });
   });
 });
-
 
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
