@@ -885,80 +885,119 @@ async function updateOrder(id){
 }
 $('refreshOrders').onclick=loadOrders;
 
+
 async function loadAnalytics(){
- if(!db)return;
- const period=$('period').value;
- let q=db.from('analytics_events').select('session_id,event_type,created_at');
- const resetAt=getResetTime();
- let cutoff=resetAt;
- if(period!=='all')cutoff=Math.max(cutoff,Date.now()-Number(period)*86400000);
- if(cutoff)q=q.gte('created_at',new Date(cutoff).toISOString());
+  if(!db) return;
 
- const {data,error}=await q;
- if(error){note('Analytics: '+err(error),true);return;}
- const ev=data||[];
- const sessions=new Set(ev.map(x=>x.session_id).filter(Boolean));
- $('sSessions').textContent=sessions.size;
- $('sViews').textContent=ev.filter(x=>x.event_type==='page_view').length;
+  const period = $('period').value;
+  let q = db.from('analytics_events')
+    .select('session_id,event_type,created_at');
 
- const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
- $('sLive').textContent=live.size;
+  if(period !== 'all'){
+    const cutoff = Date.now() - Number(period) * 86400000;
+    q = q.gte('created_at', new Date(cutoff).toISOString());
+  }
 
- const purchases=ev.filter(x=>x.event_type==='purchase').length;
- $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
+  const {data,error} = await q;
 
- const daily={};
- ev.forEach(x=>{
-  if(!x.created_at||!x.session_id)return;
-  const d=new Date(x.created_at);
-  const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  if(!daily[key])daily[key]=new Set();
-  daily[key].add(x.session_id);
- });
+  if(error){
+    note('Analytics: ' + err(error),true);
+    return;
+  }
 
- const labels=[];
- const values=[];
- let days=period==='all'?365:Number(period);
- days=Math.max(1,Math.min(days,365));
+  const ev = data || [];
+  const sessions = new Set(
+    ev.map(x => x.session_id).filter(Boolean)
+  );
 
- for(let i=days-1;i>=0;i--){
-  const d=new Date();
-  d.setHours(0,0,0,0);
-  d.setDate(d.getDate()-i);
-  const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  labels.push(d.toLocaleDateString());
-  values.push(daily[key]?.size||0);
- }
+  $('sSessions').textContent = sessions.size;
+  $('sViews').textContent =
+    ev.filter(x => x.event_type === 'page_view').length;
 
- if(chart)chart.destroy();
- if(window.Chart&&$('chart')){
-  chart=new Chart($('chart'),{
-   type:'line',
-   data:{
-    labels,
-    datasets:[{
-     label:'Daily Sessions',
-     data:values,
-     borderColor:'#C9A45C',
-     backgroundColor:'rgba(201,164,92,.12)',
-     fill:true,
-     tension:.35,
-     borderWidth:2,
-     pointRadius:3,
-     pointHoverRadius:5
-    }]
-   },
-   options:{
-    responsive:true,
-    interaction:{intersect:false,mode:'index'},
-    plugins:{legend:{display:true,labels:{color:'#aaa'}}},
-    scales:{
-     x:{ticks:{color:'#aaa',maxTicksLimit:8}},
-     y:{beginAtZero:true,ticks:{color:'#aaa',precision:0}}
-    }
-   }
+  const now = Date.now();
+  const live = new Set(
+    ev.filter(x => {
+      const t = new Date(x.created_at).getTime();
+      return t <= now && now - t < 300000;
+    }).map(x => x.session_id).filter(Boolean)
+  );
+
+  $('sLive').textContent = live.size;
+
+  const purchases = ev.filter(
+    x => x.event_type === 'purchase'
+  ).length;
+
+  $('sConversion').textContent =
+    (sessions.size ? 100 * purchases / sessions.size : 0)
+      .toFixed(2) + '%';
+
+  const daily = {};
+
+  ev.forEach(x => {
+    if(!x.created_at || !x.session_id) return;
+
+    const d = new Date(x.created_at);
+    const key = d.getFullYear() + '-' +
+      String(d.getMonth()+1).padStart(2,'0') + '-' +
+      String(d.getDate()).padStart(2,'0');
+
+    if(!daily[key]) daily[key] = new Set();
+    daily[key].add(x.session_id);
   });
- }
+
+  const labels = [];
+  const values = [];
+  const days = Math.max(
+    1,
+    Math.min(period === 'all' ? 365 : Number(period),365)
+  );
+
+  for(let i = days-1; i >= 0; i--){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate()-i);
+
+    const key = d.getFullYear() + '-' +
+      String(d.getMonth()+1).padStart(2,'0') + '-' +
+      String(d.getDate()).padStart(2,'0');
+
+    labels.push(d.toLocaleDateString());
+    values.push(daily[key]?.size || 0);
+  }
+
+  if(chart) chart.destroy();
+
+  if(window.Chart && $('chart')){
+    chart = new Chart($('chart'),{
+      type:'line',
+      data:{
+        labels,
+        datasets:[{
+          label:'Daily Sessions',
+          data:values,
+          borderColor:'#C9A45C',
+          backgroundColor:'rgba(201,164,92,.12)',
+          fill:true,
+          tension:.35,
+          borderWidth:2,
+          pointRadius:3,
+          pointHoverRadius:5
+        }]
+      },
+      options:{
+        responsive:true,
+        interaction:{intersect:false,mode:'index'},
+        plugins:{
+          legend:{display:true,labels:{color:'#aaa'}}
+        },
+        scales:{
+          x:{ticks:{color:'#aaa',maxTicksLimit:8}},
+          y:{beginAtZero:true,ticks:{color:'#aaa',precision:0}}
+        }
+      }
+    });
+  }
 }
 
 $('period').addEventListener('change',()=>{
