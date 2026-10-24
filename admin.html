@@ -382,7 +382,9 @@ th{color:var(--gold)}
 
 const SUPABASE_URL='https://fudkfvwwbqmflmtkbtkk.supabase.co';
 const SUPABASE_KEY='sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b';
-const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY,{
+  auth:{persistSession:true, autoRefreshToken:true, detectSessionInUrl:true}
+});
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
@@ -520,7 +522,7 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
- $('pSku').value=generateMHYCode(); // Naya MHY code sirf NEW product par hi generate hoga
+ $('pSku').value=generateMHYCode();
  $('pStock').value='0';
  $('pActive').checked=true;
  $('pFeatured').checked=false;
@@ -663,6 +665,11 @@ $('productForm').addEventListener('submit',async e=>{
  btn.textContent='Saving…';
 
  try{
+  const {data:{session}}=await db.auth.getSession();
+  if(!session){
+   throw Error('Aapka session expire ho gaya hai. Dobara login karein!');
+  }
+
   const id=$('pId').value;
   const sale=parseFloat($('pSale').value);
   const compareRaw=$('pCompare').value.trim();
@@ -682,11 +689,13 @@ $('productForm').addEventListener('submit',async e=>{
    .replace(/[^a-z0-9]+/g,'-')
    .replace(/^-+|-+$/g,'')+'-'+Date.now().toString(36);
 
+  const finalSku = $('pSku').value.trim() || generateMHYCode();
+
   const payload={
    name:productName,
    slug:productSlug,
    category_id:$('pCategory').value,
-   sku:$('pSku').value.trim() || generateMHYCode(), // Purana SKU hi rahega, agar Na ho tabhi naya banega
+   sku:finalSku,
    barcode:$('pBarcode').value.trim()||null,
    retail_price:storedCompare,
    sale_price:storedSale,
@@ -730,8 +739,8 @@ async function editProduct(id){
  $('pName').value=p.name||'';
  $('pCategory').value=p.category_id||'';
  
- // Purana SKU code hi load hoga, EDIT karne par change NAI HOGA!
- $('pSku').value=p.sku || '';
+ // SKU permanent rahega, agar pehle na ho toh naya generate ho jayega
+ $('pSku').value = p.sku && p.sku.trim() !== '' ? p.sku : generateMHYCode();
 
  $('pBarcode').value=p.barcode||'';
  $('pSale').value=p.sale_price??p.retail_price??'';
@@ -1326,9 +1335,8 @@ async function enter(user){
 
 (async()=>{
  if(!db){$('loginError').textContent='Supabase could not load. Refresh and try again.';return;}
- const {data,error}=await db.auth.getSession();
- if(error){$('loginError').textContent=err(error);return;}
- if(data.session)await enter(data.session.user);
+ const {data}=await db.auth.getSession();
+ if(data?.session)await enter(data.session.user);
 })();
 })();
 </script>
