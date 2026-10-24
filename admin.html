@@ -903,8 +903,21 @@ async function loadAnalytics(){
  const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
  $('sLive').textContent=live.size;
 
- const purchases=ev.filter(x=>x.event_type==='purchase').length;
- $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
+const deliveredOrders = (orders || []).filter(o => {
+  const status = String(orderStatus(o)).toLowerCase();
+  const createdAt = o.created_at
+    ? new Date(o.created_at).getTime()
+    : 0;
+
+  return status === 'delivered' &&
+    (!cutoff || createdAt >= cutoff);
+});
+
+$('sConversion').textContent =
+  (sessions.size
+    ? (100 * deliveredOrders.length / sessions.size)
+    : 0
+  ).toFixed(2) + '%';
 
  const daily={};
  ev.forEach(x=>{
