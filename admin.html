@@ -520,7 +520,7 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
- $('pSku').value=generateMHYCode(); // Generate new unique MHY code
+ $('pSku').value=generateMHYCode(); // Naya MHY code sirf NEW product par hi generate hoga
  $('pStock').value='0';
  $('pActive').checked=true;
  $('pFeatured').checked=false;
@@ -686,7 +686,7 @@ $('productForm').addEventListener('submit',async e=>{
    name:productName,
    slug:productSlug,
    category_id:$('pCategory').value,
-   sku:$('pSku').value.trim()||generateMHYCode(),
+   sku:$('pSku').value.trim() || generateMHYCode(), // Purana SKU hi rahega, agar Na ho tabhi naya banega
    barcode:$('pBarcode').value.trim()||null,
    retail_price:storedCompare,
    sale_price:storedSale,
@@ -724,14 +724,14 @@ $('productForm').addEventListener('submit',async e=>{
 async function editProduct(id){
  const p=products.find(x=>String(x.id)===String(id));
  if(!p)return;
- openProduct();
- $('productTitle').textContent='Edit Product';
+ 
+ $('productForm').reset();
  $('pId').value=p.id;
  $('pName').value=p.name||'';
  $('pCategory').value=p.category_id||'';
  
- // Keep permanent code intact on edit
- $('pSku').value=p.sku||generateMHYCode();
+ // Purana SKU code hi load hoga, EDIT karne par change NAI HOGA!
+ $('pSku').value=p.sku || '';
 
  $('pBarcode').value=p.barcode||'';
  $('pSale').value=p.sale_price??p.retail_price??'';
@@ -741,6 +741,9 @@ async function editProduct(id){
  $('pDescription').value=p.description||'';
  $('pActive').checked=p.is_active!==false;
  $('pFeatured').checked=!!p.is_featured;
+
+ $('productTitle').textContent='Edit Product';
+ fillCategories();
 
  try{
   const {data,error}=await db.from('product_images').select('image_url').eq('product_id',id).order('sort_order',{ascending:true}).limit(1);
