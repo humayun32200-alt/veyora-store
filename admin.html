@@ -539,6 +539,17 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
+ $('pSku').value='Generating...';
+
+generateProductCode()
+  .then(code => {
+    $('pSku').value = code;
+  })
+  .catch(error => {
+    console.error(error);
+    $('pSku').value = '';
+    note('Product code generate nahi hua. Dobara try karo.', true);
+  });
  $('pSku').value='';
 $('pSku').placeholder='Generating code...';
 
