@@ -858,7 +858,7 @@ async function loadOrders(){
  $('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
 
- const resetAt=getResetTime();
+ const resetAt=await getResetTime();
  const salesOrders=orders.filter(o=>
   !['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())&&
   (!resetAt||(o.created_at&&new Date(o.created_at).getTime()>=resetAt))
