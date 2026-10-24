@@ -103,7 +103,7 @@ th{color:var(--gold)}
    <div class="stat"><small>Total Sessions</small><strong id="sSessions">0</strong></div>
    <div class="stat"><small>Page Views</small><strong id="sViews">0</strong></div>
    <div class="stat"><small>Total Sales</small><strong id="sSales">Rs 0</strong></div>
-   <div class="stat"><small>Conversion Rate</small><strong id="sConversion">0%</strong></div>
+   <div class="stat"><small>Conversion Rate</small><strong id="sConversion">0.00%</strong></div>
   </div>
 
   <p style="color:#999;font-size:11px;margin:12px 0">*Visitor figures depend on analytics events recorded by your storefront.</p>
@@ -141,7 +141,7 @@ th{color:var(--gold)}
   </div>
   <div class="panel" style="overflow:auto">
    <table>
-    <thead><tr><th>Image</th><th>Name</th><th>SKU</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Image</th><th>Name</th><th>SKU / Product Code</th><th>Category</th><th>Compare-at / Sale</th><th>Stock</th><th>Actions</th></tr></thead>
     <tbody id="productsBody"></tbody>
    </table>
   </div>
@@ -232,7 +232,11 @@ th{color:var(--gold)}
    <div class="grid2">
     <div><label class="label">Product Name *</label><input id="pName" class="field" required></div>
     <div><label class="label">Category *</label><select id="pCategory" class="field" required></select></div>
-    <div><label class="label">SKU</label><input id="pSku" class="field"></div>
+    <div>
+      <label class="label">Unique Product Code (SKU)</label>
+      <input id="pSku" class="field" readonly style="background:#1a1c23;color:var(--gold);font-weight:bold;cursor:not-allowed;">
+      <p style="font-size:10px;color:#999;margin-top:4px">Auto-generated permanent code for admin tracking.</p>
+    </div>
     <div><label class="label">Barcode</label><input id="pBarcode" class="field"></div>
 
     <div>
@@ -269,7 +273,7 @@ th{color:var(--gold)}
 
    <div style="border-top:1px solid var(--border);padding-top:18px">
     <h3 style="color:var(--gold)">Custom Options / Variants</h3>
-    <p style="font-size:12px;color:#aaa;margin:6px 0 14px">Example: Option Name = Design; Option Values = Design 1, Design 2, Design 3. Each value becomes its own variant.</p>
+    <p style="font-size:12px;color:#aaa;margin:6px 0 14px">Example: Option Name = Design; Option Values = Design 1, Design 2, Design 3. Each value becomes its own variant. All variants share this product's unique code.</p>
     <div class="grid2">
      <div><label class="label">Option Name</label><input id="vName" class="field" placeholder="Design / Colour / Size"></div>
      <div><label class="label">Option Values (comma separated)</label><input id="vValues" class="field" placeholder="Blue, Black, White"></div>
@@ -388,6 +392,12 @@ let bannerImageUrl=null;
 const RESET_KEY='veyora_stats_reset_at';
 function getResetTime(){return Number(localStorage.getItem(RESET_KEY))||0;}
 
+// Generate MHY0983652 format SKU
+function generateMHYCode(){
+  const random7Digits = Math.floor(1000000 + Math.random() * 9000000);
+  return 'MHY' + random7Digits;
+}
+
 function note(s,bad=false){
  const n=$('notice');
  n.textContent=s;
@@ -398,18 +408,20 @@ function note(s,bad=false){
 function err(e){return e?.message||String(e||'Unknown error');}
 
 $('resetStats').addEventListener('click',async()=>{
- const ok=confirm('Sessions, Page Views aur Total Sales ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.');
+ const ok=confirm('Live Visitors, Sessions, Views, Orders, Total Sales aur Conversion Rate ko zero se shuru karna hai? Products, Categories aur Orders safe rahenge.');
  if(!ok)return;
  localStorage.setItem(RESET_KEY,String(Date.now()));
  $('sSessions').textContent='0';
  $('sViews').textContent='0';
  $('sSales').textContent='Rs 0';
  $('sLive').textContent='0';
- $('sConversion').textContent='0.00%';
+ $('sOrders').textContent='0';
+ $('sPending').textContent='0';
+ $('sConversion').textContent='0.00%
  try{
   await loadOrders();
   await loadAnalytics();
-  note('Stats reset successfully. Products and orders are safe.');
+  note('Tamam metrics successfully zero se reset ho gaye hain.');
  }catch(e){note('Stats reload nahi huay: '+err(e),true);}
 });
 
@@ -493,7 +505,7 @@ function renderProducts(){
   return `<tr>
    <td>${p._image?`<img src="${esc(p._image)}" style="width:45px;height:45px;object-fit:cover;border-radius:7px">`:'—'}</td>
    <td>${esc(p.name)}</td>
-   <td>${esc(p.sku||'—')}</td>
+   <td><strong style="color:var(--gold)">${esc(p.sku||'—')}</strong></td>
    <td>${esc(categories.find(c=>String(c.id)===String(p.category_id))?.name||'—')}</td>
    <td>${priceHtml}</td>
    <td>${Number(p.stock_quantity)||0}</td>
@@ -508,6 +520,7 @@ function renderProducts(){
 function openProduct(){
  $('productForm').reset();
  $('pId').value='';
+ $('pSku').value=generateMHYCode(); // Generate new unique MHY code
  $('pStock').value='0';
  $('pActive').checked=true;
  $('pFeatured').checked=false;
@@ -673,7 +686,7 @@ $('productForm').addEventListener('submit',async e=>{
    name:productName,
    slug:productSlug,
    category_id:$('pCategory').value,
-   sku:$('pSku').value.trim()||null,
+   sku:$('pSku').value.trim()||generateMHYCode(),
    barcode:$('pBarcode').value.trim()||null,
    retail_price:storedCompare,
    sale_price:storedSale,
@@ -716,9 +729,11 @@ async function editProduct(id){
  $('pId').value=p.id;
  $('pName').value=p.name||'';
  $('pCategory').value=p.category_id||'';
- $('pSku').value=p.sku||'';
- $('pBarcode').value=p.barcode||'';
+ 
+ // Keep permanent code intact on edit
+ $('pSku').value=p.sku||generateMHYCode();
 
+ $('pBarcode').value=p.barcode||'';
  $('pSale').value=p.sale_price??p.retail_price??'';
  $('pCompare').value=p.sale_price!=null&&Number(p.retail_price)>Number(p.sale_price)?p.retail_price:'';
 
@@ -821,17 +836,39 @@ async function loadOrders(){
  if(!db)return;
  const {data,error}=await db.from('orders').select('*').order('created_at',{ascending:false});
  if(error){note('Orders: '+err(error),true);return;}
- orders=data||[];
+ 
+ const rawOrders=data||[];
+ const resetAt=getResetTime();
+
+ orders = resetAt ? rawOrders.filter(o => o.created_at && new Date(o.created_at).getTime() >= resetAt) : rawOrders;
+
  $('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
 
- const resetAt=getResetTime();
  const salesOrders=orders.filter(o=>
-  !['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())&&
-  (!resetAt||(o.created_at&&new Date(o.created_at).getTime()>=resetAt))
+  !['cancelled','canceled'].includes(String(orderStatus(o)).toLowerCase())
  );
  $('sSales').textContent='Rs '+salesOrders.reduce((sum,o)=>sum+orderTotal(o),0).toLocaleString();
  renderOrders();
+ updateConversionRate(resetAt);
+}
+
+// Updated Conversion Rate Logic supporting reset
+function updateConversionRate(resetAt){
+  const resetTime = resetAt || getResetTime();
+  const validOrders = orders.filter(o => 
+    !['cancelled', 'canceled'].includes(String(orderStatus(o)).toLowerCase()) &&
+    (!resetTime || (o.created_at && new Date(o.created_at).getTime() >= resetTime))
+  ).length;
+
+  const sessionsCount = Number($('sSessions').textContent) || 0;
+  
+  if (sessionsCount > 0) {
+    const rate = ((validOrders / sessionsCount) * 100).toFixed(2);
+    $('sConversion').textContent = rate + '%';
+  } else {
+    $('sConversion').textContent = '0.00%';
+  }
 }
 
 function renderOrders(){
@@ -888,7 +925,6 @@ async function loadAnalytics(){
 
  const {data,error}=await q;
  if(error){
-  // If analytics table doesn't exist yet, keep values at 0 smoothly
   $('sSessions').textContent='0';
   $('sViews').textContent='0';
   $('sLive').textContent='0';
@@ -903,8 +939,7 @@ async function loadAnalytics(){
  const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
  $('sLive').textContent=live.size;
 
- const purchases=ev.filter(x=>x.event_type==='purchase').length;
- $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
+ updateConversionRate(resetAt);
 
  const daily={};
  ev.forEach(x=>{
