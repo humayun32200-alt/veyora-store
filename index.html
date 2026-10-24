@@ -1391,6 +1391,7 @@ let productImages = [];
 let variants = [];
 let cart = [];
 let activeCategory = "all";
+  let selectedParentCategory = null;
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
@@ -1445,6 +1446,7 @@ $("searchInput").addEventListener("input", () => { showAllProducts = false; rend
 $("shopAllLink").addEventListener("click", () => {
   activeCategory = "all";
   saleCategory = "";
+  selectedParentCategory = null;
   activeSort = "";
   showAllProducts = false;
 
@@ -1539,6 +1541,7 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
 
     activeCategory = String(match.id);
     saleCategory = key;
+    selectedParentCategory = String(match.id);
     showAllProducts = false;
 
     $("searchInput").value = "";
@@ -1596,6 +1599,7 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
 
     activeCategory = String(match.id);
     saleCategory = "";
+    selectedParentCategory = String(match.id);
     showAllProducts = false;
     $("searchInput").value = "";
 
@@ -1613,21 +1617,72 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
 
+  const roots = visible.filter(category =>
+    !category.parent_id ||
+    !visible.some(parent => String(parent.id) === String(category.parent_id))
+  );
+
+  const selectedParent = selectedParentCategory
+    ? visible.find(category =>
+        String(category.id) === String(selectedParentCategory)
+      )
+    : null;
+
+  const subcategories = selectedParent
+    ? visible.filter(category =>
+        String(category.parent_id) === String(selectedParent.id)
+      )
+    : [];
+
   $("categoryList").innerHTML =
     `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
-    visible.map(category =>
-      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
-    ).join("");
 
-  $("categoryList").querySelectorAll("[data-category]").forEach(button => {
+    roots.map(category =>
+      `<button class="category-button ${String(activeParentCategorySafe()) === String(category.id) ? "active" : ""}" data-main-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
+    ).join("") +
+
+    (selectedParent && subcategories.length
+      ? `<div class="subcategory-heading">${escapeHTML(selectedParent.name)} — Subcategories</div>` +
+        subcategories.map(category =>
+          `<button class="category-button subcategory-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-subcategory="${escapeHTML(category.id)}">${escapeHTML(category.name || "Subcategory")}</button>`
+        ).join("")
+      : "");
+
+  $("categoryList").querySelectorAll('[data-category="all"]').forEach(button => {
     button.addEventListener("click", () => {
-      activeCategory = button.dataset.category;
+      activeCategory = "all";
+      selectedParentCategory = null;
       saleCategory = "";
       showAllProducts = false;
       renderCategories();
       renderProducts();
     });
   });
+
+  $("categoryList").querySelectorAll("[data-main-category]").forEach(button => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.mainCategory;
+      selectedParentCategory = button.dataset.mainCategory;
+      saleCategory = "";
+      showAllProducts = false;
+      renderCategories();
+      renderProducts();
+    });
+  });
+
+  $("categoryList").querySelectorAll("[data-subcategory]").forEach(button => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.subcategory;
+      saleCategory = "";
+      showAllProducts = false;
+      renderCategories();
+      renderProducts();
+    });
+  });
+}
+
+function activeParentCategorySafe() {
+  return selectedParentCategory || activeCategory;
 }
 
 
@@ -1695,15 +1750,43 @@ function currentPrice(product) {
 function productIsActive(product) {
   return product.is_active === true || product.is_active === undefined;
 }
+function getCategoryAndDescendantIds(categoryId) {
+  const result = new Set([String(categoryId)]);
+  let changed = true;
 
+  while (changed) {
+    changed = false;
+
+    categories.forEach(category => {
+      if (
+        category.parent_id !== null &&
+        category.parent_id !== undefined &&
+        category.parent_id !== "" &&
+        result.has(String(category.parent_id)) &&
+        !result.has(String(category.id))
+      ) {
+        result.add(String(category.id));
+        changed = true;
+      }
+    });
+  }
+
+  return result;
+}
+
+function productMatchesActiveCategory(product) {
+  if (activeCategory === "all") return true;
+
+  const allowedIds = getCategoryAndDescendantIds(activeCategory);
+
+  return allowedIds.has(String(product.category_id));
+}
 function renderProducts() {
   const query = $("searchInput").value.trim().toLowerCase();
 
   let filtered = products.filter(product => {
     if (!productIsActive(product)) return false;
-
-    const categoryMatches = activeCategory === "all" ||
-      String(product.category_id) === String(activeCategory);
+const categoryMatches = productMatchesActiveCategory(product);
 
     const saleMatches = !saleCategory || isOnSale(product);
 
