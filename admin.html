@@ -904,8 +904,30 @@ async function loadAnalytics(){
  const live=new Set(ev.filter(x=>Date.now()-new Date(x.created_at).getTime()<300000).map(x=>x.session_id).filter(Boolean));
  $('sLive').textContent=live.size;
 
- const purchases=ev.filter(x=>x.event_type==='purchase').length;
- $('sConversion').textContent=(sessions.size?100*purchases/sessions.size:0).toFixed(2)+'%';
+const { data: conversionOrders, error: conversionError } = await db
+  .from('orders')
+  .select('id, created_at, status');
+
+if (conversionError) {
+  note('Conversion Rate: ' + err(conversionError), true);
+  return;
+}
+
+const validOrders = (conversionOrders || []).filter(o => {
+  const status = String(o.status || 'Pending').toLowerCase();
+  const createdAt = o.created_at
+    ? new Date(o.created_at).getTime()
+    : 0;
+
+  return !['cancelled', 'canceled'].includes(status) &&
+    (!cutoff || createdAt >= cutoff);
+});
+
+$('sConversion').textContent =
+  (sessions.size
+    ? (validOrders.length / sessions.size * 100)
+    : 0
+  ).toFixed(2) + '%';
 
  const daily={};
  ev.forEach(x=>{
