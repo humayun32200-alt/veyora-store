@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#080807">
 <meta name="description" content="VEYORA — Premium fashion, home essentials and everyday products in Pakistan.">
 <title>VEYORA | Premium Everyday Living</title>
+  <link rel="icon" type="image/png"
+href="./Luxury%20Gold%20Veyora%20Emblem.png">
+
+<link rel="apple-touch-icon"
+href="./Luxury%20Gold%20Veyora%20Emblem.png">
+
+<link rel="manifest" href="./manifest.json">
 
 <!-- Font Awesome Icons Library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -992,8 +999,7 @@ header.veyora-header .icon-label {
     grid-column: 1 / -1;
     grid-row: 2;
     max-width: none;
-  }
-
+  } 
   header.veyora-header .header-actions {
     grid-column: 2;
     grid-row: 1;
@@ -1009,6 +1015,44 @@ header.veyora-header .icon-label {
   header.veyora-header .icon-label {
     font-size: 8px;
   }
+}
+
+.category-tile-wrap {
+  min-width: 0;
+}
+
+.tile-subcategories[hidden] {
+  display: none !important;
+}
+
+.tile-subcategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  margin-top: 6px;
+  background: #0d0d0b;
+  border: 1px solid #51432a;
+  border-radius: 8px;
+}
+
+.tile-subcategory-button {
+  background: #1b1913;
+  color: #f6ecd5;
+  border: 1px solid #51432a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.tile-subcategory-button:hover {
+  border-color: #c9a45c;
+  color: #c9a45c;
+}
+
+.tile-subcategory-empty {
+  color: #c9a45c;
+  font-size: 13px;
 }
 
 
@@ -1086,25 +1130,43 @@ header.veyora-header .icon-label {
       <p>Discover fashion and essentials for everyday living.</p>
     </div>
 
-    <div class="category-showcase">
-      <a href="#products" class="category-tile women" data-showcase-category="women">
-        <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
-      </a>
-      <a href="#products" class="category-tile men" data-showcase-category="men">
-        <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
-      </a>
-      <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
-        <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
-      </a>
-      <a href="#products" class="category-tile home" data-showcase-category="home">
-        <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
-      </a>
-    </div>
+    
+<div class="category-showcase">
 
-    <div class="category-list" id="categoryList">
-      <button class="category-button active" data-category="all">All</button>
-    </div>
-  </section>
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile women" data-showcase-category="women">
+      <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-women" hidden></div>
+  </div>
+
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile men" data-showcase-category="men">
+      <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-men" hidden></div>
+  </div>
+
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
+      <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-bedding" hidden></div>
+  </div>
+
+  <div class="category-tile-wrap">
+    <a href="#products" class="category-tile home" data-showcase-category="home">
+      <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
+    </a>
+    <div class="tile-subcategories" id="subcategories-home" hidden></div>
+  </div>
+
+</div>
+
+<div class="category-list" id="categoryList">
+  <button class="category-button active" data-category="all">All</button>
+</div>
+
 
   <section class="section" id="products">
     <div class="section-heading">
@@ -1384,6 +1446,7 @@ let productImages = [];
 let variants = [];
 let cart = [];
 let activeCategory = "all";
+  let selectedParentCategory = null;
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
@@ -1438,6 +1501,7 @@ $("searchInput").addEventListener("input", () => { showAllProducts = false; rend
 $("shopAllLink").addEventListener("click", () => {
   activeCategory = "all";
   saleCategory = "";
+  selectedParentCategory = null;
   activeSort = "";
   showAllProducts = false;
 
@@ -1532,6 +1596,7 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
 
     activeCategory = String(match.id);
     saleCategory = key;
+    selectedParentCategory = String(match.id);
     showAllProducts = false;
 
     $("searchInput").value = "";
@@ -1551,6 +1616,7 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
   });
 });
 
+
 document.querySelectorAll("[data-showcase-category]").forEach(tile => {
   tile.addEventListener("click", event => {
     event.preventDefault();
@@ -1561,11 +1627,13 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
       const name = String(category.name || "").trim().toLowerCase();
 
       if (key === "men") {
-        return name.includes("men") && !name.includes("women");
+        return (name === "men" || name === "men's" || name === "mens");
       }
 
       if (key === "women") {
-        return name.includes("women");
+        return name === "women" ||
+               name === "women's" ||
+               name === "womens";
       }
 
       if (key === "bedding") {
@@ -1583,44 +1651,138 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
     });
 
     if (!match) {
-      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
+      alert("Admin mein parent category ka naam check karo.");
       return;
     }
 
-    activeCategory = String(match.id);
-    saleCategory = "";
-    showAllProducts = false;
-    $("searchInput").value = "";
+    const parentId = String(match.id);
+    const subBox = document.getElementById("subcategories-" + key);
 
-    renderCategories();
-    renderProducts();
+    if (!subBox) return;
 
-    document.getElementById("products").scrollIntoView({
-      behavior: "smooth",
-      block: "start"
+    const isAlreadyOpen = !subBox.hidden;
+
+    document.querySelectorAll(".tile-subcategories").forEach(box => {
+      box.hidden = true;
+      box.innerHTML = "";
+    });
+
+    if (isAlreadyOpen) return;
+
+    const children = categories.filter(category =>
+      String(category.parent_id || "") === parentId &&
+      category.is_active !== false
+    );
+
+    if (children.length === 0) {
+      subBox.innerHTML =
+        '<div class="tile-subcategory-empty">Abhi koi subcategory nahi hai.</div>';
+    } else {
+      subBox.innerHTML = children.map(category => `
+        <button type="button"
+          class="tile-subcategory-button"
+          data-tile-subcategory="${String(category.id)}">
+          ${String(category.name || "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          })[char])}
+        </button>
+      `).join("");
+    }
+
+    subBox.hidden = false;
+
+    subBox.querySelectorAll("[data-tile-subcategory]").forEach(button => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.tileSubcategory;
+        selectedParentCategory = parentId;
+        saleCategory = "";
+        showAllProducts = false;
+        $("searchInput").value = "";
+
+        renderProducts();
+
+        document.getElementById("products").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
     });
   });
 });
 
-
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
 
+  const roots = visible.filter(category =>
+    !category.parent_id ||
+    !visible.some(parent => String(parent.id) === String(category.parent_id))
+  );
+
+  const selectedParent = selectedParentCategory
+    ? visible.find(category =>
+        String(category.id) === String(selectedParentCategory)
+      )
+    : null;
+
+  const subcategories = selectedParent
+    ? visible.filter(category =>
+        String(category.parent_id) === String(selectedParent.id)
+      )
+    : [];
+
   $("categoryList").innerHTML =
     `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
-    visible.map(category =>
-      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
-    ).join("");
 
-  $("categoryList").querySelectorAll("[data-category]").forEach(button => {
+    roots.map(category =>
+      `<button class="category-button ${String(activeParentCategorySafe()) === String(category.id) ? "active" : ""}" data-main-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
+    ).join("") +
+
+    (selectedParent && subcategories.length
+      ? `<div class="subcategory-heading">${escapeHTML(selectedParent.name)} — Subcategories</div>` +
+        subcategories.map(category =>
+          `<button class="category-button subcategory-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-subcategory="${escapeHTML(category.id)}">${escapeHTML(category.name || "Subcategory")}</button>`
+        ).join("")
+      : "");
+
+  $("categoryList").querySelectorAll('[data-category="all"]').forEach(button => {
     button.addEventListener("click", () => {
-      activeCategory = button.dataset.category;
+      activeCategory = "all";
+      selectedParentCategory = null;
       saleCategory = "";
       showAllProducts = false;
       renderCategories();
       renderProducts();
     });
   });
+
+  $("categoryList").querySelectorAll("[data-main-category]").forEach(button => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.mainCategory;
+      selectedParentCategory = button.dataset.mainCategory;
+      saleCategory = "";
+      showAllProducts = false;
+      renderCategories();
+      renderProducts();
+    });
+  });
+
+  $("categoryList").querySelectorAll("[data-subcategory]").forEach(button => {
+    button.addEventListener("click", () => {
+      activeCategory = button.dataset.subcategory;
+      saleCategory = "";
+      showAllProducts = false;
+      renderCategories();
+      renderProducts();
+    });
+  });
+}
+
+function activeParentCategorySafe() {
+  return selectedParentCategory || activeCategory;
 }
 
 
@@ -1688,15 +1850,43 @@ function currentPrice(product) {
 function productIsActive(product) {
   return product.is_active === true || product.is_active === undefined;
 }
+function getCategoryAndDescendantIds(categoryId) {
+  const result = new Set([String(categoryId)]);
+  let changed = true;
 
+  while (changed) {
+    changed = false;
+
+    categories.forEach(category => {
+      if (
+        category.parent_id !== null &&
+        category.parent_id !== undefined &&
+        category.parent_id !== "" &&
+        result.has(String(category.parent_id)) &&
+        !result.has(String(category.id))
+      ) {
+        result.add(String(category.id));
+        changed = true;
+      }
+    });
+  }
+
+  return result;
+}
+
+function productMatchesActiveCategory(product) {
+  if (activeCategory === "all") return true;
+
+  const allowedIds = getCategoryAndDescendantIds(activeCategory);
+
+  return allowedIds.has(String(product.category_id));
+}
 function renderProducts() {
   const query = $("searchInput").value.trim().toLowerCase();
 
   let filtered = products.filter(product => {
     if (!productIsActive(product)) return false;
-
-    const categoryMatches = activeCategory === "all" ||
-      String(product.category_id) === String(activeCategory);
+const categoryMatches = productMatchesActiveCategory(product);
 
     const saleMatches = !saleCategory || isOnSale(product);
 
@@ -1904,7 +2094,6 @@ function showProductDetails(id) {
     selectedVariant = variant;
     const imageURL = variant?.image_url || mainImage;
     let image = $("detailProductImage");
-
     if (image) {
       image.style.display = imageURL ? "block" : "none";
       if (imageURL) image.src = imageURL;
@@ -3156,3 +3345,4 @@ refreshAccountSession();
 </script>
 </body>
 </html>
+ 
