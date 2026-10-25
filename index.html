@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,13 +7,6 @@
 <meta name="theme-color" content="#080807">
 <meta name="description" content="VEYORA — Premium fashion, home essentials and everyday products in Pakistan.">
 <title>VEYORA | Premium Everyday Living</title>
-  <link rel="icon" type="image/png"
-href="./Luxury%20Gold%20Veyora%20Emblem.png">
-
-<link rel="apple-touch-icon"
-href="./Luxury%20Gold%20Veyora%20Emblem.png">
-
-<link rel="manifest" href="./manifest.json">
 
 <!-- Font Awesome Icons Library -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -514,7 +508,8 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 /* VEYORA BANNER STYLE */
 .veyora-banner {
   position: relative;
-  min-height: 390px;
+  width: 100%;
+  min-height: 420px;
   overflow: hidden;
   background: #171510;
   color: #fff5dc;
@@ -528,47 +523,64 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: opacity 0.5s ease-in-out;
 }
 .veyora-banner-overlay {
   position: relative;
   z-index: 1;
   box-sizing: border-box;
-  min-height: 390px;
+  min-height: 420px;
   padding: 60px 8%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  background: linear-gradient(90deg, rgba(0,0,0,.82), rgba(0,0,0,.35), transparent);
+  background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2) 100%);
 }
 .veyora-banner-label {
   color: #d8b56a;
   letter-spacing: 3px;
   font-size: 10px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
 }
 .veyora-banner-overlay h1 {
   max-width: 650px;
-  margin: 10px 0;
-  font-size: clamp(28px, 5vw, 54px);
+  margin: 8px 0;
+  font-family: Georgia, serif;
+  font-size: clamp(24px, 4.5vw, 48px);
+  line-height: 1.2;
+  color: #f0dba5;
 }
 .veyora-banner-overlay p:not(.veyora-banner-label) {
   max-width: 500px;
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 13px;
+  color: #e5ddcd;
+  margin: 0 0 15px 0;
 }
 #veyoraBannerButton {
-  margin-top: 18px;
-  padding: 14px 25px;
+  margin-top: 10px;
+  padding: 12px 24px;
   border: 1px solid #d8b56a;
   background: #d8b56a;
   color: #171510;
+  font-size: 11px;
+  letter-spacing: 1.5px;
   font-weight: bold;
+  border-radius: 3px;
   cursor: pointer;
+  transition: 0.2s;
+}
+#veyoraBannerButton:hover {
+  background: #f0dba5;
+  border-color: #f0dba5;
 }
 .veyora-banner-dots {
   display: flex;
   gap: 8px;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 .veyora-banner-dot {
   width: 22px;
@@ -577,20 +589,46 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
   border: 0;
   background: #817968;
   cursor: pointer;
+  transition: 0.2s;
 }
 .veyora-banner-dot.active {
   background: #e0bd73;
+  width: 32px;
 }
+
 @media (max-width: 600px) {
   .veyora-banner,
   .veyora-banner-overlay {
-    min-height: 320px;
+    min-height: 280px;
   }
   .veyora-banner-overlay {
-    padding: 38px 22px;
+    padding: 25px 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.65) 100%);
+    align-items: center;
+    text-align: center;
+  }
+  .veyora-banner-overlay h1 {
+    font-size: 20px !important;
+    letter-spacing: 1px;
+    margin: 6px 0;
+  }
+  .veyora-banner-overlay p:not(.veyora-banner-label) {
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+  .veyora-banner-label {
+    letter-spacing: 2px;
+    font-size: 9px;
+  }
+  #veyoraBannerButton {
+    padding: 10px 18px;
+    font-size: 10px;
+    margin-top: 5px;
+  }
+  .veyora-banner-dots {
+    margin-top: 12px;
   }
 }
-
 /* VEYORA LUXURY TRACKING PAGE */
 .tracking-page-modal {
   width: min(760px, 100%);
@@ -1018,106 +1056,6 @@ header.veyora-header .icon-label {
   }
 }
 
-.category-tile-wrap {
-  min-width: 0;
-}
-
-.tile-subcategories[hidden] {
-  display: none !important;
-}
-
-.tile-subcategories {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px;
-  margin-top: 6px;
-  background: #0d0d0b;
-  border: 1px solid #51432a;
-  border-radius: 8px;
-}
-
-.tile-subcategory-button {
-  background: #1b1913;
-  color: #f6ecd5;
-  border: 1px solid #51432a;
-  border-radius: 6px;
-  padding: 8px 10px;
-  cursor: pointer;
-}
-
-.tile-subcategory-button:hover {
-  border-color: #c9a45c;
-  color: #c9a45c;
-}
-
-.tile-subcategory-empty {
-  color: #c9a45c;
-  font-size: 13px;
-}
-
-
-/* VEYORA MOBILE BANNER — FORCE FIX */
-@media screen and (max-width: 600px) {
-  html body #veyoraBanner.veyora-banner {
-    height: 300px !important;
-    min-height: 300px !important;
-    max-height: 300px !important;
-    overflow: hidden !important;
-  }
-
-  html body #veyoraBanner .veyora-banner-image {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-  }
-
-  html body #veyoraBanner .veyora-banner-overlay {
-    box-sizing: border-box !important;
-    height: 100% !important;
-    min-height: 300px !important;
-    padding: 20px 16px !important;
-    justify-content: center !important;
-    background: linear-gradient(
-      90deg,
-      rgba(0,0,0,.82),
-      rgba(0,0,0,.35)
-    ) !important;
-  }
-
-  html body #veyoraBanner .veyora-banner-label {
-    margin: 0 0 5px !important;
-    font-size: 8px !important;
-    letter-spacing: 1px !important;
-  }
-
-  html body #veyoraBanner .veyora-banner-overlay h1 {
-    max-width: 100% !important;
-    margin: 5px 0 !important;
-    font-size: 25px !important;
-    line-height: 1.2 !important;
-  }
-
-  html body #veyoraBanner .veyora-banner-overlay p:not(.veyora-banner-label) {
-    max-width: 100% !important;
-    margin: 5px 0 !important;
-    font-size: 11px !important;
-    line-height: 1.4 !important;
-  }
-
-  html body #veyoraBanner #veyoraBannerButton {
-    margin-top: 8px !important;
-    padding: 9px 15px !important;
-    font-size: 10px !important;
-  }
-
-  html body #veyoraBanner .veyora-banner-dots {
-    margin-top: 10px !important;
-  }
-}
 
 </style>
 </head>
@@ -1193,43 +1131,25 @@ header.veyora-header .icon-label {
       <p>Discover fashion and essentials for everyday living.</p>
     </div>
 
-    
-<div class="category-showcase">
+    <div class="category-showcase">
+      <a href="#products" class="category-tile women" data-showcase-category="women">
+        <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
+      </a>
+      <a href="#products" class="category-tile men" data-showcase-category="men">
+        <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
+      </a>
+      <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
+        <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
+      </a>
+      <a href="#products" class="category-tile home" data-showcase-category="home">
+        <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
+      </a>
+    </div>
 
-  <div class="category-tile-wrap">
-    <a href="#products" class="category-tile women" data-showcase-category="women">
-      <div><small>Women's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
-    </a>
-    <div class="tile-subcategories" id="subcategories-women" hidden></div>
-  </div>
-
-  <div class="category-tile-wrap">
-    <a href="#products" class="category-tile men" data-showcase-category="men">
-      <div><small>Men's</small><strong>Clothing</strong><span>SHOP NOW →</span></div>
-    </a>
-    <div class="tile-subcategories" id="subcategories-men" hidden></div>
-  </div>
-
-  <div class="category-tile-wrap">
-    <a href="#products" class="category-tile bedding" data-showcase-category="bedding">
-      <div><small>Bedsheets &</small><strong>Bedding</strong><span>SHOP NOW →</span></div>
-    </a>
-    <div class="tile-subcategories" id="subcategories-bedding" hidden></div>
-  </div>
-
-  <div class="category-tile-wrap">
-    <a href="#products" class="category-tile home" data-showcase-category="home">
-      <div><small>Home</small><strong>Accessories</strong><span>SHOP NOW →</span></div>
-    </a>
-    <div class="tile-subcategories" id="subcategories-home" hidden></div>
-  </div>
-
-</div>
-
-<div class="category-list" id="categoryList">
-  <button class="category-button active" data-category="all">All</button>
-</div>
-
+    <div class="category-list" id="categoryList">
+      <button class="category-button active" data-category="all">All</button>
+    </div>
+  </section>
 
   <section class="section" id="products">
     <div class="section-heading">
@@ -1509,7 +1429,6 @@ let productImages = [];
 let variants = [];
 let cart = [];
 let activeCategory = "all";
-  let selectedParentCategory = null;
 let activeSort = "";
 let saleCategory = "";
 let showAllProducts = false;
@@ -1564,7 +1483,6 @@ $("searchInput").addEventListener("input", () => { showAllProducts = false; rend
 $("shopAllLink").addEventListener("click", () => {
   activeCategory = "all";
   saleCategory = "";
-  selectedParentCategory = null;
   activeSort = "";
   showAllProducts = false;
 
@@ -1659,7 +1577,6 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
 
     activeCategory = String(match.id);
     saleCategory = key;
-    selectedParentCategory = String(match.id);
     showAllProducts = false;
 
     $("searchInput").value = "";
@@ -1679,7 +1596,6 @@ $("saleOptions").querySelectorAll("[data-sale-category]").forEach(button => {
   });
 });
 
-
 document.querySelectorAll("[data-showcase-category]").forEach(tile => {
   tile.addEventListener("click", event => {
     event.preventDefault();
@@ -1690,13 +1606,11 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
       const name = String(category.name || "").trim().toLowerCase();
 
       if (key === "men") {
-        return (name === "men" || name === "men's" || name === "mens");
+        return name.includes("men") && !name.includes("women");
       }
 
       if (key === "women") {
-        return name === "women" ||
-               name === "women's" ||
-               name === "womens";
+        return name.includes("women");
       }
 
       if (key === "bedding") {
@@ -1714,138 +1628,44 @@ document.querySelectorAll("[data-showcase-category]").forEach(tile => {
     });
 
     if (!match) {
-      alert("Admin mein parent category ka naam check karo.");
+      alert("Category Admin Panel mein check karo. Category ka naam match nahi ho raha.");
       return;
     }
 
-    const parentId = String(match.id);
-    const subBox = document.getElementById("subcategories-" + key);
+    activeCategory = String(match.id);
+    saleCategory = "";
+    showAllProducts = false;
+    $("searchInput").value = "";
 
-    if (!subBox) return;
+    renderCategories();
+    renderProducts();
 
-    const isAlreadyOpen = !subBox.hidden;
-
-    document.querySelectorAll(".tile-subcategories").forEach(box => {
-      box.hidden = true;
-      box.innerHTML = "";
-    });
-
-    if (isAlreadyOpen) return;
-
-    const children = categories.filter(category =>
-      String(category.parent_id || "") === parentId &&
-      category.is_active !== false
-    );
-
-    if (children.length === 0) {
-      subBox.innerHTML =
-        '<div class="tile-subcategory-empty">Abhi koi subcategory nahi hai.</div>';
-    } else {
-      subBox.innerHTML = children.map(category => `
-        <button type="button"
-          class="tile-subcategory-button"
-          data-tile-subcategory="${String(category.id)}">
-          ${String(category.name || "").replace(/[&<>"']/g, char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-          })[char])}
-        </button>
-      `).join("");
-    }
-
-    subBox.hidden = false;
-
-    subBox.querySelectorAll("[data-tile-subcategory]").forEach(button => {
-      button.addEventListener("click", () => {
-        activeCategory = button.dataset.tileSubcategory;
-        selectedParentCategory = parentId;
-        saleCategory = "";
-        showAllProducts = false;
-        $("searchInput").value = "";
-
-        renderProducts();
-
-        document.getElementById("products").scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      });
+    document.getElementById("products").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
     });
   });
 });
 
+
 function renderCategories() {
   const visible = categories.filter(category => category.is_active !== false);
 
-  const roots = visible.filter(category =>
-    !category.parent_id ||
-    !visible.some(parent => String(parent.id) === String(category.parent_id))
-  );
-
-  const selectedParent = selectedParentCategory
-    ? visible.find(category =>
-        String(category.id) === String(selectedParentCategory)
-      )
-    : null;
-
-  const subcategories = selectedParent
-    ? visible.filter(category =>
-        String(category.parent_id) === String(selectedParent.id)
-      )
-    : [];
-
   $("categoryList").innerHTML =
     `<button class="category-button ${activeCategory === "all" ? "active" : ""}" data-category="all">All</button>` +
+    visible.map(category =>
+      `<button class="category-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
+    ).join("");
 
-    roots.map(category =>
-      `<button class="category-button ${String(activeParentCategorySafe()) === String(category.id) ? "active" : ""}" data-main-category="${escapeHTML(category.id)}">${escapeHTML(category.name || "Category")}</button>`
-    ).join("") +
-
-    (selectedParent && subcategories.length
-      ? `<div class="subcategory-heading">${escapeHTML(selectedParent.name)} — Subcategories</div>` +
-        subcategories.map(category =>
-          `<button class="category-button subcategory-button ${String(activeCategory) === String(category.id) ? "active" : ""}" data-subcategory="${escapeHTML(category.id)}">${escapeHTML(category.name || "Subcategory")}</button>`
-        ).join("")
-      : "");
-
-  $("categoryList").querySelectorAll('[data-category="all"]').forEach(button => {
+  $("categoryList").querySelectorAll("[data-category]").forEach(button => {
     button.addEventListener("click", () => {
-      activeCategory = "all";
-      selectedParentCategory = null;
+      activeCategory = button.dataset.category;
       saleCategory = "";
       showAllProducts = false;
       renderCategories();
       renderProducts();
     });
   });
-
-  $("categoryList").querySelectorAll("[data-main-category]").forEach(button => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.mainCategory;
-      selectedParentCategory = button.dataset.mainCategory;
-      saleCategory = "";
-      showAllProducts = false;
-      renderCategories();
-      renderProducts();
-    });
-  });
-
-  $("categoryList").querySelectorAll("[data-subcategory]").forEach(button => {
-    button.addEventListener("click", () => {
-      activeCategory = button.dataset.subcategory;
-      saleCategory = "";
-      showAllProducts = false;
-      renderCategories();
-      renderProducts();
-    });
-  });
-}
-
-function activeParentCategorySafe() {
-  return selectedParentCategory || activeCategory;
 }
 
 
@@ -1913,43 +1733,15 @@ function currentPrice(product) {
 function productIsActive(product) {
   return product.is_active === true || product.is_active === undefined;
 }
-function getCategoryAndDescendantIds(categoryId) {
-  const result = new Set([String(categoryId)]);
-  let changed = true;
 
-  while (changed) {
-    changed = false;
-
-    categories.forEach(category => {
-      if (
-        category.parent_id !== null &&
-        category.parent_id !== undefined &&
-        category.parent_id !== "" &&
-        result.has(String(category.parent_id)) &&
-        !result.has(String(category.id))
-      ) {
-        result.add(String(category.id));
-        changed = true;
-      }
-    });
-  }
-
-  return result;
-}
-
-function productMatchesActiveCategory(product) {
-  if (activeCategory === "all") return true;
-
-  const allowedIds = getCategoryAndDescendantIds(activeCategory);
-
-  return allowedIds.has(String(product.category_id));
-}
 function renderProducts() {
   const query = $("searchInput").value.trim().toLowerCase();
 
   let filtered = products.filter(product => {
     if (!productIsActive(product)) return false;
-const categoryMatches = productMatchesActiveCategory(product);
+
+    const categoryMatches = activeCategory === "all" ||
+      String(product.category_id) === String(activeCategory);
 
     const saleMatches = !saleCategory || isOnSale(product);
 
