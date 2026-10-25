@@ -599,34 +599,42 @@ footer h3{font-size:10px;letter-spacing:1.5px;font-weight:600;margin:4px 0 14px;
 @media (max-width: 600px) {
   .veyora-banner,
   .veyora-banner-overlay {
-    min-height: 280px;
+    min-height: 260px;
   }
   .veyora-banner-overlay {
-    padding: 25px 16px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.65) 100%);
-    align-items: center;
-    text-align: center;
-  }
-  .veyora-banner-overlay h1 {
-    font-size: 20px !important;
-    letter-spacing: 1px;
-    margin: 6px 0;
-  }
-  .veyora-banner-overlay p:not(.veyora-banner-label) {
-    font-size: 11px;
-    margin-bottom: 10px;
+    padding: 20px 16px;
+    align-items: flex-start;
+    text-align: left;
+    background: linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 100%);
   }
   .veyora-banner-label {
+    font-size: 8px;
     letter-spacing: 2px;
-    font-size: 9px;
+    margin-bottom: 3px;
+  }
+  .veyora-banner-overlay h1 {
+    font-size: clamp(18px, 5vw, 24px) !important;
+    margin: 4px 0;
+    line-height: 1.1;
+  }
+  .veyora-banner-overlay p:not(.veyora-banner-label) {
+    font-size: 10px;
+    line-height: 1.4;
+    margin-bottom: 8px;
   }
   #veyoraBannerButton {
-    padding: 10px 18px;
-    font-size: 10px;
-    margin-top: 5px;
+    padding: 8px 14px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-top: 4px;
   }
   .veyora-banner-dots {
-    margin-top: 12px;
+    margin-top: 10px;
+    gap: 6px;
+  }
+  .veyora-banner-dot {
+    width: 16px;
+    height: 2px;
   }
 }
 /* VEYORA LUXURY TRACKING PAGE */
