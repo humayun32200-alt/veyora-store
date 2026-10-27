@@ -1562,6 +1562,26 @@ let db = null;
 if (window.supabase) {
   db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 }
+  
+/* VEYORA WEBSITE INSTALL COUNTER */
+window.addEventListener("appinstalled", async () => {
+  if (!db) return;
+
+  try {
+    const { error } = await db
+      .from("website_installs")
+      .insert({ install_source: "pwa" });
+
+    if (error) {
+      console.error("Website install count error:", error.message);
+    } else {
+      console.log("VEYORA installation recorded.");
+    }
+  } catch (error) {
+    console.error("Install tracking error:", error);
+  }
+});
+
 
 const $ = id => document.getElementById(id);
 const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, c => ({
