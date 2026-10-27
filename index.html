@@ -1566,6 +1566,7 @@ if (window.supabase) {
 /* VEYORA WEBSITE INSTALL COUNTER */
 
 
+
 window.addEventListener("appinstalled", async () => {
   if (!db) return;
 
@@ -1575,15 +1576,15 @@ window.addEventListener("appinstalled", async () => {
       .insert({ install_source: "pwa" });
 
     if (error) {
-      console.error("Website install count error:", error.message);
+      console.error("Install record error:", error.message);
     } else {
-      console.log("VEYORA installation recorded.");
-      localStorage.setItem("veyora_install_recorded", "yes");
+      console.log("VEYORA install recorded with date and time.");
     }
   } catch (error) {
     console.error("Install tracking error:", error);
   }
 });
+
 
 
 const $ = id => document.getElementById(id);
