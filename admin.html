@@ -105,6 +105,12 @@ th{color:var(--gold)}
    <div class="stat"><small>Live Visitors*</small><strong id="sLive">0</strong></div>
    <div class="stat"><small>Total Sessions</small><strong id="sSessions">0</strong></div>
    <div class="stat"><small>Page Views</small><strong id="sViews">0</strong></div>
+   
+<div class="stat">
+  <small>Website Installs</small>
+  <strong id="sInstalls">0</strong>
+</div>
+
    <div class="stat"><small>Total Sales</small><strong id="sSales">Rs 0</strong></div>
    <div class="stat"><small>Conversion Rate</small><strong id="sConversion">0%</strong></div>
   </div>
@@ -389,6 +395,27 @@ th{color:var(--gold)}
 const SUPABASE_URL='https://fudkfvwwbqmflmtkbtkk.supabase.co';
 const SUPABASE_KEY='sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b';
 const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
+ 
+async function loadInstallCount() {
+  const counter = document.getElementById('sInstalls');
+  if (!db || !counter) return;
+
+  counter.textContent = '...';
+
+  try {
+    const { count, error } = await db
+      .from('website_installs')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) throw error;
+
+    counter.textContent = count ?? 0;
+  } catch (error) {
+    counter.textContent = '—';
+    console.error('Install count error:', error.message);
+  }
+}
+
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
@@ -1360,6 +1387,7 @@ async function enter(user){
   await loadProducts();
   await loadOrders();
   await loadAnalytics();
+  await loadInstallCount();
   /* ADDED: load banners without changing other dashboard functions */
   await loadBanners();
   note('Dashboard data refreshed successfully.');
