@@ -396,6 +396,7 @@ const SUPABASE_URL='https://fudkfvwwbqmflmtkbtkk.supabase.co';
 const SUPABASE_KEY='sb_publishable_gAVAuyV6GiEq_qhFKjOwlw_VLhc9R_b';
 const db=window.supabase?.createClient(SUPABASE_URL,SUPABASE_KEY);
  
+
 async function loadInstallCount() {
   const counter = document.getElementById('sInstalls');
   if (!db || !counter) return;
@@ -403,18 +404,19 @@ async function loadInstallCount() {
   counter.textContent = '...';
 
   try {
-    const { count, error } = await db
+    const { data, error } = await db
       .from('website_installs')
-      .select('*', { count: 'exact', head: true });
+      .select('id');
 
     if (error) throw error;
 
-    counter.textContent = count ?? 0;
+    counter.textContent = data ? data.length : 0;
   } catch (error) {
     counter.textContent = '—';
     console.error('Install count error:', error.message);
   }
 }
+
 
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
