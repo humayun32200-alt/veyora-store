@@ -1567,23 +1567,26 @@ if (window.supabase) {
 
 
 
-window.addEventListener("appinstalled", async () => {
-  if (!db) return;
 
-  try {
-    const { error } = await db
-      .from("website_installs")
-      .insert({ install_source: "pwa" });
-
-    if (error) {
-      console.error("Install record error:", error.message);
-    } else {
-      console.log("VEYORA install recorded with date and time.");
-    }
-  } catch (error) {
-    console.error("Install tracking error:", error);
+async function recordVeyoraInstall() {
+  if (!db) {
+    console.error("Supabase client is not ready.");
+    return;
   }
-});
+
+  const { error } = await db
+    .from("website_installs")
+    .insert({ install_source: "pwa" });
+
+  if (error) {
+    console.error("Install record error:", error.message);
+  } else {
+    console.log("VEYORA install recorded.");
+  }
+}
+
+window.addEventListener("appinstalled", recordVeyoraInstall);
+
 
 
 
