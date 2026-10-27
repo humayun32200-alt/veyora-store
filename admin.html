@@ -404,13 +404,13 @@ async function loadInstallCount() {
   counter.textContent = '...';
 
   try {
-    const { data, error } = await db
+    const { count, error } = await db
       .from('website_installs')
-      .select('id');
+      .select('*', { count: 'exact', head: true });
 
     if (error) throw error;
 
-    counter.textContent = data ? data.length : 0;
+    counter.textContent = count ?? 0;
   } catch (error) {
     counter.textContent = '—';
     console.error('Install count error:', error.message);
