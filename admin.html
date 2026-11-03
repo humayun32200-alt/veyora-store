@@ -136,15 +136,7 @@ th{color:var(--gold)}
    <h3>Recent Orders</h3>
    <div style="overflow:auto">
     <table>
-    <thead>
-<tr>
-<th>Order ID</th>
-<th>Customer</th>
-<th>Total</th>
-<th>Status</th>
-<th>Tracking Number</th>
-</tr>
-</thead>
+     <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Tracking Number</th></tr></thead>
      <tbody id="recentOrders"></tbody>
     </table>
    </div>
@@ -926,28 +918,19 @@ async function loadOrders(){
  $('sSales').textContent='Rs '+salesOrders.reduce((sum,o)=>sum+orderTotal(o),0).toLocaleString();
  renderOrders();
 }
-function orderPhone(o){
- return o.phone || o.customer_phone || o.phone_number || o.mobile || '—';
-}
 
-function orderAddress(o){
- return o.delivery_address || o.shipping_address || o.address || o.customer_address || '—';
-}
 function renderOrders(){
  const rows=orders.map(o=>`<tr>
  <td>#${esc(String(o.id||'').slice(0,8))}</td>
  <td>${esc(o.customer_name||o.full_name||o.name||'Guest')}</td>
- <td>${esc(orderPhone(o))}</td>
-<td>${esc(orderAddress(o))}</td>
  <td>${esc(o.item_count??'—')}</td>
- 
  <td>Rs ${orderTotal(o).toLocaleString()}</td>
  <td>${esc(orderStatus(o))}</td>
  <td>${esc(o.tracking_number||'Not assigned')}</td>
  <td>${o.created_at?new Date(o.created_at).toLocaleDateString():'—'}</td>
  <td><button class="btn2" data-uporder="${esc(o.id)}">Update</button></td>
  </tr>`).join('');
- $('ordersBody').innerHTML=rows||'<tr><td colspan="10">No orders found.</td></tr>';
+ $('ordersBody').innerHTML=rows||'<tr><td colspan="8">No orders found.</td></tr>';
 
  $('recentOrders').innerHTML=orders.slice(0,5).map(o=>`<tr>
  <td>#${esc(String(o.id||'').slice(0,8))}</td>
