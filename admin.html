@@ -136,7 +136,17 @@ th{color:var(--gold)}
    <h3>Recent Orders</h3>
    <div style="overflow:auto">
     <table>
-     <thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Tracking Number</th></tr></thead>
+     <thead>
+  <tr>
+    <th>Order ID</th>
+    <th>Customer</th>
+    <th>Phone Number</th>
+    <th>Address</th>
+    <th>Total</th>
+    <th>Status</th>
+    <th>Tracking Number</th>
+  </tr>
+</thead>
      <tbody id="recentOrders"></tbody>
     </table>
    </div>
@@ -932,17 +942,24 @@ function renderOrders(){
  </tr>`).join('');
  $('ordersBody').innerHTML=rows||'<tr><td colspan="8">No orders found.</td></tr>';
 
- $('recentOrders').innerHTML=orders.slice(0,5).map(o=>`<tr>
- <td>#${esc(String(o.id||'').slice(0,8))}</td>
- <td>${esc(o.customer_name||o.full_name||'Guest')}</td>
- <td>Rs ${orderTotal(o).toLocaleString()}</td>
- <td>${esc(orderStatus(o))}</td>
- <td>${esc(o.tracking_number||'Not assigned')}</td>
- </tr>`).join('')||'<tr><td colspan="5">No orders.</td></tr>';
+ $('recentOrders').innerHTML = orders.slice(0, 5).map(o => {
+  const phone = o.customer_phone || o.phone_number || o.phone || o.mobile || '—';
 
- document.querySelectorAll('[data-uporder]').forEach(b=>b.onclick=()=>updateOrder(b.dataset.uporder));
+  const address = o.customer_address || o.shipping_address || o.delivery_address || o.address || '—';
+
+  return `<tr>
+    <td>#${esc(String(o.id || '').slice(0, 8))}</td>
+    <td>${esc(o.customer_name || o.full_name || 'Guest')}</td>
+    <td>${esc(phone)}</td>
+    <td>${esc(address)}</td>
+    <td>Rs ${orderTotal(o).toLocaleString()}</td>
+    <td>${esc(orderStatus(o))}</td>
+    <td>${esc(o.tracking_number || 'Not assigned')}</td>
+  </tr>`;
+}).join('') || '<tr><td colspan="7">No orders.</td></tr>';
+
+document.querySelectorAll('[data-uporder]').forEach(b => b.onclick = () => updateOrder(b.dataset.uporder));
 }
-
 async function updateOrder(id){
  const o=orders.find(x=>String(x.id)===String(id));
  if(!o)return;
