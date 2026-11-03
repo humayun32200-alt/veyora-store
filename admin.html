@@ -182,7 +182,20 @@ th{color:var(--gold)}
   <p style="color:#aaa;font-size:12px;margin-bottom:12px">Update the order status and tracking number. The customer-facing order page must also read tracking details from Supabase.</p>
   <div class="panel" style="overflow:auto">
    <table>
-    <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Tracking Number</th><th>Date</th><th>Action</th></tr></thead>
+    <thead>
+<tr>
+<th>Order ID</th>
+<th>Customer</th>
+<th>Phone Number</th>
+<th>Address</th>
+<th>Items</th>
+<th>Total</th>
+<th>Status</th>
+<th>Tracking Number</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
     <tbody id="ordersBody"></tbody>
    </table>
   </div>
@@ -930,18 +943,40 @@ async function loadOrders(){
 }
 
 function renderOrders(){
- const rows=orders.map(o=>`<tr>
- <td>#${esc(String(o.id||'').slice(0,8))}</td>
- <td>${esc(o.customer_name||o.full_name||o.name||'Guest')}</td>
- <td>${esc(o.item_count??'—')}</td>
- <td>Rs ${orderTotal(o).toLocaleString()}</td>
- <td>${esc(orderStatus(o))}</td>
- <td>${esc(o.tracking_number||'Not assigned')}</td>
- <td>${o.created_at?new Date(o.created_at).toLocaleDateString():'—'}</td>
- <td><button class="btn2" data-uporder="${esc(o.id)}">Update</button></td>
- </tr>`).join('');
- $('ordersBody').innerHTML=rows||'<tr><td colspan="8">No orders found.</td></tr>';
+ const rows = orders.map(o => {
+  const phone =
+    o.customer_phone ||
+    o.phone_number ||
+    o.phone ||
+    o.mobile ||
+    '—';
 
+  const address =
+    o.customer_address ||
+    o.shipping_address ||
+    o.delivery_address ||
+    o.address ||
+    '—';
+
+  const addressText = typeof address === 'object'
+    ? Object.values(address).filter(Boolean).join(', ')
+    : address;
+
+  return `<tr>
+    <td>#${esc(String(o.id || '').slice(0, 8))}</td>
+    <td>${esc(o.customer_name || o.full_name || o.name || 'Guest')}</td>
+    <td>${esc(phone)}</td>
+    <td>${esc(addressText)}</td>
+    <td>${esc(o.item_count ?? '—')}</td>
+    <td>Rs ${orderTotal(o).toLocaleString()}</td>
+    <td>${esc(orderStatus(o))}</td>
+    <td>${esc(o.tracking_number || 'Not assigned')}</td>
+    <td>${o.created_at ? new Date(o.created_at).toLocaleDateString() : '—'}</td>
+    <td><button class="btn2" data-uporder="${esc(o.id)}">Update</button></td>
+  </tr>`;
+}).join('');
+
+$('ordersBody').innerHTML = rows || '<tr><td colspan="10">No orders found.</td></tr>';
  $('recentOrders').innerHTML = orders.slice(0, 5).map(o => {
   const phone = o.customer_phone || o.phone_number || o.phone || o.mobile || '—';
 
