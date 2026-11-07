@@ -444,6 +444,7 @@ async function loadInstallCount() {
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],categories=[],orders=[],mainImageUrl=null,chart=null;
+let orderItemsByOrder={};
 
 /* ADDED: Banner state */
 let banners=[];
@@ -930,6 +931,65 @@ async function loadOrders(){
  const {data,error}=await db.from('orders').select('*').order('created_at',{ascending:false});
  if(error){note('Orders: '+err(error),true);return;}
  orders=data||[];
+ // Load ordered products, their pictures and SKUs
+orderItemsByOrder = {};
+
+const { data: itemData, error: itemError } = await db
+  .from('order_items')
+  .select('id,order_id,product_id,variant_id,quantity,product_image');
+
+if (itemError) {
+  note('Order items: ' + err(itemError), true);
+  return;
+}
+
+const items = itemData || [];
+
+const productIds = [...new Set(items.map(i => i.product_id).filter(Boolean))];
+const variantIds = [...new Set(items.map(i => i.variant_id).filter(Boolean))];
+
+let productSkuMap = {};
+let variantSkuMap = {};
+
+if (productIds.length) {
+  const { data, error } = await db
+    .from('products')
+    .select('id,sku')
+    .in('id', productIds);
+
+  if (error) throw error;
+
+  (data || []).forEach(p => {
+    productSkuMap[String(p.id)] = p.sku || '—';
+  });
+}
+
+if (variantIds.length) {
+  const { data, error } = await db
+    .from('product_variants')
+    .select('id,sku')
+    .in('id', variantIds);
+
+  if (error) throw error;
+
+  (data || []).forEach(v => {
+    variantSkuMap[String(v.id)] = v.sku || '—';
+  });
+}
+
+items.forEach(item => {
+  const key = String(item.order_id);
+
+  if (!orderItemsByOrder[key]) {
+    orderItemsByOrder[key] = [];
+  }
+
+  item.sku = item.variant_id
+    ? (variantSkuMap[String(item.variant_id)] || productSkuMap[String(item.product_id)] || '—')
+    : (productSkuMap[String(item.product_id)] || '—');
+
+  orderItemsByOrder[key].push(item);
+});
  $('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
 
@@ -961,13 +1021,36 @@ function renderOrders(){
   const addressText = typeof address === 'object'
     ? Object.values(address).filter(Boolean).join(', ')
     : address;
+  const orderItems = orderItemsByOrder[String(o.id)] || [];
 
+  const itemCount = orderItems.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0
+  );
+
+  const itemsHtml = `
+    <div style="font-weight:700;margin-bottom:8px;color:var(--gold)">
+      ${itemCount} ${itemCount === 1 ? 'Item' : 'Items'}
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${orderItems.map(item => `
+        <div style="display:flex;align-items:center;gap:8px">
+          ${item.product_image
+            ? `<img src="${esc(item.product_image)}"
+                style="width:42px;height:42px;object-fit:cover;border-radius:6px;flex-shrink:0">`
+            : '<span style="width:42px;height:42px;display:inline-block">—</span>'}
+          <span style="font-size:11px">SKU: ${esc(item.sku)}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
   return `<tr>
     <td>#${esc(String(o.id || '').slice(0, 8))}</td>
     <td>${esc(o.customer_name || o.full_name || o.name || 'Guest')}</td>
     <td>${esc(phone)}</td>
     <td>${esc(addressText)}</td>
-    <td>${esc(o.item_count ?? '—')}</td>
+        <td>${itemsHtml}</td>
     <td>Rs ${orderTotal(o).toLocaleString()}</td>
     <td>${esc(orderStatus(o))}</td>
     <td>${esc(o.tracking_number || 'Not assigned')}</td>
