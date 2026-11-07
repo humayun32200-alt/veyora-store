@@ -189,6 +189,8 @@ th{color:var(--gold)}
 <th>Phone Number</th>
 <th>Address</th>
 <th>Items</th>
+<th>Product Image</th>
+<th>SKU</th>
 <th>Total</th>
 <th>Status</th>
 <th>Tracking Number</th>
@@ -949,7 +951,6 @@ const productIds = [...new Set(items.map(i => i.product_id).filter(Boolean))];
 const variantIds = [...new Set(items.map(i => i.variant_id).filter(Boolean))];
 
 let productSkuMap = {};
-let variantSkuMap = {};
 
 if (productIds.length) {
   const { data, error } = await db
@@ -964,31 +965,36 @@ if (productIds.length) {
   });
 }
 
-if (variantIds.length) {
-  const { data, error } = await db
-    .from('product_variants')
-    .select('id,sku')
-    .in('id', variantIds);
-
-  if (error) throw error;
-
-  (data || []).forEach(v => {
-    variantSkuMap[String(v.id)] = v.sku || '—';
-  });
-}
+// Duplicate product records ko combine karo
+const uniqueItems = {};
 
 items.forEach(item => {
-  const key = String(item.order_id);
+  const orderKey = String(item.order_id);
+  const productKey = String(item.product_id || '') + '_' +
+                     String(item.variant_id || '');
 
-  if (!orderItemsByOrder[key]) {
-    orderItemsByOrder[key] = [];
+  if (!uniqueItems[orderKey]) {
+    uniqueItems[orderKey] = {};
   }
 
-  item.sku = item.variant_id
-    ? (variantSkuMap[String(item.variant_id)] || productSkuMap[String(item.product_id)] || '—')
-    : (productSkuMap[String(item.product_id)] || '—');
+  if (!uniqueItems[orderKey][productKey]) {
+    uniqueItems[orderKey][productKey] = {
+      ...item,
+      quantity: Number(item.quantity) || 1,
+      sku: productSkuMap[String(item.product_id)] || '—'
+    };
+  } else {
+    uniqueItems[orderKey][productKey].quantity = Math.max(
+      uniqueItems[orderKey][productKey].quantity,
+      Number(item.quantity) || 1
+    );
+  }
+});
 
-  orderItemsByOrder[key].push(item);
+orderItemsByOrder = {};
+
+Object.keys(uniqueItems).forEach(orderId => {
+  orderItemsByOrder[orderId] = Object.values(uniqueItems[orderId]);
 });
  $('sOrders').textContent=orders.length;
  $('sPending').textContent=orders.filter(o=>['pending','confirmed','processing'].includes(String(orderStatus(o)).toLowerCase())).length;
@@ -1023,35 +1029,31 @@ function renderOrders(){
     : address;
   const orderItems = orderItemsByOrder[String(o.id)] || [];
 
-  const itemCount = orderItems.reduce(
-    (sum, item) => sum + (Number(item.quantity) || 0),
-    0
-  );
+const itemCount = orderItems.reduce(
+  (sum, item) => sum + (Number(item.quantity) || 0),
+  0
+);
 
-  const itemsHtml = `
-    <div style="font-weight:700;margin-bottom:8px;color:var(--gold)">
-      ${itemCount} ${itemCount === 1 ? 'Item' : 'Items'}
-    </div>
+const imageHtml = orderItems.map(item =>
+  item.product_image
+    ? `<img src="${esc(item.product_image)}" style="width:45px;height:45px;object-fit:cover;border-radius:6px;margin:3px">`
+    : '—'
+).join('<br>');
 
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${orderItems.map(item => `
-        <div style="display:flex;align-items:center;gap:8px">
-          ${item.product_image
-            ? `<img src="${esc(item.product_image)}"
-                style="width:42px;height:42px;object-fit:cover;border-radius:6px;flex-shrink:0">`
-            : '<span style="width:42px;height:42px;display:inline-block">—</span>'}
-          <span style="font-size:11px">SKU: ${esc(item.sku)}</span>
-        </div>
-      `).join('')}
-    </div>
-  `;
+const skuHtml = orderItems.map(item =>
+  `<div style="padding:12px 0">${esc(item.sku || '—')}</div>`
+).join('');
   return `<tr>
     <td>#${esc(String(o.id || '').slice(0, 8))}</td>
     <td>${esc(o.customer_name || o.full_name || o.name || 'Guest')}</td>
     <td>${esc(phone)}</td>
     <td>${esc(addressText)}</td>
-        <td>${itemsHtml}</td>
-    <td>Rs ${orderTotal(o).toLocaleString()}</td>
+        <td style="color:var(--gold);font-weight:700">
+  ${itemCount} ${itemCount === 1 ? 'Item' : 'Items'}
+</td>
+<td>${imageHtml}</td>
+<td>${skuHtml}</td>
+<td>Rs ${orderTotal(o).toLocaleString()}</td>
     <td>${esc(orderStatus(o))}</td>
     <td>${esc(o.tracking_number || 'Not assigned')}</td>
     <td>${o.created_at ? new Date(o.created_at).toLocaleDateString() : '—'}</td>
@@ -1059,7 +1061,7 @@ function renderOrders(){
   </tr>`;
 }).join('');
 
-$('ordersBody').innerHTML = rows || '<tr><td colspan="10">No orders found.</td></tr>';
+$('ordersBody').innerHTML = rows || '<tr><td colspan="12">No orders found.</td></tr>';
  $('recentOrders').innerHTML = orders.slice(0, 5).map(o => {
   const phone = o.customer_phone || o.phone_number || o.phone || o.mobile || '—';
 
